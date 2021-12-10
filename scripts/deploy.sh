@@ -62,8 +62,7 @@ then
     echo "${GREEN}Found package to upload${NORMAL}"
     cloudsmith push deb $REPO $DEB
 else
-    echo "${RED}No deb packages found to upload, exiting.${NORMAL}"
-    exit 1
+    echo "${YELLOW}No deb packages found to upload. Skipping.${NORMAL}"
 fi
 
 if [[ -n $DSC  && -n $DEBIAN && -n $SRC ]]
@@ -71,6 +70,5 @@ then
     echo "${GREEN}Found sources${NORMAL}"
     cloudsmith push deb $REPO $DSC --sources-file $SRC  --changes-file $DEBIAN
 else
-    echo "${RED}No source found${NORMAL}"
-
+    echo "${YELLOW}No source found${NORMAL}"
 fi
