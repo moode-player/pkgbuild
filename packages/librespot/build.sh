@@ -2,7 +2,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="librespot_0.3.1-1~moode1"
+PKG="librespot_0.3.1-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/librespot-org/librespot.git"
 PKG_SOURCE_GIT_TAG="v0.3.1"

@@ -2,7 +2,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="trx_0.6-1~moode1"
+PKG="trx_0.6-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/trx.git"
 PKG_SOURCE_GIT_TAG="0.6"

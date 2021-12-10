@@ -3,7 +3,7 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="libnpupnp1_4.1.1-1~moode1"
+PKG="libnpupnp1_4.1.1-1moode1"
 
 PKG_SOURCE_GIT="https://framagit.org/medoc92/npupnp.git"
 PKG_SOURCE_GIT_TAG="libnpupnp-v4.1.1"

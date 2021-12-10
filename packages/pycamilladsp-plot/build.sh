@@ -2,7 +2,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="pycamilladsp-plot_0.6.2-1~moode1"
+PKG="pycamilladsp-plot_0.6.2-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/pycamilladsp-plot.git"
 PKG_SOURCE_GIT_TAG="v0.6.2"

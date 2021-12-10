@@ -21,7 +21,7 @@
 # Used as local version after the deb release number:
 if [ -z "$DEBSUFFIX" ]
 then
-    DEBSUFFIX=~moode
+    DEBSUFFIX=moode
 fi
 
 # Used for coloured output
@@ -47,13 +47,14 @@ UNDERLINE=$(tput smul)
 #  Supported version formats:
 #  VER=caps_0.9.26-1~moode1
 #  VER=caps_2:0.9.26-1~moode1
+#  VER=caps_2:0.9.26-1moode1
 #  VER=caps_0.9.26-1
 
 #  Unsupported version formats:
 #  VER=caps_0.9.26~moode1
 #  VER=caps_0.9.26
 
-REGEXP='^([A-Za-z].*)[_]([0-9]:?.*)-([0-9]{1,3}.?[0-9]?)(~.*)?$'
+REGEXP='^([A-Za-z].*)[_]([0-9]:?.*)-([0-9]{1,3}[.]?[0-9]?)(.*)?$'
 
 
 # check some use conditions:
@@ -122,10 +123,10 @@ function _rbl_decode_pkg_version {
 
     FULL_VERSION="$PKGVERSION-$DEBVER$DEBLOC"
     PKGDIR="$PKGNAME-$PKGVERSION"
-    # echo $PKGNAME
-    # echo $PKGVERSION
-    # echo $DEBVER
-    # echo $DEBLOC
+    echo $PKGNAME
+    echo $PKGVERSION
+    echo $DEBVER
+    echo $DEBLOC
 
     # When the REGEXPR can not decode the pacakge string it passes on the full string
     # Detect this to indicate that the string can not be decoded

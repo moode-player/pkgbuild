@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="alsa-cdsp_1.0.0-1~moode1"
+PKG="alsa-cdsp_1.0.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsa_cdsp.git"
 PKG_SOURCE_GIT_TAG="v1.0.0"

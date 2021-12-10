@@ -12,7 +12,7 @@
 
 #TODO: If needed add systemd files
 
-PKG="ashuffle_3.12.5-1~moode1"
+PKG="ashuffle_3.12.5-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/joshkunz/ashuffle.git"
 PKG_SOURCE_GIT_TAG="v3.12.5"

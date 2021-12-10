@@ -1,5 +1,6 @@
 #!/bin/bash
 
+DEBSUFFIX=moode
 . ../../scripts/rebuilder.lib.sh
 
 PKG_DSC_URL="http://deb.debian.org/debian/pool/main/c/caps/caps_0.9.26-1.dsc"

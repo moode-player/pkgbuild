@@ -2,7 +2,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="udisks-glue_1.3.5-1~moode1"
+PKG="udisks-glue_1.3.5-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/fernandotcl/udisks-glue.git"
 PKG_SOURCE_GIT_TAG="release-1.3.5"

@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="alsacap_1.0.1-1~moode1"
+PKG="alsacap_1.0.1-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsacap.git"
 PKG_SOURCE_GIT_TAG="master"
@@ -31,7 +31,7 @@ rm debian/README.*
 cp README debian/README
 
 #DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Build for moOde audioplayer" -b
-rbl_set_initial_version_changelog $PKGNAME
+rbl_set_initial_version_changelog $PKGNAME $FULL_VERSION
 
 #------------------------------------------------------------
 rbl_build
