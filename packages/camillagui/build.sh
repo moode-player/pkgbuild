@@ -26,8 +26,9 @@ rbl_check_fpm
 _rbl_decode_pkg_version
 _rbl_check_curr_is_package_dir
 _rbl_cleanup_previous_build
-mkdir $PKGDIR
-_rbl_cd_source_dir
+_rbl_change_to_build_root
+# mkdir $PKGDIR
+# _rbl_cd_source_dir
 # ------------------------------------------------------------
 # Custom part of the packing
 
@@ -102,8 +103,8 @@ then
 fi
 
 
-mv ${PKGNAME}_${FULL_VERSION}*.deb $BASE_DIR
-cd $BASE_DIR
+# mv ${PKGNAME}_${FULL_VERSION}*.deb $BASE_DIR
+#cd $BASE_DIR
 
 #------------------------------------------------------------
 rbl_move_to_dist

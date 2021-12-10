@@ -13,7 +13,7 @@ rbl_prepare_from_git_with_deb_repo
 #------------------------------------------------------------
 # Custom part of the packing
 
-patch -p1 < ../debian.control.patch
+patch -p1 < $BASE_DIR/debian.control.patch
 
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch -b --newversion $FULL_VERSION "Rebuild for moOde."
 

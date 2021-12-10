@@ -12,7 +12,7 @@ rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 #------------------------------------------------------------
 # Custom part of the packing
 
-patch -p1 < ../debian.control.patch
+patch -p1 < $BASE_DIR/debian.control.patch
 echo "10" > debian/compat
 _rbl_check_build_deps
 ./autogen.sh

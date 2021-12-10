@@ -10,7 +10,7 @@ rbl_prepare_from_dsc_url $PKG_DSC_URL
 # Custom part of the packing
 
 # patch and add patch to debian
-patch -p1 < ../caps_12band_eqp.patch
+patch -p1 < $BASE_DIR/caps_12band_eqp.patch
 EDITOR=/bin/true dpkg-source --commit . caps_12band_eqp.patch
 
 # set debian local suffix flag

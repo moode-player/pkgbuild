@@ -26,7 +26,7 @@ then
     exit
 fi
 
-mv target/debian/* ..
+mv target/debian/* $BUILD_ROOT_DIR
 #------------------------------------------------------------
 
 rbl_move_to_dist

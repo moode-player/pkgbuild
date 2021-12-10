@@ -22,7 +22,7 @@ dget --no-cache http://deb.debian.org/debian/pool/main/c/caps/caps_$VER_PKG-1.ds
 cd caps-$VER_PKG
 
 # patch and add patch to debian
-patch -p1 < ../caps_12band_eqp.patch
+patch -p1 < $BASE_DIR/caps_12band_eqp.patch
 EDITOR=/bin/true dpkg-source --commit . caps_12band_eqp.patch
 
 # set debian local suffix flag

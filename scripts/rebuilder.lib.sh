@@ -75,6 +75,8 @@ then
 fi
 
 BASE_DIR=`pwd`
+BUILD_ROOT_DIR="$BASE_DIR/build"
+
 DO_DEP_UPDATE=1
 
 # make sure apt update is only done once during the build process
@@ -159,10 +161,15 @@ function _rbl_decode_pkg_version {
 }
 
 function _rbl_cleanup_previous_build {
-    if [ -d "$PKGNAME-$PKGVERSION" ]
+    # if [ -d "$PKGNAME-$PKGVERSION" ]
+    # then
+    #     rm -rf $PKGNAME-$PKGVERSION
+    # fi
+    if [ -d "$BUILD_ROOT_DIR" ]
     then
-        rm -rf $PKGNAME-$PKGVERSION
+        rm -rf $BUILD_ROOT_DIR
     fi
+
     rm -f $PKG-rebuild.log
 }
 
@@ -173,6 +180,11 @@ function _download_source_package {
         echo "${RED}Error: downloading source${NORMAL}"
         exit 1
     fi
+}
+
+function _rbl_change_to_build_root {
+    mkdir -p $BUILD_ROOT_DIR
+    cd $BUILD_ROOT_DIR
 }
 
 function _rbl_cd_source_dir {
@@ -217,12 +229,12 @@ function _build_deb {
 
 function rbl_move_to_dist {
     # copy output to dist dir
-    mkdir -p dist/source
-    mkdir -p dist/binary
-    mv -f *$PKGVERSION*.orig.* dist/source
-    mv -f *$PKGVERSION*$DEBLOC*.dsc dist/source
-    mv -f *$PKGVERSION*$DEBLOC.debian.* dist/source
-    mv *$PKGVERSION-$DEBVER$DEBLOC* dist/binary
+    mkdir -p $BASE_DIR/dist/source
+    mkdir -p $BASE_DIR/dist/binary
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*.orig.* $BASE_DIR/dist/source
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC*.dsc $BASE_DIR/dist/source
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC.debian.* $BASE_DIR/dist/source
+    mv $BUILD_ROOT_DIR/*$PKGVERSION-$DEBVER$DEBLOC* $BASE_DIR/dist/binary
 }
 
 function _rebuild {
@@ -231,6 +243,7 @@ function _rebuild {
     _rbl_decode_pkg_version
     _rbl_check_curr_is_package_dir
     _rbl_cleanup_previous_build
+    _rbl_change_to_build_root
     _download_source_package
     _rbl_cd_source_dir
     _rbl_check_build_deps
@@ -300,6 +313,8 @@ function rbl_prepare_from_dsc_url {
     _rbl_decode_pkg_version
     _rbl_check_curr_is_package_dir
     _rbl_cleanup_previous_build
+    _rbl_change_to_build_root
+    _rbl_change_to_build_root
     dget $1
     _rbl_cd_source_dir
 }
@@ -309,6 +324,8 @@ function rbl_prepare_from_git_with_deb_repo {
     _rbl_decode_pkg_version
     _rbl_check_curr_is_package_dir
     _rbl_cleanup_previous_build
+    _rbl_change_to_build_root
+
     git clone $PKG_SOURCE_GIT $PKGDIR
 
     _rbl_cd_source_dir
@@ -323,6 +340,7 @@ function rbl_prepare_clone_from_git {
     _rbl_decode_pkg_version
     _rbl_check_curr_is_package_dir
     _rbl_cleanup_previous_build
+    _rbl_change_to_build_root
 
     git clone $_PKG_SOURCE_GIT $PKGDIR
     if [[ $? -gt 0 ]]
@@ -358,6 +376,7 @@ function rbl_build_py_from_git {
     _rbl_decode_pkg_version
     _rbl_check_curr_is_package_dir
     _rbl_cleanup_previous_build
+    _rbl_change_to_build_root
 
     git clone $PKG_SOURCE_GIT $PKGDIR
     if [[ $? -gt 0 ]]
@@ -384,7 +403,7 @@ function rbl_build_py_from_git {
 
     mv deb_dist/*$DEBVER$DEBLOC* ..
     mv deb_dist/*$PKGVERSION.orig* ..
-    cd ..
+    # cd ..
     rbl_move_to_dist
 }
 
