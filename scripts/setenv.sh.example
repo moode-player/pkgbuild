@@ -1,0 +1,17 @@
+#!/bin/bash
+#########################################################################
+#
+# Example of setting the required environment settings.
+#
+# Use:
+# - Copy it to setend.sh and customize the settings
+# - Include it in your current shell by running
+# . ./setenv.sh
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
+
+export DEBFULLNAME=FooBar
+export DEBEMAIL=foobar@users.noreply.github.com

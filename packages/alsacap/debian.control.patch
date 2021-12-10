@@ -1,0 +1,28 @@
+--- alsacap-1.0.1/debian/control	2021-12-07 19:20:27.014753634 +0000
++++ ../../../build/alsacap-1.0.1/debian/control	2021-12-07 19:24:24.158029909 +0000
+@@ -1,16 +1,17 @@
+ Source: alsacap
+-Section: unknown
++Section: sound
+ Priority: optional
+-Maintainer: Bitkeeper <bitkeeper@users.noreply.github.com>
++Maintainer: bitkeeper <bitkeeper@users.noreply.github.com>
+ Build-Depends: debhelper-compat (= 13)
+ Standards-Version: 4.5.1
+-Homepage: <insert the upstream URL, if relevant>
+-#Vcs-Browser: https://salsa.debian.org/debian/alsacap
+-#Vcs-Git: https://salsa.debian.org/debian/alsacap.git
++Homepage: https://github.com/bubbapizza/alsacap
++Vcs-Browser: https://github.com/bitkeeper/alsacap
++Vcs-Git: https://github.com/bitkeeper/alsacap.git
+ Rules-Requires-Root: no
+ 
+ Package: alsacap
+ Architecture: any
+-Depends: ${shlibs:Depends}, ${misc:Depends}
+-Description: <insert up to 60 chars description>
+- <insert long description, indented with spaces>
++Depends: ${shlibs:Depends}, ${misc:Depends}, libasound2
++Description:  Alsacap was originally
++ written by Volker Schatz and it shows the capabilities of alsa device.
++ Shawn Wilson added autoconfigure to the project.

@@ -1,0 +1,43 @@
+--- libupnpp-bindings-0.20.1/debian/control.org	2021-12-08 20:22:06.391000000 +0000
++++ libupnpp-bindings-0.20.1/debian/control	2021-12-08 20:23:56.673725467 +0000
+@@ -3,22 +3,22 @@
+ Priority: optional
+ Maintainer: Jean-Francois Dockes <jf@dockes.org>
+ Build-Depends: debhelper (>= 9), dh-python,
+-               python-all-dev (>= 2.6.6-3~), python3-all-dev,
++               python3-all-dev,
+                libupnpp6-dev (>= 0.18.0), autotools-dev
+-X-Python-Version: >= 2.6
++#X-Python-Version: >= 2.6
+ Standards-Version: 3.9.8
+ Homepage: https://www.lesbonscomptes.com/upmpdcli/
+ 
+-Package: python-libupnpp
+-Section: python
+-Architecture: any
+-Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
+-Provides: ${python:Provides}
+-Description: libupnpp UPnP library interface for Python
+- This package provides libupnpp Python bindings.
+- .
+- libupnpp wraps libupnp calls and data inside easier to use C++ constructs.
+- It can be used to build either devices or control points. 
++# Package: python-libupnpp
++# Section: python
++# Architecture: any
++# Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
++# Provides: ${python:Provides}
++# Description: libupnpp UPnP library interface for Python
++#  This package provides libupnpp Python bindings.
++#  .
++#  libupnpp wraps libupnp calls and data inside easier to use C++ constructs.
++#  It can be used to build either devices or control points.
+ 
+ Package: python3-libupnpp
+ Section: python
+@@ -29,4 +29,4 @@
+  This package provides libupnpp Python3 bindings.
+  .
+  libupnpp wraps libupnp calls and data inside easier to use C++ constructs.
+- It can be used to build either devices or control points. 
++ It can be used to build either devices or control points.

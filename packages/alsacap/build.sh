@@ -1,0 +1,39 @@
+#!/bin/bash
+#########################################################################
+#
+# Build Recipe for alscap
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
+
+. ../../scripts/rebuilder.lib.sh
+
+PKG="alsacap_1.0.1-1~moode1"
+
+PKG_SOURCE_GIT="https://github.com/bitkeeper/alsacap.git"
+PKG_SOURCE_GIT_TAG="master"
+
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT
+
+#------------------------------------------------------------
+# Custom part of the packing
+
+git archive  --format=tar.gz --output ../${PKGNAME}_${PKGVERSION}.tar.gz master
+dh_make -s -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../COPYING -y
+rm ../${PKGNAME}_${PKGVERSION}.tar.gz
+
+patch -p1 < $BASE_DIR/debian.control.patch
+
+rm debian/manpage.*.ex
+rm debian/README.*
+cp README debian/README
+
+#DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Build for moOde audioplayer" -b
+rbl_set_initial_version_changelog $PKGNAME
+
+#------------------------------------------------------------
+rbl_build
+echo "done"
+

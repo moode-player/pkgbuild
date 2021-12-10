@@ -1,0 +1,1001 @@
+Description: Add 12 band PEQ to caps
+ Based on the 4 bands PEQ create 12 bands PEQ called eqfa12p(3xeqfa4p).This make it possible 
+ to do room/headphone correction.
+ .
+ caps (0.9.26-1) unstable; urgency=medium
+ .
+   * Change maintainer address to debian-multimedia@lists.debian.org
+   * New upstream version 0.9.26
+     - Drop all patches - equivalents applied upstream
+     - Fixes crashes in some plugins. Closes: #907220
+Author: Felipe Sateler <fsateler@debian.org>
+Bug-Debian: https://bugs.debian.org/907220
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: 2021-05-01
+
+--- caps-0.9.26.orig/Eq.cc
++++ caps-0.9.26/Eq.cc
+@@ -1,12 +1,15 @@
+ /*
+ 	Eq.cc
+-	
++
+ 	Copyright 2002-14 Tim Goetze <tim@quitte.de>
+-	
++
+ 	http://quitte.de/dsp/
+ 
+ 	Various equaliser plugins.
+ 
++	2020-10 bitkeeper Created EqFA12p based on the EqFA4p
++	https://github.com/bitkeeper/caps
++
+ */
+ /*
+ 	This program is free software; you can redistribute it and/or
+@@ -35,14 +38,14 @@
+ 
+ /* slight adjustments to gain to keep response optimally flat at
+  * 0 dB gain in all bands */
+-inline static double 
++inline static double
+ adjust_gain(int i, double g)
+ {
+ 	static float adjust[] = {
+-		0.69238604707174034, 0.67282771124180096, 
+-		0.67215187672467813, 0.65768648447259315, 
+-		0.65988083755898952, 0.66359580101701909, 
+-		0.66485139160960427, 0.65890297086039662, 
++		0.69238604707174034, 0.67282771124180096,
++		0.67215187672467813, 0.65768648447259315,
++		0.65988083755898952, 0.66359580101701909,
++		0.66485139160960427, 0.65890297086039662,
+ 		0.6493229390740376, 0.82305724539749325
+ 	};
+ 
+@@ -54,7 +57,7 @@ adjust_gain(int i, double g)
+ void
+ Eq10::init()
+ {
+-	eq.init(fs, Eq10Q); 
++	eq.init(fs, Eq10Q);
+ }
+ 
+ void
+@@ -109,18 +112,18 @@ Eq10::cycle(uint frames)
+ PortInfo
+ Eq10::port_info [] =
+ {
+-	{"31 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"63 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"125 Hz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}}, 
+-	{"250 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"500 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"1 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}}, 
+-	{"2 kHz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"4 kHz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"8 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}}, 
+-	{"16 kHz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
++	{"31 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"63 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"125 Hz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}},
++	{"250 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"500 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"1 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}},
++	{"2 kHz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"4 kHz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"8 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}},
++	{"16 kHz", CTRL_IN, {DEFAULT_0, -48, 24}},
+ 
+-	{"in", INPUT | AUDIO}, 
++	{"in", INPUT | AUDIO},
+ 	{"out", OUTPUT | AUDIO}
+ };
+ 
+@@ -174,7 +177,7 @@ Eq10X2::cycle(uint frames)
+ 		else
+ 		{
+ 			gain[i] = getport(i);
+-			
++
+ 			/* prepare factor for logarithmic gain fade */
+ 			a = adjust_gain(i, db2lin(gain[i]));
+ 			a = pow(a / eq[0].gain[i], one_over_n);
+@@ -186,7 +189,7 @@ Eq10X2::cycle(uint frames)
+ 
+ 	for(int c = 0; c < 2; ++c)
+ 	{
+-		sample_t 
++		sample_t
+ 			* s = ports[10 + c],
+ 			* d = ports[12 + c];
+ 
+@@ -209,20 +212,20 @@ Eq10X2::cycle(uint frames)
+ PortInfo
+ Eq10X2::port_info [] =
+ {
+-	{"31 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"63 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"125 Hz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}}, 
+-	{"250 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"500 Hz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"1 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}}, 
+-	{"2 kHz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"4 kHz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-	{"8 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}}, 
+-	{"16 kHz", CTRL_IN, {DEFAULT_0, -48, 24}}, 
+-
+-	{"in.l", INPUT | AUDIO}, 
+-	{"in.r", INPUT | AUDIO}, 
+-	{"out.l", OUTPUT | AUDIO}, 
++	{"31 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"63 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"125 Hz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}},
++	{"250 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"500 Hz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"1 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}},
++	{"2 kHz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"4 kHz", CTRL_IN, {DEFAULT_0, -48, 24}},
++	{"8 kHz", CTRL_IN | GROUP, {DEFAULT_0, -48, 24}},
++	{"16 kHz", CTRL_IN, {DEFAULT_0, -48, 24}},
++
++	{"in.l", INPUT | AUDIO},
++	{"in.r", INPUT | AUDIO},
++	{"out.l", OUTPUT | AUDIO},
+ 	{"out.r", OUTPUT | AUDIO}
+ };
+ 
+@@ -240,7 +243,7 @@ void
+ Eq4p::init()
+ {
+ 	/* limit filter frequency to slightly under Nyquist to be on the safe side */
+-	float limit = .48*fs; 
++	float limit = .48*fs;
+ 	for(int i = 0; i < 4; ++i)
+ 	{
+ 		state[i].f = -1; /* ensure all coefficients updated */
+@@ -271,7 +274,7 @@ Eq4p::updatestate()
+ 		sample_t Q = getport(i*4 + 2);
+ 		sample_t gain = getport(i*4 + 3);
+ 
+-		if(mode==state[i].mode && gain==state[i].gain && f==state[i].f && Q==state[i].Q) 
++		if(mode==state[i].mode && gain==state[i].gain && f==state[i].f && Q==state[i].Q)
+ 			continue;
+ 
+ 		xfade = true;
+@@ -281,7 +284,7 @@ Eq4p::updatestate()
+ 		state[i].f = f;
+ 		state[i].gain = gain;
+ 
+-		IIR2_ab c; 
++		IIR2_ab c;
+ 
+ 		f *= over_fs;
+ 		/* Zoelzer shelve: H(s) = (A*s^2 + s*(sqrt(A)/Q) + 1) / (s^2 + s/Q + 1) */
+@@ -308,7 +311,7 @@ Eq4p::cycle(uint frames)
+ 	sample_t * s = ports[17];
+ 	sample_t * d = ports[18];
+ 
+-	updatestate(); 
++	updatestate();
+ 
+ 	if(!xfade)
+ 	{
+@@ -332,7 +335,7 @@ Eq4p::cycle(uint frames)
+ 			x = g0*g0*filter[0].seriesprocess(x) + g1*g1*filter[1].seriesprocess(x);
+ 			d[i] = x;
+ 		}
+-		
++
+ 		filter[0] = filter[1];
+ 		filter[1].reset();
+ 		xfade = false;
+@@ -373,7 +376,7 @@ Eq4p::port_info [] =
+ 	{"_latency", OUTPUT|CONTROL|GROUP, {INTEGER|DEFAULT_MAX,3,3}, "{3:'3 samples'}"},
+ 
+ 	/* 17 */
+-	{"in", INPUT | AUDIO, {0, -1, 1}}, 
++	{"in", INPUT | AUDIO, {0, -1, 1}},
+ 	{"out", OUTPUT | AUDIO, {0}}
+ };
+ 
+@@ -391,7 +394,7 @@ void
+ EqFA4p::init()
+ {
+ 	/* limit filter frequency to slightly under Nyquist to be on the safe side */
+-	float limit = .48*fs; 
++	float limit = .48*fs;
+ 	for(int i = 0; i < 4; ++i)
+ 	{
+ 		state[i].f = -1; /* ensure all coefficients updated */
+@@ -421,7 +424,7 @@ EqFA4p::updatestate()
+ 		sample_t bw = getport(i*4 + 2);
+ 		sample_t gain = getport(i*4 + 3);
+ 
+-		if(mode==state[i].mode && gain==state[i].gain && f==state[i].f && bw==state[i].bw) 
++		if(mode==state[i].mode && gain==state[i].gain && f==state[i].f && bw==state[i].bw)
+ 			continue;
+ 
+ 		xfade = true;
+@@ -441,7 +444,7 @@ EqFA4p::updatestate()
+ void
+ EqFA4p::cycle(uint frames)
+ {
+-	updatestate(); 
++	updatestate();
+ 
+ 	sample_t g = db2lin(getport(16));
+ 	sample_t over_n = frames ? 1./frames : 1;
+@@ -476,7 +479,7 @@ EqFA4p::cycle(uint frames)
+ 			gain *= gf;
+ 			d[i] = x;
+ 		}
+-		
++
+ 		filter[0] = filter[1];
+ 		filter[1].reset();
+ 		xfade = false;
+@@ -520,7 +523,7 @@ EqFA4p::port_info [] =
+ 	{"_latency", OUTPUT|CONTROL|GROUP, {INTEGER|DEFAULT_MAX,3,3}, "{3:'3 samples'}"},
+ 
+ 	/* 18 */
+-	{"in", INPUT | AUDIO}, 
++	{"in", INPUT | AUDIO},
+ 	{"out", OUTPUT | AUDIO}
+ };
+ 
+@@ -532,4 +535,232 @@ Descriptor<EqFA4p>::setup()
+ 	autogen();
+ }
+ 
++/* //////////////////////////////////////////////////////////////////////// */
++#define EQFA12P_GAIN_PORT 48 //16
++#define EQFA12P_LATENCY_PORT 49 //17
++#define EQFA12P_INPUT_PORT 50 //18
++#define EQFA12P_OUTPUT_PORT 51 // 19
++
++void
++EqFA12p::init()
++{
++	this->NR_OF_BANDS =EQFA12P_NR_OF_BANDS;
++
++	/* limit filter frequency to slightly under Nyquist to be on the safe side */
++	float limit = .48*fs;
++	for(int i = 0; i < NR_OF_BANDS; ++i)
++	{
++		state[i].f = -1; /* ensure all coefficients updated */
++		ranges[NR_OF_BANDS*i + 1].UpperBound = min(ranges[NR_OF_BANDS*i + 1].UpperBound, limit);
++	}
++}
++
++void
++EqFA12p::activate()
++{
++	filter[0].reset();
++	filter[1].reset();
++	filter[2].reset();
++	filter[3].reset();
++	filter[4].reset();
++	filter[5].reset();
++
++	updatestate();
++	filter[0] = filter[1];
++	filter[2] = filter[3];
++	filter[4] = filter[5];
++	xfade = false;
++	gain = db2lin(getport(EQFA12P_GAIN_PORT)); /* was 16 (gain) */
++}
++
++void
++EqFA12p::updatestate()
++{
++	size_t filter_instance, index;
++	for(int i=0; i<NR_OF_BANDS; ++i)
++	{
++		sample_t mode = getport(i*4 + 0);
++		sample_t f = getport(i*4 + 1);
++		sample_t bw = getport(i*4 + 2);
++		sample_t gain = getport(i*4 + 3);
++
++		if(mode==state[i].mode && gain==state[i].gain && f==state[i].f && bw==state[i].bw)
++			continue;
++
++		xfade = true;
++
++		state[i].mode = mode;
++		state[i].bw = bw;
++		state[i].f = f;
++		state[i].gain = gain;
++
++		index = i % 4;
++		if(i >=8) {
++			filter_instance = 5;
++		}else if(i >=4) {
++			filter_instance = 3;
++		}else {
++			filter_instance = 1;
++		}
++
++		if(!mode)
++			filter[filter_instance].unity(index);
++		else
++			filter[filter_instance].set(index, f*over_fs, bw, db2lin(gain));
++	}
++}
++
++void
++EqFA12p::cycle(uint frames)
++{
++	updatestate();
++
++	sample_t g = db2lin(getport(EQFA12P_GAIN_PORT));
++	sample_t over_n = frames ? 1./frames : 1;
++	sample_t gf = pow(g/gain, over_n);
++
++	*ports[EQFA12P_LATENCY_PORT] = 9;
++	sample_t * s = ports[EQFA12P_INPUT_PORT];
++	sample_t * d = ports[EQFA12P_OUTPUT_PORT];
++
++	if(!xfade)
++	{
++		for(uint i = 0; i < frames; ++i)
++		{
++			sample_t x = s[i];
++			x = filter[0].seriesprocess(x);
++			x = filter[2].seriesprocess(x);
++			x = filter[4].seriesprocess(x);
++			x = gain*x;
++			gain *= gf;
++			d[i] = x;
++		}
++	}
++	else
++	{
++		DSP::Sine gf0 (.5*M_PI*over_n,.5*M_PI);
++		DSP::Sine gf1 (.5*M_PI*over_n,0);
++		for(uint i = 0; i < frames; ++i)
++		{
++			sample_t x = s[i];
++			sample_t g0 = gf0.get();
++			sample_t g1 = gf1.get();
++			x = g0*g0*filter[0].seriesprocess(x) + g1*g1*filter[1].seriesprocess(x);
++			x = filter[2].seriesprocess(x) + filter[3].seriesprocess(x);
++			x = filter[4].seriesprocess(x) + filter[5].seriesprocess(x);
++			x = gain*x;
++			gain *= gf;
++			d[i] = x;
++		}
++
++		filter[0] = filter[1];
++		filter[1].reset();
++
++		filter[2] = filter[3];
++		filter[3].reset();
++
++		filter[4] = filter[5];
++		filter[5].reset();
++
++		xfade = false;
++	}
++}
++
++// /* //////////////////////////////////////////////////////////////////////// */
++
++PortInfo
++EqFA12p::port_info [] =
++{
++	{"a.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"a.f (Hz)", CTRL_IN, {DEFAULT_LOW | LOG, 10, 18000}},
++	{"a.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"a.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 4 */
++	{"b.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"b.f (Hz)", CTRL_IN, {DEFAULT_MID | LOG, 10, 18000}},
++	{"b.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"b.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 8 */
++	{"c.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"c.f (Hz)", CTRL_IN, {DEFAULT_MID | LOG, 10, 18000}},
++	{"c.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"c.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 12 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++	//-----------------
+ 
++	/* 16 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 20 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 24 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 28 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 32 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 36 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 40 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++	/* 44 */
++	{"d.act", CTRL_IN | GROUP, {DEFAULT_0 | INTEGER, 0,1}, EqFA4pBandModes},
++	{"d.f (Hz)", CTRL_IN, {DEFAULT_HIGH | LOG, 10, 18000}},
++	{"d.bw", CTRL_IN, {DEFAULT_1, .06, 16}},
++	{"d.gain (dB)", CTRL_IN, {DEFAULT_0, -24, 24}},
++
++
++	//-----------------
++
++	/* 48  was 16 */
++	{"gain", CTRL_IN|GROUP, {DEFAULT_0, -24, 24}},
++
++	/* 49 was 17 */
++	{"_latency", OUTPUT|CONTROL|GROUP, {INTEGER|DEFAULT_MAX,9,9}, "{9:'9 samples'}"},
++
++	/* 50 was 18 */
++	{"in", INPUT | AUDIO},
++	{"out", OUTPUT | AUDIO}
++};
++
++template <> void
++Descriptor<EqFA12p>::setup()
++{
++	Label = "EqFA12p";
++	Name = CAPS "EqFA12p - 12-band parametric eq";
++	autogen();
++}
+--- caps-0.9.26.orig/Eq.h
++++ caps-0.9.26/Eq.h
+@@ -1,12 +1,15 @@
+ /*
+ 	Eq.h
+-	
++
+ 	Copyright 2004-13 Tim Goetze <tim@quitte.de>
+-	
++
+ 	http://quitte.de/dsp/
+ 
+ 	IIR equalisation filters.
+ 
++	2020-10 bitkeeper Created EqFA12p based on the EqFA4p
++	https://github.com/bitkeeper/caps
++
+ */
+ /*
+ 	This program is free software; you can redistribute it and/or
+@@ -114,4 +117,30 @@ class EqFA4p
+ 		void activate();
+ };
+ 
++
++#define EQFA12P_NR_OF_BANDS 12
++/* 3x 4-way parametric, parallel implementation */
++class EqFA12p
++: public Plugin
++{
++	public:
++	    int NR_OF_BANDS;
++		struct {sample_t mode,gain,f,bw;} state[EQFA12P_NR_OF_BANDS]; /* parameters */
++
++		DSP::MREqv4 filter[6];
++
++		bool xfade;
++		void updatestate();
++		sample_t gain;
++
++		void cycle (uint frames);
++
++	public:
++		static PortInfo port_info [];
++
++		void init();
++		void activate();
++};
++
++
+ #endif /* EQ_H */
+--- /dev/null
++++ caps-0.9.26/README.MD
+@@ -0,0 +1,11 @@
++#This is CAPS, the C* Audio Plugin Suite
++=======================================
++This is from the offical CAPS project, for all questions, please be referred to the documentation at
++
++	http://quitte.de/dsp/caps.html
++
++If that doesn't help, you can contact
++
++	tim@quitte.de
++
++This fork adds the EqFa12p a 3x4 bands parameteric EQ, based on the EqFa4p.
+--- caps-0.9.26.orig/dsp/v4f_IIR2.h
++++ caps-0.9.26/dsp/v4f_IIR2.h
+@@ -1,11 +1,14 @@
+ /*
+ 	dsp/v4f_IIR2.h
+-	
++
+ 	Copyright 2003-14 Tim Goetze <tim@quitte.de>
+-	
++
+ 	http://quitte.de/dsp/
+ 
+-	2nd-order IIR filters, SIMD 
++	2nd-order IIR filters, SIMD
++
++	2020-10 bitkeeper Created EqFA10p based on the EqFA4p
++	https://github.com/bitkeeper/caps
+ 
+ */
+ /*
+@@ -40,7 +43,7 @@ class RBJv4
+ {
+ 	public:
+ 		v4f_t sin, cos, alpha;
+-		
++
+ 		RBJv4 (v4f_t f, v4f_t Q)
+ 			{
+ 				v4f_t w = v4f_2pi * f;
+@@ -70,7 +73,7 @@ class IIR2v4
+ 				unity();
+ 				reset();
+ 			}
+-		
++
+ 		/* needed to make sure copy has properly aligned storage */
+ 		void operator = (IIR2v4 & b)
+ 			{
+@@ -89,7 +92,7 @@ class IIR2v4
+ 		void dumpab()
+ 			{
+ 				v4f_t *a = data();
+-				
++
+ 				msg(), "a0 = ", a[0];
+ 				msg(), "a1 = ", a[1];
+ 				msg(), "a2 = ", a[2];
+@@ -101,7 +104,7 @@ class IIR2v4
+ 		void reset()
+ 			{
+ 				v4f_t *x = data() + 5, *y = x + 2;
+-				x[0] = x[1] = 
++				x[0] = x[1] =
+ 				y[0] = y[1] = (v4f_t) {0,0,0,0};
+ 			}
+ 
+@@ -114,7 +117,7 @@ class IIR2v4
+ 				b[0] = Q * p.alpha;
+ 				b[1] = v4f_0;
+ 				b[2] = -b[0];
+-				
++
+ 				a[0] = v4f_1 + p.alpha;
+ 				a[1] = -v4f_2 * p.cos;
+ 				a[2] = v4f_1 - p.alpha;
+@@ -129,7 +132,7 @@ class IIR2v4
+ 
+ 				b[1] = v4f_1 - p.cos;
+ 				b[0] = b[2] = b[1] * v4f_half;
+-				
++
+ 				a[0] = v4f_1 + p.alpha;
+ 				a[1] = -v4f_2 * p.cos;
+ 				a[2] = v4f_1 - p.alpha;
+@@ -158,7 +161,7 @@ class IIR2v4
+ 
+ 				a[0] = v4f_1 + aoA;
+ 				a[2] = v4f_1 - aoA;
+-			
++
+ 				make_direct_I (a, b);
+ 			}
+ 
+@@ -167,7 +170,7 @@ class IIR2v4
+ 				v4f_t *a = data(), *b = a + 2;
+ 
+ 				v4f_t ha0i = v4f_1 / ha[0];
+-				
++
+ 				a[0] = hb[0] * ha0i;
+ 				a[1] = hb[1] * ha0i;
+ 				a[2] = hb[2] * ha0i;
+@@ -183,7 +186,7 @@ class IIR2v4
+ 				v4f_t *a = data(), *b = a + 2, *x = a + 5, *y = a + 7;
+ 
+ 				register v4f_t r = s * a[0];
+-				
++
+ 				r += a[1] * x[h];
+ 				r += b[1] * y[h];
+ 
+@@ -193,7 +196,7 @@ class IIR2v4
+ 
+ 				y[h] = r;
+ 				x[h] = s;
+-				
++
+ 				return r;
+ 			}
+ 
+@@ -203,7 +206,7 @@ class IIR2v4
+ 				v4f_t *a = data();
+ 
+ 				register v4f_t r = s * a[0];
+-				
++
+ 				r += a[1] * a[5+h]; /* a[1] * x[h] */
+ 				r += a[2+1] * a[7+h]; /* b[1] * y[h] */
+ 
+@@ -213,7 +216,7 @@ class IIR2v4
+ 
+ 				a[5+h] = s; /* x[h] = s */
+ 				a[7+h] = r; /* y[h] = r */
+-				
++
+ 				return r;
+ 			}
+ 
+@@ -224,7 +227,7 @@ class IIR2v4
+ 				v4f_t *a = data();
+ 
+ 				register v4f_t r = s * a[0];
+-				
++
+ 				r += a[2+1] * a[7+h]; /* b[1] * y[h] */
+ 
+ 				h ^= 1;
+@@ -233,17 +236,17 @@ class IIR2v4
+ 
+ 				a[5+h] = s; /* x[h] = s */
+ 				a[7+h] = r; /* y[h] = r */
+-				
++
+ 				return r;
+ 			}
+ 
+-		/* using the parallel structure as four filters in series by 
++		/* using the parallel structure as four filters in series by
+ 		 * sequential rotation */
+ 		inline float seriesprocess (float x)
+ 			{
+ 				v4f_t *a = data();
+ 				v4f_t s = a[7+h]; /* y[-1] = last output */
+-				s = v4f_shuffle (s, 0,0,1,2); /* keep first sample -> no-op on non-SSE chips */ 
++				s = v4f_shuffle (s, 0,0,1,2); /* keep first sample -> no-op on non-SSE chips */
+ 				v4fa(s)[0] = x;
+ 				s = process(s);
+ 				return v4fa(s)[3];
+@@ -268,7 +271,7 @@ class IIR2v4Bank
+ {
+ 	public:
+ 		enum { DataSize = (2 + 7*N) * sizeof (v4f_t) };
+-		/* data layout: x[2] first, then N * (a[3], b[2], y[2]) 
++		/* data layout: x[2] first, then N * (a[3], b[2], y[2])
+ 		 * plus 16 extra bytes to ensure sufficient room for alignment */
+ 		char __data [DataSize + sizeof (v4f_t)];
+ 		v4f_t * _data;
+@@ -305,7 +308,7 @@ class IIR2v4Bank
+ 		void dumpab()
+ 			{
+ 				v4f_t *a = data() + 2;
+-				
++
+ 				for (uint i = 0; i < N; ++i, a += 7)
+ 				{
+ 					msg(), "a0[", i, "] = ", a[0];
+@@ -319,7 +322,7 @@ class IIR2v4Bank
+ 
+ 		inline v4f_t process (v4f_t s, uint n = N)
+ 			{
+-				v4f_t *x = data(), *a = x + 2; 
++				v4f_t *x = data(), *a = x + 2;
+ 
+ 				v4f_t acc = v4f_0;
+ 
+@@ -327,7 +330,7 @@ class IIR2v4Bank
+ 				for (uint i = 0; i < n; ++i, a += 7)
+ 				{
+ 					register v4f_t r = s * a[0];
+-					
++
+ 					r +=   a[1] * x[h1];
+ 					r += a[2+1] * a[5+h1]; /* b[1] * y[h1] */
+ 
+@@ -346,7 +349,7 @@ class IIR2v4Bank
+ 
+ 		inline v4f_t process_no_a0 (v4f_t s)
+ 			{
+-				v4f_t *x = data(), *a = x + 2; 
++				v4f_t *x = data(), *a = x + 2;
+ 
+ 				v4f_t acc = v4f_0;
+ 
+@@ -354,7 +357,7 @@ class IIR2v4Bank
+ 				for (uint i = 0; i < N; ++i, a += 7)
+ 				{
+ 					register v4f_t r;
+-					
++
+ 					r =    a[1] * x[h1];
+ 					r += a[2+1] * a[5+h1]; /* b[1] * y[h1] */
+ 
+@@ -373,7 +376,7 @@ class IIR2v4Bank
+ 
+ 		inline v4f_t process_bp (v4f_t s, uint n = N)
+ 			{
+-				v4f_t *x = data(), *a = x + 2; 
++				v4f_t *x = data(), *a = x + 2;
+ 
+ 				v4f_t acc = v4f_0;
+ 
+@@ -381,7 +384,7 @@ class IIR2v4Bank
+ 				for (uint i = 0; i < n; ++i, a += 7)
+ 				{
+ 					register v4f_t r = s * a[0];
+-					
++
+ 					r += a[2+1] * a[5+h1]; /* b[1] * y[h1] */
+ 
+ 					r += a[2] * x[h2];
+@@ -401,7 +404,7 @@ class IIR2v4Bank
+ 		/* RBJ prototypes */
+ 		void set_bp (v4f_t * f, v4f_t * Q, v4f_t * gain = 0)
+ 			{
+-				v4f_t * a = data() + 2; 
++				v4f_t * a = data() + 2;
+ 				for (uint i = 0; i < N; ++i, a += 7)
+ 				{
+ 					RBJv4 p (f[i], Q[i]);
+@@ -410,7 +413,7 @@ class IIR2v4Bank
+ 					hb[0] = Q[i] * p.alpha;
+ 					hb[1] = v4f_0;
+ 					hb[2] = -hb[0];
+-					
++
+ 					ha[0] = v4f_1 + p.alpha;
+ 					ha[1] = -v4f_2 * p.cos;
+ 					ha[2] = v4f_1 - p.alpha;
+@@ -423,7 +426,7 @@ class IIR2v4Bank
+ 
+ 		void set_eq (v4f_t *f, v4f_t *Q, v4f_t *gain)
+ 			{
+-				v4f_t * a = data() + 2; 
++				v4f_t * a = data() + 2;
+ 				for (uint i = 0; i < N; ++i, a += 7)
+ 				{
+ 					/* A = pow (10, gain / 40) */
+@@ -445,7 +448,7 @@ class IIR2v4Bank
+ 
+ 					ha[0] = v4f_1 + aoA;
+ 					ha[2] = v4f_1 - aoA;
+-				
++
+ 					make_direct_I (a, ha, hb);
+ 				}
+ 			}
+@@ -456,7 +459,7 @@ class IIR2v4Bank
+ 				v4f_t *b = a + 2;
+ 
+ 				v4f_t ha0i = v4f_1 / ha[0];
+-				
++
+ 				a[0] = hb[0] * ha0i;
+ 				a[1] = hb[1] * ha0i;
+ 				a[2] = hb[2] * ha0i;
+@@ -469,7 +472,7 @@ class IIR2v4Bank
+ 		void set_a (uint k, float *c, uint n = N)
+ 			{
+ 				//msg(), k, " = ", (v4f_t) {c[0],c[1],c[2],c[3]}, (v4f_t) {c[4],c[5],c[6],c[7]};
+-				v4f_t * a = data() + 2 + k; 
++				v4f_t * a = data() + 2 + k;
+ 				for (uint i = 0; i < n; ++i, a += 7, c += 4)
+ 					*a = (v4f_t) {c[0],c[1],c[2],c[3]};
+ 			}
+@@ -479,7 +482,7 @@ class IIR2v4Bank
+ 		/* initialise coefficients wholesale */
+ 		void set_ab (uint n, v4f_t *a0, v4f_t *a1, v4f_t *a2, v4f_t *b1, v4f_t *b2)
+ 			{
+-				v4f_t * a = data() + 2; 
++				v4f_t * a = data() + 2;
+ 				for (uint i = 0; i < n; ++i, a += 7)
+ 				{
+ 					a[0] = a0[i];
+@@ -564,7 +567,7 @@ class Resonator4fBank
+ 				r *= r;
+ 				a[2] = -r;
+ 			}
+-	
++
+ 		void reset()
+ 			{
+ 				v4f_t *y = state + 3;
+@@ -581,11 +584,11 @@ class Resonator4fBank
+ 
+ 		inline v4f_t process (int i, v4f_t x)
+ 			{
+-				v4f_t *a = state + i*Item; 
++				v4f_t *a = state + i*Item;
+ 
+ 				register uint h2 = h1 ^ 1;
+ 				x = x * a[0]; /* x * a[0] */
+-				
++
+ 				x += a[1] * a[3+h1]; /* b[1] * y[h1] */
+ 				x += a[2] * a[3+h2]; /* b[2] * y[h2] */
+ 
+@@ -595,19 +598,19 @@ class Resonator4fBank
+ 
+ 		inline v4f_t y1(int i)
+ 			{
+-				return *((v4f_t*) state + i*Item + 3 + h1); 
++				return *((v4f_t*) state + i*Item + 3 + h1);
+ 			}
+ 
+ 
+ 		inline v4f_t processplus (int i, sample_t x)
+ 			{
+-				v4f_t *a = state + i*Item; 
++				v4f_t *a = state + i*Item;
+ 
+ 				v4f_t s = (v4f_t) {x,x,x,x};
+ 
+ 				register uint h2 = h1 ^ 1;
+ 				register v4f_t r = s * a[0]; /* x * a[0] */
+-				
++
+ 				r += a[1] * a[3+h1]; /* b[1] * y[h1] */
+ 				r += a[2] * a[3+h2]; /* b[2] * y[h2] */
+ 
+@@ -628,7 +631,7 @@ class Resonator4fBank
+ 		void dumpab()
+ 			{
+ 				v4f_t *a = state;
+-				
++
+ 				for (int i = 0; i < N; ++i, a += Item)
+ 				{
+ 					msg(), "a0[", i, "] = ", a[0];
+@@ -654,7 +657,7 @@ class MREqv4
+ 				unity();
+ 				reset();
+ 			}
+-		
++
+ 		/* needed to make sure copy has properly aligned storage */
+ 		void operator = (MREqv4 & b)
+ 			{ memcpy (data(), b.data(), 9 * sizeof (v4f_t)); }
+@@ -737,7 +740,7 @@ class MREqv4
+ 				c[3] = y;
+ 				return v4fa(x)[3];
+ 			}
+-}; 
++};
+ 
+ } /* namespace DSP */
+ 
+--- caps-0.9.26.orig/interface.cc
++++ caps-0.9.26/interface.cc
+@@ -2,11 +2,15 @@
+   interface.cc
+ 
+ 	Copyright 2004-14 Tim Goetze <tim@quitte.de>
+-	
++
+ 	http://quitte.de/dsp/
+ 
+ 	LADSPA descriptor factory, host interface.
+ 
++
++	2020-10 bitkeeper Created EqFA12p based on the EqFA4p
++	https://github.com/bitkeeper/caps
++
+ */
+ /*
+ 	This program is free software; you can redistribute it and/or
+@@ -25,7 +29,7 @@
+ 	02111-1307, USA or point your web browser to http://www.gnu.org.
+ */
+ /*
+-	LADSPA ID ranges 1761 - 1800 and 2581 - 2660 
++	LADSPA ID ranges 1761 - 1800 and 2581 - 2660
+ 	(2541 - 2580 donated to artemio@kdemail.net)
+ */
+ 
+@@ -47,24 +51,24 @@
+ #include "Amp.h"
+ #include "Pan.h"
+ #include "Scape.h"
+-#include "ToneStack.h" 
+-#include "Noisegate.h" 
++#include "ToneStack.h"
++#include "Noisegate.h"
+ #ifdef SUMMER
+ #include "AmpVI.h"
+ #endif
+ 
+ #include "Descriptor.h"
+ 
+-#define N 36 
++#define N 36
+ 
+ static DescriptorStub * descriptors[N+1];
+ 
+ extern "C" {
+ 
+-const LADSPA_Descriptor * 
++const LADSPA_Descriptor *
+ ladspa_descriptor (unsigned long i) { return i < N ? descriptors[i] : 0; }
+ 
+-__attribute__ ((constructor)) 
++__attribute__ ((constructor))
+ void caps_so_init()
+ {
+ 	DescriptorStub ** d = descriptors;
+@@ -106,6 +110,7 @@ void caps_so_init()
+ 	*d++ = new Descriptor<Eq10X2>(2594);
+ 	*d++ = new Descriptor<Eq4p>(2608);
+ 	*d++ = new Descriptor<EqFA4p>(2609);
++	*d++ = new Descriptor<EqFA12p>(2611);
+ 
+ 	*d++ = new Descriptor<Wider>(1788);
+ 	*d++ = new Descriptor<Narrower>(2595);
+@@ -116,11 +121,11 @@ void caps_so_init()
+ 
+ 	*d++ = new Descriptor<Click>(1769);
+ 	*d++ = new Descriptor<CEO>(1770);
+-	
++
+ 	assert (d - descriptors <= N);
+ }
+ 
+-__attribute__ ((destructor)) 
++__attribute__ ((destructor))
+ void caps_so_fini()
+ {
+ 	DescriptorStub ** d = descriptors;

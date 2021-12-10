@@ -1,0 +1,9 @@
+--- alsa-cdsp-1.0.0.org/debian/rules	2021-12-06 20:43:18.280830687 +0000
++++ build/alsa-cdsp_1.0.0/debian/rules	2021-11-23 20:18:45.680659667 +0000
+@@ -21,5 +21,5 @@
+ # dh_make generated override targets
+ # This is example for Cmake (See https://bugs.debian.org/641051 )
+ #override_dh_auto_configure:
+-#	dh_auto_configure -- \
++#	dh_auto_configure --
+ #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)

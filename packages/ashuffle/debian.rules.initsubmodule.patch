@@ -1,0 +1,13 @@
+--- ashuffle-3.12.5/debian/rules	2021-12-07 17:22:17.378244805 +0000
++++ ../../../build/ashuffle_3.12.5/debian/rules	2021-11-22 20:31:28.026333255 +0000
+@@ -20,6 +20,7 @@
+ 
+ # dh_make generated override targets
+ # This is example for Cmake (See https://bugs.debian.org/641051 )
+-#override_dh_auto_configure:
+-#	dh_auto_configure -- \
+-#	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
++override_dh_auto_configure:
++	git submodule update --init --recursive
++	dh_auto_configure -- \
++	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)

@@ -1,0 +1,85 @@
+--- /a/debian/rules	2021-11-07 04:12:49.000000000 +0000
++++ mpd-0.23.4/debian/rules	2021-11-18 18:09:04.282218635 +0000
+@@ -32,49 +32,49 @@
+
+ # Autodiscovery support
+ ENABLE_AUTODISCOVERY=-Dneighbor=true \
+-		-Dupnp=pupnp \
++#		-Dupnp=pupnp
+ 		-Dzeroconf=avahi
+
+ # Client support
+-ENABLE_CLIENTS=-Dipv6=enabled \
++ENABLE_CLIENTS=-Dipv6=disabled \
+ 	 	-Dtcp=true \
+ 	 	-Dlocal_socket=true
+
+ # Storage support
+-ENABLE_STORAGE=-Dnfs=enabled \
++ENABLE_STORAGE=-Dnfs=disabled \
+ 	 	${ENABLE_SMBCLIENT} \
+ 	 	-Dwebdav=enabled
+
+ # File format support
+ ENABLE_FILEFORMATS=-Dfaad=enabled \
+ 		-Dadplug=enabled \
+-		-Daudiofile=enabled \
++		-Daudiofile=disabled \
+ 		-Dffmpeg=enabled \
+ 		-Dflac=enabled \
+-		-Dfluidsynth=enabled \
+-		-Dgme=enabled \
++		-Dfluidsynth=disabled \
++		-Dgme=disabled \
+ 		-Dmad=enabled \
+-		-Dmikmod=enabled \
+-		-Dmodplug=enabled \
++		-Dmikmod=disabled \
++		-Dmodplug=disabled \
+ 		-Dmpcdec=enabled \
+ 		-Dmpg123=enabled \
+ 		-Dopenmpt=enabled \
+ 		-Dopus=enabled \
+-		-Dsidplay=enabled \
+-		-Dsndfile=enabled \
++		-Dsidplay=disabled \
++		-Dsndfile=disabled \
+ 		-Dwavpack=enabled \
+-		-Dwildmidi=enabled
++		-Dwildmidi=disabled
+
+ # Other features
+ ENABLE_OTHER=-Dcue=true \
+-		-Ddatabase=true \
+-		-Dexpat=enabled \
++		-Ddatabase=false \
++		-Dexpat=disabled \
+ 		-Dicu=enabled \
+ 		-Dlibmpdclient=enabled \
+ 		-Dinotify=true \
+ 		-Dsoxr=enabled \
+-		-Dlibsamplerate=enabled \
+-		-Dsqlite=enabled \
++		-Dlibsamplerate=disabled \
++		-Dsqlite=disabled \
+ 		-Dsyslog=enabled \
+ 		-Dyajl=enabled \
+ 		-Dpcre=enabled
+@@ -89,13 +89,13 @@
+ 		-Dsndio=enabled \
+ 		-Drecorder=true \
+ 		-Dhttpd=true \
+-		-Djack=enabled \
+-		-Dao=enabled \
+-		-Doss=enabled \
++		-Djack=disabled \
++		-Dao=disabled \
++		-Doss=disabled \
+ 		-Dopenal=enabled \
+ 		-Dpipe=true \
+ 		-Dpipewire=enabled \
+-		-Dpulse=enabled \
++		-Dpulse=disabled \
+ 		-Dshout=enabled \
+ 		-Dsnapcast=true
+
