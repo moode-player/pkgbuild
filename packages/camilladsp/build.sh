@@ -16,7 +16,7 @@ rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_check_build_dep libasound2-dev
 
 #Add to [package.metadata.deb] section of Cargo.toml:
-echo "[package.metadata.deb]" >> >> Cargo.toml
+echo "[package.metadata.deb]" >> Cargo.toml
 echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
 
 
