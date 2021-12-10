@@ -123,10 +123,10 @@ function _rbl_decode_pkg_version {
 
     FULL_VERSION="$PKGVERSION-$DEBVER$DEBLOC"
     PKGDIR="$PKGNAME-$PKGVERSION"
-    echo $PKGNAME
-    echo $PKGVERSION
-    echo $DEBVER
-    echo $DEBLOC
+    # echo $PKGNAME
+    # echo $PKGVERSION
+    # echo $DEBVER
+    # echo $DEBLOC
 
     # When the REGEXPR can not decode the pacakge string it passes on the full string
     # Detect this to indicate that the string can not be decoded
