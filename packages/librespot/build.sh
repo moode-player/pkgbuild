@@ -1,4 +1,12 @@
 #!/bin/bash
+#########################################################################
+#
+# Build recipe for librespot debian package
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
 
 . ../../scripts/rebuilder.lib.sh
 

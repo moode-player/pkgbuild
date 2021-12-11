@@ -1,7 +1,7 @@
 #!/bin/bash
 #########################################################################
 #
-# Build Recipe for alscap
+# Build recipe for alscap debian pacakge
 #
 # (C) bitkeeper 2021 http://moodeaudio.org
 # License: GPLv3

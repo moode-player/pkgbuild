@@ -1,7 +1,7 @@
 #!/bin/bash
 #########################################################################
 #
-# Build Recipe for alsa-cdsp
+# Build recipe for alsa-cdsp debian package
 #
 # (C) bitkeeper 2021 http://moodeaudio.org
 # License: GPLv3

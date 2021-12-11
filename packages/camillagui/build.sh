@@ -1,7 +1,7 @@
 #!/bin/bash
 #########################################################################
 #
-# Build Recipe for camillagui + camillagui-backend
+# Build recipe for camillagui + camillagui-backend debian package
 #
 # (C) bitkeeper 2021 http://moodeaudio.org
 # License: GPLv3
@@ -27,8 +27,7 @@ _rbl_decode_pkg_version
 _rbl_check_curr_is_package_dir
 _rbl_cleanup_previous_build
 _rbl_change_to_build_root
-# mkdir $PKGDIR
-# _rbl_cd_source_dir
+
 # ------------------------------------------------------------
 # Custom part of the packing
 

@@ -1,4 +1,12 @@
 #!/bin/bash
+#########################################################################
+#
+# Build recipe for pycamilladsp-plot debian package
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
 
 . ../../scripts/rebuilder.lib.sh
 

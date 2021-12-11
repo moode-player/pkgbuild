@@ -1,7 +1,7 @@
 #!/bin/bash
 #########################################################################
 #
-# Build Recipe for ashuffle
+# Build recipe for ashuffle debian package
 #
 # (C) bitkeeper 2021 http://moodeaudio.org
 # License: GPLv3
