@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#TODO: make sure the package can upgrade an reinstalled without sideeffects
+
 echo "$1"
 echo "$1 $2" >> /tmp/moode.log
 
@@ -97,15 +99,12 @@ then
 
       echo "** Reset permissions"
       #TODO: maybe set the rights before packed
-      # chmod -R 0744 /var/www
-      # chmod 0755 /var/www/command/*
-      # chmod -R 0744 /var/local/www
-      # chmod -R 0777 /var/local/www/command/*
-      # chmod -R 0766 /var/local/www/db
+      chmod -R 0755 /var/www
+      chmod -R 0755 /var/local/www
+      chmod -R 0777 /var/local/www/db
+      chmod -R ug-s /var/local/www
       # chmod -R 0755 /usr/local/bin
 
-      chmod -R ug-s /var/local/www
-      #chmod -R 0755 /usr/local/bin
 
       if [ ! -f /var/local/www/db/moode-sqlite3.db ]
       then
@@ -178,10 +177,29 @@ then
       # mostly updates for existsing (owned by other pacakges) files
       # ...
       SRC=/usr/share/moode-player
-      cp $SRC/etc/upmpdcli.conf cp /etc/upmpdcli.conf
-      cp $SRC/etc/rc.local cp /etc/rc.local
+      cp $SRC/etc/upmpdcli.conf /etc/
+      cp $SRC/etc/rc.local /etc/rc.local
+
+      cp $SRC/etc/upmpdcli.conf cp /etc/
+
+      # alsa
+      rsync --exclude=-'/etc/alsa/conf.d/20-bluealsa.conf' $SRC/etc/alsa/conf.d/ /etc/alsa/conf.d
+
+      # nginx
+      cp $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+      cp $SRC/etc/nginx/fastcgi_params /etc/nginx/fastcgi_params
+      sed -i "s/^post_max_size.*/post_max_size = 50M/" /etc/php/7.4/cli/php.ini
+      sed -i "s/^upload_max_filesize.*/upload_max_filesize = 50M/" /etc/php/7.4/cli/php.ini
+      sed -i "s/^pm[.]max_children.*/pm.max_children = 50/" //etc/php/7.4/fpm/pool.d/www.conf
+      sed -i "s/^;session.save_path.*/session.save_path = \"0;666;\/var\/local\/php\"/" /etc/php/7.4/cli/php.ini
+
+
+      # samba
+      cp $SRC/etc/samba/smb.conf /etc/samba/
 
       sync
+
+      /usr/local/bin/moodeutl -r
   # fi
 
 else
