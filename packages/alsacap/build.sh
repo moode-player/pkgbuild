@@ -15,12 +15,12 @@ PKG="alsacap_1.0.1-1moode1"
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsacap.git"
 PKG_SOURCE_GIT_TAG="master"
 
-rbl_prepare_clone_from_git $PKG_SOURCE_GIT
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
+rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------
 # Custom part of the packing
 
-git archive  --format=tar.gz --output ../${PKGNAME}_${PKGVERSION}.tar.gz master
 dh_make -s -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../COPYING -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 

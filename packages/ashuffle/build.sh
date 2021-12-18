@@ -19,11 +19,10 @@ PKG_SOURCE_GIT_TAG="v3.12.5"
 
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
+rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------
 # Custom part of the packing
-
-git archive  --format=tar.gz --output ../${PKGNAME}_${PKGVERSION}.tar.gz v$PKGVERSION
 
 dh_make -l -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../LICENSE -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz

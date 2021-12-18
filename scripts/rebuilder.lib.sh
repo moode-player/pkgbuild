@@ -232,10 +232,10 @@ function rbl_move_to_dist {
     # copy output to dist dir
     mkdir -p $BASE_DIR/dist/source
     mkdir -p $BASE_DIR/dist/binary
-    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*.orig.* $BASE_DIR/dist/source
-    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC*.dsc $BASE_DIR/dist/source
-    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC.debian.* $BASE_DIR/dist/source
-    mv $BUILD_ROOT_DIR/*$PKGVERSION-$DEBVER$DEBLOC* $BASE_DIR/dist/binary
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*.orig.* $BASE_DIR/dist/source > /dev/null
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC*.dsc $BASE_DIR/dist/source > /dev/null
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC.debian.* $BASE_DIR/dist/source > /dev/null
+    mv $BUILD_ROOT_DIR/*$PKGVERSION-$DEBVER$DEBLOC* $BASE_DIR/dist/binary > /dev/null
 }
 
 function _rebuild {
@@ -334,6 +334,10 @@ function rbl_prepare_from_git_with_deb_repo {
     git archive  --format=tar.gz --output ../${PKGNAME}_${PKGVERSION}.orig.tar.gz $PKG_SOURCE_GIT_TAG
 }
 
+# Clone git repo and checkout to provided tag
+# Arguments:
+# 1 - git repo url to clone
+# 2 - git tag to checkout
 function rbl_prepare_clone_from_git {
     _PKG_SOURCE_GIT=$1
     _PKG_SOURCE_GIT_TAG=$2
@@ -358,6 +362,35 @@ function rbl_prepare_clone_from_git {
     if [[ $? -gt 0 ]]
     then
         echo "${RED}Error: error during git checkout from $_PKG_SOURCE_GIT_TAG ${NORMAL}"
+        exit 1
+    fi
+}
+
+# Creae archive from git gag
+# Arguments:
+# 1 - git tag
+# 2 - archive file name
+function rbl_create_git_archive {
+    _PKG_SOURCE_GIT_TAG=$1
+    _PKG_ARCHIVE_FILE=$2
+    if [ -z "$_PKG_SOURCE_GIT_TAG" ]
+    then
+        echo "${RED}Error: git tag is empty${NORMAL}"
+        exit 1
+    fi
+    if [ -z "$_PKG_ARCHIVE_FILE" ]
+    then
+        echo "${RED}Error: git archive filename is empty${NORMAL}"
+        exit 1
+    fi
+
+    if [[ -n "$_PKG_ARCHIVE_FILE" ]]
+    then
+        git archive  --format=tar.gz --output $_PKG_ARCHIVE_FILE $_PKG_SOURCE_GIT_TAG
+    fi
+    if [[ $? -gt 0 ]]
+    then
+        echo "${RED}Error: error during git archive from $_PKG_SOURCE_GIT_TAG to $_PKG_ARCHIVE_FILE ${NORMAL}"
         exit 1
     fi
 }

@@ -17,6 +17,7 @@ PKG_SOURCE_GIT="https://framagit.org/medoc92/libupnpp-bindings.git "
 PKG_SOURCE_GIT_TAG="libupnpp-bindings-v0.20.1"
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
+rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
 
 #------------------------------------------------------------
 # Custom part of the packing
