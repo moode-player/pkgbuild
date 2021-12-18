@@ -17,9 +17,7 @@ PKG="moode-player_8.0.0-1moode1pre"
 
 # For now git isn't used to get the source. During development it is much handier
 # to use an already checkout ( and gulp build version of moode )
-# Location where to find moode projectsource
-MOODE_DIR=~/moode.dev/moode
-
+# The enviroment var MOODE_DIR should be set to the location where the moode project source is.
 
 # sync required npm modules for gulp build
 NPM_CI=0
@@ -49,6 +47,13 @@ PKG_ROOT_DIR="$BUILD_ROOT_DIR/root"
 # init build root
 rm -rf $BUILD_ROOT_DIR/root
 mkdir -p $BUILD_ROOT_DIR/root
+
+if [ -z "$MOODE_DIR" ]
+then
+    echo "${YELLOW}Error: MOODE_DIR is should point to a moode source dir${NORMAL}"
+    exit 1
+fi
+
 
 if [ -z "$PKG_ROOT_DIR" ]
 then
@@ -156,7 +161,6 @@ rsync -av $MOODE_DIR/etc/ $NOT_INSTALLABLES/etc
 # /lib mainly service files
 rsync -av $MOODE_DIR/lib/ $NOT_INSTALLABLES/lib
 
-# exit
 # ------------------------------------------------------------
 # 5. Create the package
 
@@ -249,20 +253,14 @@ root/mnt/.=/mnt \
 root/usr/.=/usr
 
 
-#package/etc/=/etc/.
-
 if [[ $? -gt 0 ]]
 then
     echo "${RED}Error: failure during fpm.${NORMAL}"
     exit 1
 fi
 
-
-# mv ${PKGNAME}_${FULL_VERSION}*.deb $BASE_DIR
-#cd $BASE_DIR
-
 #------------------------------------------------------------
-#rbl_move_to_dist
+rbl_move_to_dist
 
 echo "done"
 
