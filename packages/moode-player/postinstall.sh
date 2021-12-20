@@ -11,11 +11,9 @@ then
   # then
       # DURING DEVELOPMENT TEMPORARY DISABLED
       # timedatectl set-timezone "America/Detroit"
-      # echo "pi:moodeaudio" | chpasswd
+      echo "pi:moodeaudio" | chpasswd
       # #TODO: use a dpkg-divert instead?
-      # cp /usr/share/moode-player/config.txt.default /boot/config.txt
-      # cp /usr/share/moode-player/moodecfg.ini.default /boot/moodecfg.ini
-      cp /usr/share/moode-player/boot/config.txt.default /boot/config.txt.default
+      cp /usr/share/moode-player/boot/config.txt.default /boot/config.txt
       cp /usr/share/moode-player/boot/moodecfg.ini.default /boot/moodecfg.ini.default
 
       echo "** Basic optimizations"
@@ -67,8 +65,6 @@ then
       chown -R mpd:audio /var/log/mpd
       #TODO: Is it really needed to copy(is conflict with mpd itself), anyway it is generated at the start of worker.php
       # cp ./moode/mpd/mpd.conf.default /etc/mpd.conf
-      chown mpd:audio /etc/mpd.conf
-      chmod 0666 /etc/mpd.conf
 
       echo "** Set permissions for D-Bus (for bluez-alsa)"
       usermod -a -G audio mpd
@@ -106,18 +102,19 @@ then
       # chmod -R 0755 /usr/local/bin
 
 
-      if [ ! -f /var/local/www/db/moode-sqlite3.db ]
-      then
+      #if [ ! -f /var/local/www/db/moode-sqlite3.db ]
+      #then
         echo "** Create database"
       # fresh install
+        rm /var/local/www/db/moode-sqlite3.db.sql
+        cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
         sqlite3 /var/local/www/db/moode-sqlite3.db "CREATE TRIGGER ro_columns BEFORE UPDATE OF param, value, [action] ON cfg_hash FOR EACH ROW BEGIN SELECT RAISE(ABORT, 'read only'); END;"
         sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
-        cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
-      else
+      #else
         echo "** Update database"
       # update
       # Do patch work
-      fi
+      #fi
 
       LIBCACHE_BASE=/var/local/www/libcache
       echo "** Initial permissions for certain files. These also get set during moOde Worker startup"
@@ -177,29 +174,47 @@ then
       # mostly updates for existsing (owned by other pacakges) files
       # ...
       SRC=/usr/share/moode-player
-      cp $SRC/etc/upmpdcli.conf /etc/
-      cp $SRC/etc/rc.local /etc/rc.local
+      cp -f $SRC/etc/upmpdcli.conf /etc/
+      cp -f $SRC/etc/rc.local /etc/rc.local
 
-      cp $SRC/etc/upmpdcli.conf cp /etc/
+      cp $SRC/etc/upmpdcli.conf /etc/
 
       # alsa
-      rsync --exclude=-'/etc/alsa/conf.d/20-bluealsa.conf' $SRC/etc/alsa/conf.d/ /etc/alsa/conf.d
+      rsync -av --exclude=-'20-bluealsa.conf' $SRC/etc/alsa/conf.d/ /etc/alsa/conf.d
 
-      # nginx
-      cp $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
-      cp $SRC/etc/nginx/fastcgi_params /etc/nginx/fastcgi_params
+      # nginx + php + php74-fpm
+      cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+      cp -f $SRC/etc/nginx/fastcgi_params /etc/nginx/fastcgi_params
       sed -i "s/^post_max_size.*/post_max_size = 50M/" /etc/php/7.4/cli/php.ini
       sed -i "s/^upload_max_filesize.*/upload_max_filesize = 50M/" /etc/php/7.4/cli/php.ini
       sed -i "s/^pm[.]max_children.*/pm.max_children = 50/" //etc/php/7.4/fpm/pool.d/www.conf
       sed -i "s/^;session.save_path.*/session.save_path = \"0;666;\/var\/local\/php\"/" /etc/php/7.4/cli/php.ini
 
+      sed -i "s/^;session.save_path.*/session.save_path = \"0;666;\/var\/local\/php\"/" /etc/php/7.4/cli/php.ini
+
+      sed -i "s/^;session.save_path.*/session.save_path = \"0;666;\/var\/local\/php\"/" /etc/php/7.4/fpm/php.ini
+      sed -i "s/^max_execution_time.*/max_execution_time = 300/" /etc/php/7.4/fpm/php.ini
+      sed -i "s/^max_input_time.*/max_input_time = -1/" /etc/php/7.4/fpm/php.ini
+      sed -i "s/^max_input_vars.*/max_input_vars = 10000/" /etc/php/7.4/fpm/php.ini
+      sed -i "s/^memory_limit.*/memory_limit = -1/" /etc/php/7.4/fpm/php.ini
+      sed -i "s/^post_max_size.*/post_max_size = 75M/" /etc/php/7.4/fpm/php.ini
+      sed -i "s/^upload_max_filesize.*/upload_max_filesize = 75M/" /etc/php/7.4/fpm/php.ini
+      sed -i "s/^;defensive.*/defensive = 1/" /etc/php/7.4/fpm/php.ini
+
+      cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
       # samba
-      cp $SRC/etc/samba/smb.conf /etc/samba/
+      cp -f $SRC/etc/samba/smb.conf /etc/samba
+
+      # mpd
+      cp -f $SRC/etc/mpd.conf /etc/
+      chown mpd:audio /etc/mpd.conf
+      chmod 0666 /etc/mpd.conf
+
 
       sync
 
-      /usr/local/bin/moodeutl -r
+      #/usr/local/bin/moodeutl -r
   # fi
 
 else

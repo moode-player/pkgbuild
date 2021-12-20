@@ -157,6 +157,8 @@ cp $MOODE_DIR/network/hostapd.conf.default $NOT_INSTALLABLES/etc/hostapd/hostapd
 # /etc
 rsync -av $MOODE_DIR/etc/ $NOT_INSTALLABLES/etc
 
+cp $MOODE_DIR/mpd/mpd.conf.default $NOT_INSTALLABLES/etc/mpd.conf
+
 #TODO: check the service files and what to do with those
 # /lib mainly service files
 rsync -av $MOODE_DIR/lib/ $NOT_INSTALLABLES/lib
