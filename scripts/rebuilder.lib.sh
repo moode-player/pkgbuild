@@ -75,6 +75,9 @@ then
     exit 1
 fi
 
+PKGBUILD_ROOT=`realpath $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/..`
+
+
 BASE_DIR=`pwd`
 BUILD_ROOT_DIR="$BASE_DIR/build"
 
@@ -315,7 +318,6 @@ function rbl_prepare_from_dsc_url {
     _rbl_check_curr_is_package_dir
     _rbl_cleanup_previous_build
     _rbl_change_to_build_root
-    _rbl_change_to_build_root
     dget $1
     _rbl_cd_source_dir
 }
@@ -446,6 +448,41 @@ function rbl_grab_debian_archive {
     wget -O ../$DEB_ARCHIVE_NAME $1
     tar -x -f ../$DEB_ARCHIVE_NAME
     rm ../$DEB_ARCHIVE_NAME
+}
+
+# Downloads the full source of the current running kernel as tarbal.
+# You can find the filename in the the env setting $KERNEL_SOURCE_ARCHIVE or local var $KERNEL_SOURCE_ARCHIVE
+function rbl_get_kernel_source {
+    rbl_check_build_dep rpi-source
+    KERNEL_DOWNLOAD_LOCATION="$PKGBUILD_ROOT/tmp"
+    mkdir -p $KERNEL_DOWNLOAD_LOCATION
+    KERNEL_SOURCE_ARCHIVE=`rpi-source --dry-run --skip-update --download-only --dest $KERNEL_DOWNLOAD_LOCATION | grep "kernel source tarball:" | sed -r "s/.* (.*linux-.*[.]tar[.]gz)/\1/"`
+    if [[ $? -gt 0 ]]
+    then
+        echo "${RED}Error: failure during running rpi-source!${NORMAL}"
+        exit 1
+    fi
+
+    export KERNEL_SOURCE_ARCHIVE=$KERNEL_SOURCE_ARCHIVE # for using with other scripts
+
+    if [ -f "$KERNEL_SOURCE_ARCHIVE" ]
+    then
+        echo "${GREEN} Kernel source archive already downloaded${NORMAL}"
+    else
+        echo "${YELLOW} Kernel source archive not present, downloading it${NORMAL}"
+        rpi-source --skip-update --download-only --dest $KERNEL_DOWNLOAD_LOCATION
+        if [[ $? -gt 0 ]]
+        then
+            echo "Error: failure during downloading kernel source with rpi-source!${NORMAL}"
+            exit 1
+        fi
+        if [ ! -f "$KERNEL_SOURCE_ARCHIVE" ]
+        then
+            echo "${RED}Error: failure during downloading kernel source with rpi-source!${NORMAL}"
+            exit 1
+        fi
+
+    fi
 }
 
 function rbl_build {
