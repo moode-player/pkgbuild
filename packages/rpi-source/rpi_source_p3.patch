@@ -1,0 +1,102 @@
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+--- rpi-source  2021-11-28 02:38:43.060466855 +0000
++++ rpi-source~ 2021-11-13 13:05:16.360303210 +0000
+@@ -1,20 +1,19 @@
+-#!/usr/bin/env python3
++#!/usr/bin/env python2
+
+ #
+ # Copyright (C) 2014 Noralf Tronnes
+ #
+ # MIT License
+ #
+-# 2021-11-27 Amended by Dougie for python3
+
+ import io
+ import os
+ import struct
+ import sys
+ import argparse
+-import urllib.request
+-import urllib.error
+-import urllib.parse
++import urllib
++import urllib2
++import urlparse
+ import gzip
+ import subprocess
+ import re
+@@ -110,25 +109,25 @@
+ def download(url):
+     debug("download: %s" % url)
+     try:
+-        res = urllib.request.urlopen(url).read()
+-    except urllib.error.HTTPError as e:
++        res = urllib2.urlopen(url).read()
++    except urllib2.HTTPError, e:
+         fail(
+             "Couldn't download %s, HTTPError: %s\n\n%s"
+             % (url, e.code, json.dumps(json.load(e), indent=4))
+         )
+-    except urllib.error.URLError as e:
++    except urllib2.URLError, e:
+         fail("Couldn't download %s, URLError: %s" % (url, e.args))
+     return res
+
+ def download_to(url, file):
+     debug("download_to: %s -> %s" % (url, file))
+     if not args.dry_run:
+-        urllib.request.urlretrieve (url, file)
++        urllib.urlretrieve (url, file)
+
+ def update_get_head():
+     if update_get_head.ref:
+         return update_get_head.ref
+-    repo_short = urllib.parse.urlparse(script_repo).path
++    repo_short = urlparse.urlparse(script_repo).path
+     repo_api = "https://api.github.com/repos%s/git/refs/heads/master" % repo_short
+     res = download(repo_api)
+     try:
+@@ -176,7 +175,7 @@
+     os.execv(sys.executable, argv)
+
+ def check_diskspace(dir):
+-    df = sh_out("df %s" % dir).decode()
++    df = sh_out("df %s" % dir)
+     nums = re.findall(r'(?<=\s)\d+(?=\s+)', df)
+     if not nums or len(nums) != 3:
+         info("Warning: unable to check available diskspace")
+@@ -216,7 +215,7 @@
+         return ''
+
+     with gzip.open('/proc/config.gz', 'rb') as f:
+-        return f.read().decode('utf-8')
++        return f.read()
+
+
+ def processor_type_suffix():
+@@ -239,12 +238,12 @@
+         fw_rev = f.read().strip()
+     info("Firmware revision: %s" % fw_rev)
+
+-    repo_short = urllib.parse.urlparse(uri).path
++    repo_short = urlparse.urlparse(uri).path
+
+     repo_api = "https://api.github.com/repos%s" % repo_short
+     repo_raw = "https://raw.githubusercontent.com%s" % repo_short
+
+-    kernel.git_hash = download("%s/%s/git_hash" % (repo_raw, fw_rev)).strip().decode('utf-8')
++    kernel.git_hash = download("%s/%s/git_hash" % (repo_raw, fw_rev)).strip()
+     kernel.symvers = "%s/%s/Module%s.symvers" % (repo_raw, fw_rev, processor_type_suffix())
+
+     if not args.default_config:
+@@ -269,7 +268,7 @@
+
+     repo_raw = "https://raw.githubusercontent.com/raspberrypi/firmware"
+
+-    kernel.git_hash = download("%s/%s/extra/git_hash" % (repo_raw, fw_rev)).strip().decode('utf-8')
++    kernel.git_hash = download("%s/%s/extra/git_hash" % (repo_raw, fw_rev)).strip()
+     kernel.symvers = "%s/%s/extra/Module%s.symvers" % (repo_raw, fw_rev, processor_type_suffix())
+
+     if not args.default_config:

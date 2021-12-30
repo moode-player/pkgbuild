@@ -1,0 +1,33 @@
+--- ./rpi-source.org	2021-12-27 09:01:21.848388739 +0000
++++ ./rpi-source	2021-12-27 09:06:49.475552487 +0000
+@@ -177,7 +177,7 @@
+ 
+ def check_diskspace(dir):
+     df = sh_out("df %s" % dir).decode()
+-    nums = re.findall(r'(?<=\s)\d+(?=\s+)', df)
++    nums = re.findall('(?<=\s)\d+(?=\s+)', df)
+     if not nums or len(nums) != 3:
+         info("Warning: unable to check available diskspace")
+     if (int(nums[2]) / 1024) < DISK_USAGE_MB:
+@@ -195,7 +195,7 @@
+ 
+     with open('/proc/version', 'r') as f:
+         proc_version = f.read()
+-    gcc_ver_kernel = re.search(r'gcc version (\d\.\d\.\d)', proc_version)
++    gcc_ver_kernel = re.search('gcc version (\d\.\d\.\d)', proc_version)
+ 
+     if not gcc_ver or not gcc_ver_kernel:
+         debug("gcc version check failed: could not extract version numbers")
+@@ -256,10 +256,10 @@
+     kernel = Kernel()
+     info("Using: %s" % fn)
+     with gzip.open(fn, 'rb') as f:
+-        debian_changelog = f.read()
++        debian_changelog = str(f.read())
+ 
+     # Find first firmware entry in log (latest entries are at the top)
+-    fw_rev = re.search(r'firmware as of ([0-9a-fA-F]+)', debian_changelog)
++    fw_rev = re.search('firmware as of ([0-9a-fA-F]+)', debian_changelog)
+     if not fw_rev:
+         fail("Could not identify latest firmware revision")
+ 
