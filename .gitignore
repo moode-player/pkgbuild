@@ -3,3 +3,4 @@ build
 scripts/setenv.sh
 TODO.txt
 docs/notes.txt
+tmp
