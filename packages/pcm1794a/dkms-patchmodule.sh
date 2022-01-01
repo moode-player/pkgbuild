@@ -12,7 +12,7 @@ minor="${vers[1]}"
 version="$major.$minor"    # recombine as needed
 subver=$(grep "SUBLEVEL =" /usr/src/linux-headers-${kernelver}/Makefile | tr -d " " | cut -d "=" -f 2)
 
-echo "Downloading kernel source $version.$subver for $kernelver"
+# echo "Downloading kernel source $version.$subver for $kernelver"
 #wget https://mirrors.edge.kernel.org/pub/linux/kernel/v$major.x/linux-$version.$subver.tar.xz
 # KERNEL_ARCHIVE=/home/pi/moode.dev/bullseye/mooderepo/packages/pcm1794/temp/linux-7136c8f9c83cf1d4ed5a2262cc74118672835218.tar.gz
 KERNEL_ARCHIVE=$KERNEL_SOURCE_ARCHIVE
@@ -31,8 +31,8 @@ tar -xf $KERNEL_ARCHIVE $KERNEL_BASE_NAME/$1 --xform=s,$KERNEL_BASE_NAME/$1,.,
 # installed during kernel upgrade
 echo "Increase module version"
 #sed -i 's/\(#define VERSION "0\.8\)/\1\.1/' btusb.c
-pwd
-ls
+#pwd
+#ls
 
 for i in `ls *.patch`
 do
