@@ -12,19 +12,10 @@ minor="${vers[1]}"
 version="$major.$minor"    # recombine as needed
 subver=$(grep "SUBLEVEL =" /usr/src/linux-headers-${kernelver}/Makefile | tr -d " " | cut -d "=" -f 2)
 
-# echo "Downloading kernel source $version.$subver for $kernelver"
-#wget https://mirrors.edge.kernel.org/pub/linux/kernel/v$major.x/linux-$version.$subver.tar.xz
-# KERNEL_ARCHIVE=/home/pi/moode.dev/bullseye/mooderepo/packages/pcm1794/temp/linux-7136c8f9c83cf1d4ed5a2262cc74118672835218.tar.gz
 KERNEL_ARCHIVE=$KERNEL_SOURCE_ARCHIVE
-#KERNEL_FILE_REL=`basename $KERNEL_ARCHIVE`
-#KERNEL_BASE_NAME=${KERNEL_FILE_REL%.*}
 KERNEL_BASE_NAME=`basename $KERNEL_ARCHIVE .tar.gz`
 
-#cp /home/pi/moode.dev/bullseye/mooderepo/packages/pcm1794/temp/linux-7136c8f9c83cf1d4ed5a2262cc74118672835218.tar.gz linux-$version.$subver.tar.xz
 echo "Extracting original source"
-#todo: f
-# tar -xf linux-$version.$subver.tar.* linux-$version.$subver/$1 --xform=s,linux-$version.$subver/$1,.,
-#tar -xf linux-$version.$subver.tar.* linux-7136c8f9c83cf1d4ed5a2262cc74118672835218/$1 --xform=s,linux-7136c8f9c83cf1d4ed5a2262cc74118672835218/$1,.,
 tar -xf $KERNEL_ARCHIVE $KERNEL_BASE_NAME/$1 --xform=s,$KERNEL_BASE_NAME/$1,.,
 
 # The new module version should be increased to allow the new module to be
