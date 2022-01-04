@@ -10,11 +10,12 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="aloop_5.10.63-1"
+KERNEL_VER=`uname -r | sed -r "s/([0-9.]*)[-].*/\1/"`
+
+PKG="aloop_$KERNEL_VER-1"
 
 DKMS_MODULE="aloop/0.2"
 SRC_DIR="aloop-0.2"
-KERNEL_VER=`uname -r | sed -r "s/([0-9.]*)[-].*/\1/"`
 ARCHS=( v7l+ v7+ )
 MODULE="snd-aloop.ko"
 MODULE_PATH='sound/drivers'
@@ -36,10 +37,9 @@ rbl_get_kernel_source
 echo $BUILD_ROOT_DIR/source/$SRC_DIR
 mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
 
-# cp $BASE_DIR/dkms-patchmodule.sh $BASE_DIR/dkms.conf $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR
 cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms-patchmodule.intree.sh $BUILD_ROOT_DIR/source/$SRC_DIR/dkms-patchmodule.sh
 chmod +x $BUILD_ROOT_DIR/source/$SRC_DIR/*.sh
-cp $BASE_DIR/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR
+rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR/dkms.conf
 cp $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR
 
 # 2. build the modules with dkms:

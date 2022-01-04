@@ -10,11 +10,12 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="pcm1794a_5.10.63-1"
+KERNEL_VER=`uname -r | sed -r "s/([0-9.]*)[-].*/\1/"`
+
+PKG="pcm1794a_$KERNEL_VER-1"
 
 DKMS_MODULE="pcm1794a/0.2"
 SRC_DIR="pcm1794a-0.2"
-KERNEL_VER=`uname -r | sed -r "s/([0-9.]*)[-].*/\1/"`
 ARCHS=( v7l+ v7+ )
 MODULE="snd-soc-pcm1794a.ko"
 MODULE_PATH='sound/soc/codecs'
@@ -36,14 +37,10 @@ rbl_get_kernel_source
 echo $BUILD_ROOT_DIR/source/$SRC_DIR
 mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
 
-# cp $BASE_DIR/dkms-patchmodule.sh $BASE_DIR/dkms.conf $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR
-# cp $BASE_DIR/dkms-patchmodule.sh $BUILD_ROOT_DIR/source/$SRC_DIR
 cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms-patchmodule.intree.sh $BUILD_ROOT_DIR/source/$SRC_DIR/dkms-patchmodule.sh
 chmod +x $BUILD_ROOT_DIR/source/$SRC_DIR/*.sh
-cp $BASE_DIR/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR
+rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR/dkms.conf
 cp $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR
-
-
 
 # 2. build the modules with dkms:
 dkms build --dkmstree $BUILD_ROOT_DIR --sourcetree $BUILD_ROOT_DIR/source -k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+ $DKMS_MODULE
@@ -67,6 +64,7 @@ dkms build --dkmstree $BUILD_ROOT_DIR --sourcetree $BUILD_ROOT_DIR/source -k $KE
 # create deb postinstall and afterremove scripts based on template:
 rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/postinstall.sh $BUILD_ROOT_DIR/postinstall.sh
 rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh $BUILD_ROOT_DIR/afterremove.sh
+
 
 # place build modules in the correct file tree
 rbl_dkms_grab_modules
