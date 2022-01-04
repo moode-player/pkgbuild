@@ -24,9 +24,12 @@ echo "Increase module version"
 #sed -i 's/\(#define VERSION "0\.8\)/\1\.1/' btusb.c
 #pwd
 #ls
-
+module_path="/$1/"
+parts=${module_path//[!\/]}
+depth=${#parts}
+echo $depth
 for i in `ls *.patch`
 do
   echo "Applying $i"
-  patch -p3 < $i
+  patch -p$depth < $i
 done

@@ -39,6 +39,7 @@ mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
 # cp $BASE_DIR/dkms-patchmodule.sh $BASE_DIR/dkms.conf $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR
 # cp $BASE_DIR/dkms-patchmodule.sh $BUILD_ROOT_DIR/source/$SRC_DIR
 cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms-patchmodule.intree.sh $BUILD_ROOT_DIR/source/$SRC_DIR/dkms-patchmodule.sh
+chmod +x $BUILD_ROOT_DIR/source/$SRC_DIR/*.sh
 cp $BASE_DIR/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR
 cp $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR
 
@@ -82,7 +83,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --description "Patched pcm1794a driver with 384kHz support." \
 --post-install $BUILD_ROOT_DIR/postinstall.sh \
 --after-remove  $BUILD_ROOT_DIR/afterremove.sh  \
-$BUILD_ROOT_DIR/lib=/lib/.
+$BUILD_ROOT_DIR/lib/=/lib/.
 
 
 #------------------------------------------------------------
