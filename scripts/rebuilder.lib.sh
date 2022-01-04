@@ -490,3 +490,38 @@ function rbl_build {
     _build_deb
     rbl_move_to_dist
 }
+
+# escape string (including) filepaths for sed substituion
+function rbl_escaped_for_sed {
+    local _escaped=$(sed -e 's/[&\\/]/\\&/g; s/$/\\/' -e '$s/\\$//' <<< "$1" )
+    echo "$_escaped"
+}
+
+
+# -------------------------------------------------------------------------
+# dkms helper funcions
+# -------------------------------------------------------------------------
+
+# copy template $1 to destination $2, while replacing some vars in the template file
+function rbl_dkms_apply_template {
+    local from=$1
+    local to=$2
+    repl=$(rbl_escaped_for_sed "$MODULE_PATH")
+
+    sed $from \
+    -e "s/[%]KERNEL_VER[%]/$KERNEL_VER/" \
+    -e "s/[%]ARCHS[%]/${ARCHS[*]}/" \
+    -e "s/[%]PKG_NAME[%]/$PKGNAME/" \
+    -e "s/[%]MODULE_PATH[%]/$repl/" \
+    -e "s/[%]MODULE[%]/$MODULE/" \
+    > $to
+}
+
+# copy the specified moudle from dkms build to fakeroot for fpm
+function rbl_dkms_grab_modules {
+    for i in "${ARCHS[@]}"
+    do
+        mkdir -p $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+        install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+    done
+}
