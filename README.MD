@@ -39,7 +39,7 @@ All forms with src as output can be rebuild from source packages (also present i
 | [*mediainfo*](https://mediaarea.net/nl/MediaInfo)  | *20.09-1* | ***stock*** |
 | [*minidlna*](https://sourceforge.net/projects/minidlna/)   | *1.3.0+dfsg-2* | ***stock*** |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
-| [mpd](https://www.musicpd.org/)        | 0.23.5-1moode1 | backport    | yes |
+| [mpd](https://www.musicpd.org/)        | 0.23.5-1moode2 | backport    | yes |
 | [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 0.6.0-1moode1 | stdeb |  |
 | [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 0.6.2-1moode1 | stdeb |  |
 | [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.20.1~-1moode1 | git   |  |
@@ -53,6 +53,13 @@ Patches means patches required for the source code, excludes patches for the pac
 Stock pacakge can be directly used, no need to rebuild.
 
 camillagui-backend is bundled with the camillagui package.
+
+## Other packages in the repo
+| Package    |      Version    | How  | Patches* | Descriptions |
+|----------  |-----------------|:----|---------------|----------|
+| [aloop](https://github.com/moode-player/pkgbuild )    | 5.10.63-1moode1  | fpm | yes | 384kHz patch for in tree module
+| [pcm1794a](https://github.com/moode-player/pkgbuild)  | 5.10.63-1moode1  | fpm | yes | 384kHz patch for in tree module
+| [rpi-source](https://github.com/RPi-Distro/rpi-source)    | 0.1-1moode1  | git | yes | Fixes to let it work with Python 3. Only needed with development.
 
 ## Usage
 
