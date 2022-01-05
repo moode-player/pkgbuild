@@ -124,8 +124,6 @@ function _rbl_decode_pkg_version {
     DEBVER=`echo $PKG| sed -r "s|$REGEXP|\3|"`
     DEBLOC=`echo $PKG | sed -r "s|$REGEXP|\4|"`
 
-    FULL_VERSION="$PKGVERSION-$DEBVER$DEBLOC"
-    PKGDIR="$PKGNAME-$PKGVERSION"
     # echo $PKGNAME
     # echo $PKGVERSION
     # echo $DEBVER
@@ -147,12 +145,21 @@ function _rbl_decode_pkg_version {
         exit 1
     fi
 
-    if [ -z $DEBLOC ];
+    if [ -z $DEBLOC ]
     then
         #echo "${YELLOW}Warning: no deblocpackage version is empty${NORMAL}"
-        DEBLOC="${DEBSUFFIX}1"
+
+        if [ -z $DEBSUFFIXVERSION ]
+        then
+            DEBSUFFIXVERSION="1"
+        fi
+        DEBLOC="${DEBSUFFIX}${DEBSUFFIXVERSION}"
     fi
 
+    # echo $DEBLOC
+    FULL_VERSION="$PKGVERSION-$DEBVER$DEBLOC"
+    PKGDIR="$PKGNAME-$PKGVERSION"
+    # echo $FULL_VERSION
 }
 
  function _rbl_check_curr_is_package_dir {
@@ -506,6 +513,8 @@ function rbl_escaped_for_sed {
 function rbl_dkms_apply_template {
     local from=$1
     local to=$2
+    local mod_name=`basename $MODULE .ko`
+    local dkms_ver=`basename $DKMS_MODULE`
     repl=$(rbl_escaped_for_sed "$MODULE_PATH")
 
     sed $from \
@@ -514,7 +523,14 @@ function rbl_dkms_apply_template {
     -e "s/[%]PKG_NAME[%]/$PKGNAME/" \
     -e "s/[%]MODULE_PATH[%]/$repl/" \
     -e "s/[%]MODULE[%]/$MODULE/" \
+    -e "s/[%]MODULE_NAME[%]/$mod_name/" \
+    -e "s/[%]MODULE_VER[%]/$dkms_ver/" \
     > $to
+    if [[ $? -gt 0 ]]
+    then
+        echo "${RED}Error: failure during rbl_dkms_apply_template!${NORMAL}"
+        exit 1
+    fi
 }
 
 # copy the specified moudle from dkms build to fakeroot for fpm
@@ -523,5 +539,10 @@ function rbl_dkms_grab_modules {
     do
         mkdir -p $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
         install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+        if [[ $? -gt 0 ]]
+        then
+            echo "${RED}Error: failure during rbl_dkms_grab_modules!${NORMAL}"
+            exit 1
+        fi
     done
 }
