@@ -11,6 +11,7 @@
 . ../../scripts/rebuilder.lib.sh
 
 PKG_DSC_URL="http://deb.debian.org/debian/pool/main/m/mpd/mpd_0.23.5-1.dsc"
+DEBSUFFIXVERSION=2
 
 rbl_prepare_from_dsc_url $PKG_DSC_URL
 
@@ -22,8 +23,8 @@ EDITOR=/bin/true dpkg-source --commit . selective_resample_mode.patch
 
 patch -p1 < $BASE_DIR/moode_build_options.patch
 
-# set debian local suffix flag
-DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --local $DEBSUFFIX "Support for selective resample mode"
+# update the packageversion + debian version part
+DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch -v $FULL_VERSION "Support for selective resample mode"
 
 #------------------------------------------------------------
 rbl_build
