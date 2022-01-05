@@ -43,12 +43,12 @@ then
     exit 1
 fi
 
-DEB=`find ./dist/binary -maxdepth 1 -name "$PKG*.deb"`
+DEB=`find ./dist/binary -maxdepth 1 -name "$PKG*.deb" ! -name "$PKG-dbgsym*.deb"`
 DEB_COUNT=`find ./dist/binary -maxdepth 1 -name "$PKG*.deb" | wc -l`
 
 DSC=`find ./dist/source -maxdepth 1 -name "$PKG*.dsc"`
 DEBIAN=`find ./dist/source -maxdepth 1 -name "$PKG*.debian*"`
-SRC=`find ./dist/source -maxdepth 1 -name "$PKG*.orig*"`
+SRC=`find ./dist/source -maxdepth 1 -name "$PKG*.orig*" ! -name "$PKG*.asc"`
 
 if [ $DEB_COUNT -gt 1 ]
 then
@@ -68,6 +68,7 @@ fi
 if [[ -n $DSC  && -n $DEBIAN && -n $SRC ]]
 then
     echo "${GREEN}Found sources${NORMAL}"
+    echo "cloudsmith push deb $REPO $DSC --sources-file $SRC  --changes-file $DEBIAN"
     cloudsmith push deb $REPO $DSC --sources-file $SRC  --changes-file $DEBIAN
 else
     echo "${YELLOW}No source found${NORMAL}"
