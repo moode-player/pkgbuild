@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO: make sure the package can upgrade an reinstalled without sideeffects
+#TODO: make sure the package can upgrade an reinstalled without sideeffects, requires splitting in part that should be done only once and what should be done on upgrade or always
 
 echo "$1"
 echo "$1 $2" >> /tmp/moode.log
@@ -12,10 +12,12 @@ then
       # DURING DEVELOPMENT TEMPORARY DISABLED
       # timedatectl set-timezone "America/Detroit"
       echo "pi:moodeaudio" | chpasswd
+
+      sed -i "s/raspberrypi/moode/" /etc/hostname
+      sed -i "s/raspberrypi/moode/" /etc/hosts
       # #TODO: use a dpkg-divert instead?
       cp /usr/share/moode-player/boot/config.txt.default /boot/config.txt
       cp /usr/share/moode-player/boot/moodecfg.ini.default /boot/moodecfg.ini.default
-
       echo "** Basic optimizations"
       dphys-swapfile swapoff
       dphys-swapfile uninstall
@@ -106,12 +108,12 @@ then
       #then
         echo "** Create database"
       # fresh install
-        rm /var/local/www/db/moode-sqlite3.db.sql
+        rm /var/local/www/db/moode-sqlite3.db
         cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
         sqlite3 /var/local/www/db/moode-sqlite3.db "CREATE TRIGGER ro_columns BEFORE UPDATE OF param, value, [action] ON cfg_hash FOR EACH ROW BEGIN SELECT RAISE(ABORT, 'read only'); END;"
         sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
       #else
-        echo "** Update database"
+      # echo "** Update database"
       # update
       # Do patch work
       #fi
@@ -140,9 +142,8 @@ then
       then
         rm -r /var/www/html
       fi
-      #TODO: must these really be deleted or can we leave them alone?
-      # rm /etc/update-motd.d/10-uname
-      # rm /etc/motd
+      rm /etc/update-motd.d/10-uname
+      mv /etc/motd /etc/motd.default
 
       # sleep 45 $ why?
       echo "** List MPD outputs"
@@ -214,7 +215,9 @@ then
 
       sync
 
-      #/usr/local/bin/moodeutl -r
+      /usr/local/bin/moodeutl -r
+      sleep 5
+      mpc load "Default Playlist"
   # fi
 
 else

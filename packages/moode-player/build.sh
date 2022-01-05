@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.0-1moode1pre"
+PKG="moode-player_8.0.0-1moode1pre2"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -92,12 +92,17 @@ cd $BUILD_ROOT_DIR
 # ----------------------------------------------------------------------------
 # Home dir
 mkdir -p $PKG_ROOT_DIR/home/pi
-rsync -av --exclude xinitrc.default $MOODE_DIR/home/ $PKG_ROOT_DIR/home/pi
+rsync -av --exclude xinitrc.default --exclude dircolors $MOODE_DIR/home/ $PKG_ROOT_DIR/home/pi
 cp $MOODE_DIR/home/xinitrc.default $PKG_ROOT_DIR/home/pi/.xinitrc
+cp $MOODE_DIR/home/dircolors $PKG_ROOT_DIR/home/pi/.dircolors
+
+# os header
+mkdir -p $PKG_ROOT_DIR/etc/update-motd.d
+cp $MOODE_DIR/etc/update-motd.d/* $PKG_ROOT_DIR/etc/update-motd.d/
 
 # /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
-cp -r $MOODE_DIR/build/distr/var/www/* $PKG_ROOT_DIR/var/www
+cp -r $MOODE_DIR/build/distr/var/www/* $PKG_ROOT_DIR/var/www/
 
 # /usr
 rsync -av --exclude='rx' --exclude='tx' --exclude='alsacap' --exclude='lib' --exclude='radio_scripts' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
@@ -249,10 +254,13 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends trx \
 --depends udisks-glue \
 --depends upmpdcli \
+--depends pcm1794a \
+--depends aloop \
 root/var/.=/var \
 root/home/.=/home \
 root/mnt/.=/mnt \
-root/usr/.=/usr
+root/usr/.=/usr \
+root/etc/.=/etc
 
 
 if [[ $? -gt 0 ]]
