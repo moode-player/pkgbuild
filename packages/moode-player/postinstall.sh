@@ -172,11 +172,12 @@ then
       echo "** Setup config files"
       #TODO:
       # Deal with the files is /usr/share/moode-player etc|lib|boot
-      # mostly updates for existsing (owned by other pacakges) files
+      # mostly updates for existsing (owned by other packages) files
       # ...
       SRC=/usr/share/moode-player
       cp -f $SRC/etc/upmpdcli.conf /etc/
-      cp -f $SRC/etc/rc.local /etc/rc.local
+      cp -f $SRC/etc/rc.local /etc/
+      cp -f $SRC/etc/udisks-glue.conf /etc/
 
       cp $SRC/etc/upmpdcli.conf /etc/
 
