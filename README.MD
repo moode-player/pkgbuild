@@ -46,7 +46,8 @@ All forms with src as output can be rebuild from source packages (also present i
 | [*shairport-sync*](https://github.com/mikebrady/shairport-sync) | *3.3.7*| ***stock*** |
 | [*squeezelite*](https://github.com/ralph-irving/squeezelite)| *1.9+git20210102.78fef68-3* | ***stock*** |
 | [trx](http://www.pogo.org.uk/~mark/trx/)        | 0.6-1moode1    |  git+dh_make |  |
-| [udisks-glue](https://github.com/fernandotcl/udisks-glue) | 1.3.5-1moode1 | git+debsrc |  |
+| [udisks](https://www.freedesktop.org/wiki/Software/udisks/) | 1.0.5-1moode1 | ***upport*** | yes |
+| [udisks-glue](https://github.com/fernandotcl/udisks-glue) | 1.3.5-1moode3 | git+debsrc |  |
 | [upmpdcli](https://www.lesbonscomptes.com/upmpdcli/index.html)   | 1.5.12-1moode1 | git |  |
 
 Patches means patches required for the source code, excludes patches for the packing it self.
