@@ -1,0 +1,67 @@
+diff -Naur --exclude 'Makefile*' --exclude policy --exclude '*.xml' --exclude doc --exclude '*.gmo' --exclude 'config.*' org/udisks-1.0.5/src/daemon.c build/udisks-1.0.5/src/daemon.c
+--- org/udisks-1.0.5/src/daemon.c	2022-01-06 11:24:36.000000000 +0000
++++ build/udisks-1.0.5/src/daemon.c	2022-01-06 11:30:14.026512960 +0000
+@@ -45,6 +45,7 @@
+ #include <sys/socket.h>
+ #include <sys/un.h>
+ #include <sys/utsname.h>
++#include <sys/sysmacros.h>
+ #include <net/if_arp.h>
+ #include <fcntl.h>
+ #include <signal.h>
+diff -Naur --exclude 'Makefile*' --exclude policy --exclude '*.xml' --exclude doc --exclude '*.gmo' --exclude 'config.*' org/udisks-1.0.5/src/device.c build/udisks-1.0.5/src/device.c
+--- org/udisks-1.0.5/src/device.c	2022-01-06 11:24:36.000000000 +0000
++++ build/udisks-1.0.5/src/device.c	2022-01-06 11:29:54.461852830 +0000
+@@ -33,6 +33,7 @@
+ #include <sys/stat.h>
+ #include <sys/time.h>
+ #include <sys/resource.h>
++#include <sys/sysmacros.h>
+ #include <fcntl.h>
+ #include <pwd.h>
+ #include <grp.h>
+diff -Naur --exclude 'Makefile*' --exclude policy --exclude '*.xml' --exclude doc --exclude '*.gmo' --exclude 'config.*' org/udisks-1.0.5/src/helpers/job-drive-detach.c build/udisks-1.0.5/src/helpers/job-drive-detach.c
+--- org/udisks-1.0.5/src/helpers/job-drive-detach.c	2022-01-06 11:28:43.568084288 +0000
++++ build/udisks-1.0.5/src/helpers/job-drive-detach.c	2022-01-06 11:29:15.571528389 +0000
+@@ -26,7 +26,7 @@
+
+ #include <scsi/sg_lib.h>
+ #include <scsi/sg_cmds.h>
+-
++#include <sys/stat.h>
+ #include <libudev.h>
+
+ #include <glib.h>
+diff -Naur --exclude 'Makefile*' --exclude policy --exclude '*.xml' --exclude doc --exclude '*.gmo' --exclude 'config.*' org/udisks-1.0.5/src/mount-monitor.c build/udisks-1.0.5/src/mount-monitor.c
+--- org/udisks-1.0.5/src/mount-monitor.c	2014-03-10 08:58:42.000000000 +0000
++++ build/udisks-1.0.5/src/mount-monitor.c	2022-01-06 11:30:29.086251341 +0000
+@@ -29,6 +29,7 @@
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/sysmacros.h>
+ #include <mntent.h>
+
+ #include <glib.h>
+diff -Naur --exclude 'Makefile*' --exclude policy --exclude '*.xml' --exclude doc --exclude '*.gmo' --exclude 'config.*' org/udisks-1.0.5/tools/udisks.c build/udisks-1.0.5/tools/udisks.c
+--- org/udisks-1.0.5/tools/udisks.c	2014-03-10 08:57:48.000000000 +0000
++++ build/udisks-1.0.5/tools/udisks.c	2022-01-06 11:30:50.060885355 +0000
+@@ -31,6 +31,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <sys/sysmacros.h>
+ #include <fcntl.h>
+ #include <pwd.h>
+ #include <grp.h>
+diff -Naur --exclude 'Makefile*' --exclude policy --exclude '*.xml' --exclude doc --exclude '*.gmo' --exclude 'config.*' org/udisks-1.0.5/tools/umount-udisks.c build/udisks-1.0.5/tools/umount-udisks.c
+--- org/udisks-1.0.5/tools/umount-udisks.c	2014-03-10 08:57:48.000000000 +0000
++++ build/udisks-1.0.5/tools/umount-udisks.c	2022-01-06 11:31:10.721523435 +0000
+@@ -30,6 +30,7 @@
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <sys/sysmacros.h>
+ #include <fcntl.h>
+ #include <pwd.h>
+ #include <grp.h>
