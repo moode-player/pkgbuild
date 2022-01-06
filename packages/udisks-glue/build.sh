@@ -8,10 +8,9 @@
 #
 #########################################################################
 
-
 . ../../scripts/rebuilder.lib.sh
 
-PKG="udisks-glue_1.3.5-1moode2"
+PKG="udisks-glue_1.3.5-1moode3"
 
 PKG_SOURCE_GIT="https://github.com/fernandotcl/udisks-glue.git"
 PKG_SOURCE_GIT_TAG="release-1.3.5"
@@ -29,8 +28,6 @@ rbl_prepare_from_git_with_deb_repo
 rbl_grab_debian_archive $PKG_DEBIAN
 
 echo "10" > debian/compat
-
-sed -i "s/,[ ]udisks$/, udisks2/" debian/control
 
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Build for moOde."
 
