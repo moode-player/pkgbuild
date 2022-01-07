@@ -24,12 +24,30 @@ echo "Increase module version"
 #sed -i 's/\(#define VERSION "0\.8\)/\1\.1/' btusb.c
 #pwd
 #ls
-module_path="/$1/"
-parts=${module_path//[!\/]}
-depth=${#parts}
-echo $depth
-for i in `ls *.patch`
-do
-  echo "Applying $i"
-  patch -p$depth < $i
-done
+
+# auto unpack tars in source dir
+if [ $(find -name "*.tar" | wc -l) -gt 0 ]
+then
+  for i in `ls *.tar`
+  do
+    echo "Unpack $i"
+    tar -xvf $i
+  done
+fi
+
+# auto apply patches in source dir
+if [ $(find -name "*.patch" | wc -l) -gt 0 ]
+then
+  patches=`ls *.patch`
+  module_path="/$1/"
+  parts=${module_path//[!\/]}
+  depth=${#parts}
+  echo $depth
+
+  for i in `ls *.patch`
+  do
+    echo "Applying $i"
+    patch -p$depth < $i
+  done
+fi
+
