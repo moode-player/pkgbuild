@@ -242,10 +242,10 @@ function rbl_move_to_dist {
     # copy output to dist dir
     mkdir -p $BASE_DIR/dist/source
     mkdir -p $BASE_DIR/dist/binary
-    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*.orig.* $BASE_DIR/dist/source > /dev/null
-    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC*.dsc $BASE_DIR/dist/source > /dev/null
-    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC.debian.* $BASE_DIR/dist/source > /dev/null
-    mv $BUILD_ROOT_DIR/*$PKGVERSION-$DEBVER$DEBLOC* $BASE_DIR/dist/binary > /dev/null
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*.orig.* $BASE_DIR/dist/source > /dev/null 2>&1
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC*.dsc $BASE_DIR/dist/source > /dev/null 2>&1
+    mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC.debian.* $BASE_DIR/dist/source > /dev/null 2>&1
+    mv $BUILD_ROOT_DIR/*$PKGVERSION-$DEBVER$DEBLOC* $BASE_DIR/dist/binary > /dev/null 2>&1
 }
 
 function _rebuild {
@@ -504,6 +504,11 @@ function rbl_escaped_for_sed {
     echo "$_escaped"
 }
 
+# returns the current running kernel version as in "1.2.3"
+function rbl_get_current_kernel_version {
+    local _kernel_ver=$(uname -r | sed -r "s/([0-9.]*)[-].*/\1/")
+    echo "$_kernel_ver"
+}
 
 # -------------------------------------------------------------------------
 # dkms helper funcions
@@ -546,3 +551,44 @@ function rbl_dkms_grab_modules {
         fi
     done
 }
+
+# prepare an in tree or out tree module build with dkms
+function rbl_dkms_prepare {
+    local mode="$1"
+    if [ -z "$mode" ] || ( [ "$mode" != "intree" ] && [ "$mode" != "outtree" ] )
+    then
+        echo "Error: rbl_dkms_prepare is missing mode argument: should be set to \"intree\" or \"outtree\"!${NORMAL}"
+        exit 1
+    fi
+
+    _rbl_decode_pkg_version
+    _rbl_check_curr_is_package_dir
+    _rbl_cleanup_previous_build
+    _rbl_change_to_build_root
+
+    rbl_check_build_dep dkms
+
+    # for intree modules builds the kernel source (not only the headers is required)
+    if [ "$mode" = "intree" ]
+    then
+        # make sure we have the rpi-source package available
+        rbl_check_build_dep rpi-source
+        # this will download the kernel source if needed and set the ENV KERNEL_SOURCE_ARCHIVE to the location of the tarball
+        # if already present the cached source will be used
+        rbl_get_kernel_source
+    fi
+
+    echo "dkms build prepared at: $BUILD_ROOT_DIR/source/$SRC_DIR"
+    mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
+
+    # create dkms source project files:
+    cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms-patchmodule.intree.sh $BUILD_ROOT_DIR/source/$SRC_DIR/dkms-patchmodule.sh
+    chmod +x $BUILD_ROOT_DIR/source/$SRC_DIR/*.sh
+    rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR/dkms.conf
+
+    # if patched or tar files are needed for the dkms project
+    cp $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
+    cp $BASE_DIR/*.tar $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
+}
+
+
