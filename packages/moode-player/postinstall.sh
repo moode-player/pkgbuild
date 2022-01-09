@@ -39,6 +39,8 @@ then
       systemctl disable phpsessionclean.timer
       systemctl disable udisks2
       systemctl disable triggerhappy
+      systemctl stop mpd
+      systemctl disable mpd
 
       echo "** Disable hostapd and dnsmasq services"
       systemctl daemon-reload
@@ -108,29 +110,32 @@ then
       #then
         echo "** Create database"
       # fresh install
-        rm /var/local/www/db/moode-sqlite3.db
-        cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
-        sqlite3 /var/local/www/db/moode-sqlite3.db "CREATE TRIGGER ro_columns BEFORE UPDATE OF param, value, [action] ON cfg_hash FOR EACH ROW BEGIN SELECT RAISE(ABORT, 'read only'); END;"
-        sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
+
+          if [ -f /var/local/www/db/moode-sqlite3.db ]
+          then
+            rm /var/local/www/db/moode-sqlite3.db
+          fi
+          cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
+          sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
       #else
       # echo "** Update database"
       # update
       # Do patch work
       #fi
 
-      LIBCACHE_BASE=/var/local/www/libcache
+      LIBCACHE_BASE="/var/local/www/libcache"
       echo "** Initial permissions for certain files. These also get set during moOde Worker startup"
       touch /var/local/www/playhistory.log
       touch /var/local/www/currentsong.txt
       chmod 0777 /var/local/www/playhistory.log
       chmod 0777 /var/local/www/currentsong.txt
-      touch $LIBCACHE_BASE"_all.json"
-      touch $LIBCACHE_BASE"_folder.json"
-      touch $LIBCACHE_BASE"_format.json"
-      touch $LIBCACHE_BASE"_lossless.json"
-      touch $LIBCACHE_BASE"_lossy.json"
+      # touch "${LIBCACHE_BASE}_all.json"
+      # touch "${LIBCACHE_BASE}_folder.json"
+      # touch "${LIBCACHE_BASE}_format.json"
+      # touch "${LIBCACHE_BASE}_lossless.json"
+      # touch "${LIBCACHE_BASE}_lossy.json"
       #FIX: this doesn't work, no clue for now?
-      chmod 0777 "${LIBCACHE_BASE}_*"
+      # chmod 0777 "${LIBCACHE_BASE}_*"
 
     	echo "** Establish permissions"
     	# chmod 0777 /var/lib/mpd/music/RADIO # is part of mpd pkg
@@ -140,16 +145,19 @@ then
       echo "** Misc deletes"
       if [ -d "/var/www/html" ]
       then
-        rm -r /var/www/html
+        rm -rf /var/www/html
       fi
-      rm /etc/update-motd.d/10-uname
-      mv /etc/motd /etc/motd.default
+      rm -f /etc/update-motd.d/10-uname
+      if [ -f /etc/motd ]
+      then
+        mv /etc/motd /etc/motd.default
+      fi
 
       # sleep 45 $ why?
-      echo "** List MPD outputs"
-      mpc outputs
-      echo "** Enable only output 1"
-      mpc enable only 1
+      # echo "** List MPD outputs"
+      # mpc outputs
+      # echo "** Enable only output 1"
+      # mpc enable only 1
 
       echo "** Disable MiniDLNA service"
       systemctl disable minidlna
@@ -216,9 +224,20 @@ then
 
       sync
 
+      #don't now why there is a empty database dir instead of a database file
+      if [ -d /var/lib/mpd/database]
+      then
+        rmdir -rf /var/lib/mpd/database
+      fi
+
       /usr/local/bin/moodeutl -r
-      sleep 5
+      timeout 30s bash -c 'until mpc status; do sleep 3; done';
       mpc load "Default Playlist"
+      echo "** List MPD outputs"
+      mpc outputs
+      echo "** Enable only output 1"
+      mpc enable only 1
+
   # fi
 
 else

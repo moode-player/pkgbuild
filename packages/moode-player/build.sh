@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.0-1moode1pre2"
+PKG="moode-player_8.0.0-1moode1pre4"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -76,8 +76,8 @@ if [[ $BUILD_APP -gt 0 ]]
 then
     $GULP_BIN clean --all
     $GULP_BIN build
-    $GULP_BIN deploy --test
 fi
+$GULP_BIN deploy --test
 
 cd $BUILD_ROOT_DIR
 
@@ -251,6 +251,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends python3-libupnpp \
 --depends shairport-sync \
 --depends squeezelite \
+--depends minidlna \
 --depends trx \
 --depends udisks-glue \
 --depends upmpdcli \
