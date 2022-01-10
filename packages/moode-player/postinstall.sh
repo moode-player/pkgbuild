@@ -225,11 +225,11 @@ then
       sync
 
       #don't now why there is a empty database dir instead of a database file
-      if [ -d /var/lib/mpd/database]
+      if [ -d /var/lib/mpd/database ]
       then
         rmdir -rf /var/lib/mpd/database
       fi
-
+.
       /usr/local/bin/moodeutl -r
       timeout 30s bash -c 'until mpc status; do sleep 3; done';
       mpc load "Default Playlist"
