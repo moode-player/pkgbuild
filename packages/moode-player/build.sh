@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.0-1moode1pre4"
+PKG="moode-player_8.0.0-1moode1pre5"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -257,6 +257,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends upmpdcli \
 --depends pcm1794a \
 --depends aloop \
+--depends ax88179 \
 root/var/.=/var \
 root/home/.=/home \
 root/mnt/.=/mnt \
