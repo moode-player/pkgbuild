@@ -229,7 +229,7 @@ then
       then
         rmdir -rf /var/lib/mpd/database
       fi
-.
+
       /usr/local/bin/moodeutl -r
       timeout 30s bash -c 'until mpc status; do sleep 3; done';
       mpc load "Default Playlist"
