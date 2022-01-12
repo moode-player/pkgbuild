@@ -33,27 +33,36 @@ then
       systemctl mask apt-daily-upgrade.timer
 
       echo "** Systemd enable/disable"
+      systemctl daemon-reload
       systemctl enable haveged
-      systemctl disable shellinabox
-      systemctl disable phpsessionclean.service
-      systemctl disable phpsessionclean.timer
-      systemctl disable udisks2
-      systemctl disable triggerhappy
-      systemctl stop mpd
-      systemctl disable mpd
 
-      echo "** Disable hostapd and dnsmasq services"
-      systemctl daemon-reload
       systemctl unmask hostapd
-      systemctl disable hostapd
-      systemctl disable dnsmasq
 
-      echo "** Disable bluetooth services"
-      systemctl daemon-reload
-      systemctl disable bluetooth.service
-      #systemctl disable bluealsa.service
-      systemctl disable bluez-alsa.service
-      systemctl disable hciuart.service
+      disable_services=(
+          bluetooth \
+          bluez-alsa \
+          dnsmasq \
+          hciuart \
+          hostapd \
+          minidlna \
+          mpd \
+          mpd.service \
+          mpd.socket \
+          phpsessionclean.service \
+          phpsessionclean.timer \
+          shellinabox \
+          shairport-sync \
+          squeezelite \
+          triggerhappy \
+          udisks2 \
+          upmpdcli )
+
+      for service in "${disable_services[@]}"
+      do
+        systemctl stop "${service}"
+        systemctl disable "${service}"
+      done
+
       # mkdir -p /var/run/bluealsa # not present ?
 
       echo "** Create MPD runtime environment"
@@ -129,13 +138,6 @@ then
       touch /var/local/www/currentsong.txt
       chmod 0777 /var/local/www/playhistory.log
       chmod 0777 /var/local/www/currentsong.txt
-      # touch "${LIBCACHE_BASE}_all.json"
-      # touch "${LIBCACHE_BASE}_folder.json"
-      # touch "${LIBCACHE_BASE}_format.json"
-      # touch "${LIBCACHE_BASE}_lossless.json"
-      # touch "${LIBCACHE_BASE}_lossy.json"
-      #FIX: this doesn't work, no clue for now?
-      # chmod 0777 "${LIBCACHE_BASE}_*"
 
     	echo "** Establish permissions"
     	# chmod 0777 /var/lib/mpd/music/RADIO # is part of mpd pkg
@@ -152,23 +154,6 @@ then
       then
         mv /etc/motd /etc/motd.default
       fi
-
-      # sleep 45 $ why?
-      # echo "** List MPD outputs"
-      # mpc outputs
-      # echo "** Enable only output 1"
-      # mpc enable only 1
-
-      echo "** Disable MiniDLNA service"
-      systemctl disable minidlna
-
-      systemctl daemon-reload
-      systemctl disable upmpdcli
-      systemctl disable mpd.service
-      systemctl disable mpd.socket
-      # systemctl disable rotenc.service
-      systemctl disable squeezelite
-      systemctl disable upmpdcli.service
 
       echo "** Update sudoers file"
       #TODO: this could be added a config file instead
@@ -222,7 +207,17 @@ then
       chmod 0666 /etc/mpd.conf
 
 
+      # incase any changes are made to systemd file reload config
+      systemctl daemon-reload
+
       sync
+
+      # restart some services to pickup new configuration
+      systemctl stop nginx
+      systemctl restart php7.4-fpm
+      systemctl start nginx
+      systemctl restart smbd
+      systemctl restart winbind
 
       #don't now why there is a empty database dir instead of a database file
       if [ -d /var/lib/mpd/database ]
@@ -230,14 +225,24 @@ then
         rmdir -rf /var/lib/mpd/database
       fi
 
+      /usr/bin/udisks-glue --config=/etc/udisks-glue.conf > /dev/null 2>&1
+
+      # just start it to add playlist and then stop it
       /usr/local/bin/moodeutl -r
       timeout 30s bash -c 'until mpc status; do sleep 3; done';
-      mpc load "Default Playlist"
-      echo "** List MPD outputs"
-      mpc outputs
-      echo "** Enable only output 1"
-      mpc enable only 1
+      mpc status
+      if [[ $? -gt 0 ]]
+      then
+        mpc load "Default Playlist"
+        echo "** List MPD outputs"
+        mpc outputs
+        echo "** Enable only output 1"
+        mpc enable only 1
+      else
+        echo "hmmm problem mpd isn't started!"
+      fi
 
+      echo "moode-player install finished, please reboot"
   # fi
 
 else
