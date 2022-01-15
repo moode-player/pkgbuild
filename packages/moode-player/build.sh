@@ -182,7 +182,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --deb-priority optional \
 --url https://www.moode.org \
 -m moodeaudio.org \
---description 'moode audioplayer.' \
+--description 'moOde audio player' \
 --after-install $BASE_DIR/postinstall.sh \
 --depends rpi-update \
 --depends php-fpm \
