@@ -561,6 +561,7 @@ function rbl_dkms_prepare {
         exit 1
     fi
 
+    rbl_check_fpm
     _rbl_decode_pkg_version
     _rbl_check_curr_is_package_dir
     _rbl_cleanup_previous_build
