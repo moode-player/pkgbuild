@@ -60,7 +60,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 -S moode \
 --iteration $DEBVER$DEBLOC \
 --deb-priority optional \
---url https://github.com/moode-player/pkgbuild \
+--url https://github.com/allocom/USBridgeSig-AX2v0.git \
 -m $DEBEMAIL \
 --description "Patched ax88179_178a driver with Allo usbridge_sig suppport." \
 --post-install $BUILD_ROOT_DIR/postinstall.sh \
