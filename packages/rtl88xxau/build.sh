@@ -19,6 +19,7 @@ PKG="rtl88xxau_5.6.4.2-1"
 PKG_SOURCE_GIT="https://github.com/aircrack-ng/rtl8812au.git"
 PKG_SOURCE_GIT_TAG="v5.6.4.2"
 
+rbl_check_fpm
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
 
@@ -36,7 +37,6 @@ echo $BUILD_ROOT_DIR/$PKGNAME-$PKGVERSION
 
 #------------------------------------------------------------
 # Custom part of the packing
-cd ..
 
 # 1. build the modules with dkms:
 dkms build --dkmstree $BUILD_ROOT_DIR --sourcetree $BUILD_ROOT_DIR -k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+ $DKMS_MODULE
