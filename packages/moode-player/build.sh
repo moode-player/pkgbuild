@@ -84,51 +84,82 @@ cd $BUILD_ROOT_DIR
 # ----------------------------------------------------------------------------
 # 3. Collect installable files
 #
-# Collect all file that can be directly writen into the filesystem on install
-# This means that the file shouldn't be owned by another pacakge!
+# Collect files for the package in the $PKG_ROOT_DIR
+# Some file cannot the directly owned by the package, because it is owned by
+# an other package. In this case fles need to be copied after install and are temporaty located in $NOT_OWNED_TEMP.
 #
 # If it is really required to install an already owned file, the
 # preinstall script of the pacakge should use `dpkg-divert`
+#
 # ----------------------------------------------------------------------------
-# Home dir
-mkdir -p $PKG_ROOT_DIR/home/pi
+
+
+# location for files that should overwrite existing files (not owned by moode-player)
+NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
+mkdir -p $NOT_OWNED_TEMP
+
+# /boot
+rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/boot/ $PKG_ROOT_DIR/boot/
+rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/etc/ $NOT_OWNED_TEMP/boot/
+
+# /etc
+rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/etc/ $PKG_ROOT_DIR/etc/
+rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/etc/ $NOT_OWNED_TEMP/etc/
+#TODO: remove this one and make sure it is generated on startup
+cp $MOODE_DIR/mpd/mpd.conf.default $NOT_OWNED_TEMP/etc/mpd.conf
+
+# /home
+mkdir -p $PKG_ROOT_DIR/home
 rsync -av --exclude xinitrc.default --exclude dircolors $MOODE_DIR/home/ $PKG_ROOT_DIR/home/pi
 cp $MOODE_DIR/home/xinitrc.default $PKG_ROOT_DIR/home/pi/.xinitrc
 cp $MOODE_DIR/home/dircolors $PKG_ROOT_DIR/home/pi/.dircolors
 
-# os header
-mkdir -p $PKG_ROOT_DIR/etc/update-motd.d
-cp $MOODE_DIR/etc/update-motd.d/* $PKG_ROOT_DIR/etc/update-motd.d/
+# /lib
+rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/lib/ $PKG_ROOT_DIR/lib/
+rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/lib/ $NOT_OWNED_TEMP/lib/
+
+# /mnt (mount points)
+mkdir -p $PKG_ROOT_DIR/mnt/{NAS,SDCARD,UPNP}
+cp -r "$MOODE_DIR/other/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
+
+# /usr
+rsync -av --prune-empty-dirs --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
+rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $NOT_OWNED_TEMP/usr/
+
+# /var
+rsync -av --exclude='moode-sqlite3.db' $MOODE_DIR/var/ $PKG_ROOT_DIR/var
+
+# /var/lib/mpd
+# TODO: maybe move the file $PKG_ROOT_DIR/mpd into the correct filesystem location
+mkdir -p $PKG_ROOT_DIR/var/lib/mpd
+cp $MOODE_DIR/mpd/sticker.sql $PKG_ROOT_DIR/var/lib/mpd
+mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
+mkdir -p $PKG_ROOT_DIR/var/lib/mpd/playlists
+cp -r $MOODE_DIR/mpd/RADIO/* $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
+cp $MOODE_DIR/mpd/playlists/* $PKG_ROOT_DIR/var/lib/mpd/playlists
+
+# /var/local/php
+mkdir -p $PKG_ROOT_DIR/var/local/php
 
 # /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
 cp -r $MOODE_DIR/build/distr/var/www/* $PKG_ROOT_DIR/var/www/
 
-# /usr
-rsync -av --exclude='rx' --exclude='tx' --exclude='alsacap' --exclude='lib' --exclude='radio_scripts' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
 
-# /var
-rsync -av --exclude='moode-sqlite3.db' --exclude='cdsp_extensions.json' $MOODE_DIR/var/ $PKG_ROOT_DIR/var
+# In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
+function rename_files() {
+    org_name=$1
+    new_name=`echo "$org_name" | sed -r 's/(.*)[.]overwrite(.*)/\1\2/'`
+    mv $org_name $new_name
+}
+export -f rename_files;
+find $NOT_OWNED_TEMP -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
 
-mkdir -p $PKG_ROOT_DIR/var/local/php
-
-# Radio stations
-# TODO: may just use the station manager to import the default moode stations (and then also remove the stations from the db by default)
-mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
-mkdir -p $PKG_ROOT_DIR/var/lib/mpd/playlists
-cp $MOODE_DIR/mpd/RADIO/* $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
-cp $MOODE_DIR/mpd/playlists/* $PKG_ROOT_DIR/var/lib/mpd/playlists
-
-# mkdir -p $BUILD_ROOT_DIR/
-echo "** Create mount points"
-mkdir -p $PKG_ROOT_DIR/mnt/NAS
-mkdir -p $PKG_ROOT_DIR/mnt/SDCARD
-mkdir -p $PKG_ROOT_DIR/mnt/UPNP
-
-echo "** Create misc files"
-cp $MOODE_DIR/mpd/sticker.sql $PKG_ROOT_DIR/var/lib/mpd
-cp -r "$MOODE_DIR/other/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
-
+#chmod -R 0644  $PKG_ROOT_DIR/etc/*
+#chmod -R 0644  $NOT_OWNED_TEMP/*
+# exit
+# chmod -R -644  $PKG_ROOT_DIR/etc/*
+# chmod -R -644  $NOT_OWNED_TEMP/*
 
 # echo "** Reset permissions"
 # #TODO: maybe set the rights before packed
@@ -142,31 +173,6 @@ chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
 # # chmod -R ug-s /var/local/www
 chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
 
-# exit
-# ------------------------------------------------------------
-# 4. Collect not directly installable files
-NOT_INSTALLABLES="$PKG_ROOT_DIR/usr/share/moode-player"
-mkdir -p $NOT_INSTALLABLES
-
-# /boot
-rsync -av $MOODE_DIR/boot/ $NOT_INSTALLABLES/boot
-
-# /etc network
-mkdir -p $NOT_INSTALLABLES/etc/network
-mkdir -p $NOT_INSTALLABLES/etc/hostapd
-cp $MOODE_DIR/network/interfaces.default $NOT_INSTALLABLES/etc/network/interfaces
-cp $MOODE_DIR/network/dhcpcd.conf.default $NOT_INSTALLABLES/etc/dhcpcd.conf
-cp $MOODE_DIR/network/hostapd.conf.default $NOT_INSTALLABLES/etc/hostapd/hostapd.conf
-
-#TODO: find out which files can be directly installed (as copy to prevent no update due etc file)
-# /etc
-rsync -av $MOODE_DIR/etc/ $NOT_INSTALLABLES/etc
-
-cp $MOODE_DIR/mpd/mpd.conf.default $NOT_INSTALLABLES/etc/mpd.conf
-
-#TODO: check the service files and what to do with those
-# /lib mainly service files
-rsync -av $MOODE_DIR/lib/ $NOT_INSTALLABLES/lib
 
 # ------------------------------------------------------------
 # 5. Create the package
@@ -174,6 +180,8 @@ rsync -av $MOODE_DIR/lib/ $NOT_INSTALLABLES/lib
 #TODO: Critical look at the deps, remove unneeded.
 #TODO: Add license and readme, improve description
 
+# Don't include packages as dependency, if those package depends on the used kernel (like drivers).
+# Install those separate.
 fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --license GPLv3 \
 --category sound \
@@ -255,9 +263,12 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends trx \
 --depends udisks-glue \
 --depends upmpdcli \
---depends pcm1794a \
---depends aloop \
---depends ax88179 \
+--depends boss2-oled-p3 \
+--depends xinit \
+--depends xorg \
+--depends lsb-release \
+--depends chromium-browser \
+root/boot/.=/boot \
 root/var/.=/var \
 root/home/.=/home \
 root/mnt/.=/mnt \
