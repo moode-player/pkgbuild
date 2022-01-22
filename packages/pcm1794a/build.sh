@@ -12,11 +12,11 @@
 
 KERNEL_VER=$(rbl_get_current_kernel_version)
 
-PKG="pcm1794a_$KERNEL_VER-1"
+PKG="pcm1794a_0.1-1"
 
 # required for creating a dkms project:
-DKMS_MODULE="pcm1794a/0.2"
-SRC_DIR="pcm1794a-0.2"
+DKMS_MODULE="pcm1794a/0.1"
+SRC_DIR="pcm1794a-0.1"
 ARCHS=( v7l+ v7+ )
 MODULE="snd-soc-pcm1794a.ko"
 MODULE_PATH='sound/soc/codecs'
@@ -33,14 +33,13 @@ dkms build --dkmstree $BUILD_ROOT_DIR --sourcetree $BUILD_ROOT_DIR/source -k $KE
 # examples of other dkms outputs:
 # build the packing:
 # package for single arch
-# dkms mkbmdeb --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v7+ $DKMS_MODULE
+dkms mkbmdeb --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v7+ $DKMS_MODULE
 # package for single arch
 # dkms mkbmdeb --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v7l+ $DKMS_MODULE
 # rebuildable tarball which can be installed with with dkms
 # dkms mktarball --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+ $DKMS_MODULE
 # binaries tarball with prebuild modules which can be installed with with dkms
 # dkms mktarball --dkmstree $BUILD_ROOT_DIR --binaries-only -k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+ $DKMS_MODULE
-
 
 # 2. packed it with fpm:
 # (wanted multiple arch deb which isn't possible with dkms and wanted to prevent install deps of dkms and related)
@@ -53,7 +52,7 @@ rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh
 rbl_dkms_grab_modules
 
 # build the package
-fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
 --license GPLv3 \
 --category sound \
 -S moode \

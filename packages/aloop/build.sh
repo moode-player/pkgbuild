@@ -12,11 +12,11 @@
 
 KERNEL_VER=$(rbl_get_current_kernel_version)
 
-PKG="aloop_$KERNEL_VER-1"
+PKG="aloop_0.1-1"
 
 # required for creating a dkms project:
-DKMS_MODULE="aloop/0.2"
-SRC_DIR="aloop-0.2"
+DKMS_MODULE="aloop/0.1"
+SRC_DIR="aloop-0.1"
 ARCHS=( v7l+ v7+ )
 MODULE="snd-aloop.ko"
 MODULE_PATH='sound/drivers'
@@ -40,7 +40,7 @@ rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh
 rbl_dkms_grab_modules
 
 # build the package
-fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
 --license GPLv3 \
 --category sound \
 -S moode \

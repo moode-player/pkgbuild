@@ -14,7 +14,7 @@
 
 KERNEL_VER=$(rbl_get_current_kernel_version)
 
-PKG="ax88179_$KERNEL_VER-1"
+PKG="ax88179_2.0-1"
 
 # required for creating a dkms project:
 DKMS_MODULE="ax88179_178a/2.0"
@@ -53,8 +53,9 @@ rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh
 # place build modules in the correct file tree for fpm
 rbl_dkms_grab_modules
 
+cd $BUILD_ROOT_DIR
 # build the package
-fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
 --license GPLv3 \
 --category network \
 -S moode \
