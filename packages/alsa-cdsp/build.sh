@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="alsa-cdsp_1.0.0-1moode1"
+PKG="alsa-cdsp_1.0.0-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsa_cdsp.git"
 PKG_SOURCE_GIT_TAG="v1.0.0"
@@ -34,6 +34,7 @@ patch -p1 < $BASE_DIR/fix_libdir_for_deb_build.patch
 EDITOR=/bin/true dpkg-source --commit . fix_deb_build.patch
 
 patch -p1 < $BASE_DIR/debian.control.patch
+patch -p1 < $BASE_DIR/debian.rules.patch
 
 pandoc -r markdown -w man ./README.md -o ./debian/manpage.1
 rm debian/manpage.*.ex
