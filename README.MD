@@ -60,6 +60,7 @@ camillagui-backend is bundled with the camillagui package.
 |----------  |-----------------|:----|---------------|----------|
 | [aloop](https://github.com/moode-player/pkgbuild )    | 5.10.63-1moode1  | fpm | yes | 384kHz patch for in tree module
 | [ax88179](https://github.com/allocom/USBridgeSig-AX2v0.git)    | 5.6.4.2-1moode1  | git |  | Patched  ax88179_178a driver with Allo SIG suppport.
+| [boss2-oled-p3](https://github.com/allocom/allo_boss2_oled_p3)  | 1.0.0-1moode1  | fpm |  | Allo Boss2 OLED display service
 | [pcm1794a](https://github.com/moode-player/pkgbuild)  | 5.10.63-1moode1  | fpm | yes | 384kHz patch for in tree module
 | [rpi-source](https://github.com/RPi-Distro/rpi-source)    | 0.1-1moode1  | git | yes | Fixes to let it work with Python 3. Only needed with development.
 | [rtl88xxau](https://github.com/aircrack-ng/rtl8812au)    | 5.6.4.2-1moode1  | git |  | Required for SIG Wifi.
