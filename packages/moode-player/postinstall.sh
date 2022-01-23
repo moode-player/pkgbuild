@@ -321,6 +321,7 @@ then
 
       # mpd
       #cp -f $SRC/etc/mpd.conf /etc/
+      touch /etc/mpd.conf
       chown mpd:audio /etc/mpd.conf
       chmod 0666 /etc/mpd.conf
 
