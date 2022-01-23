@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.0-1moode1pre7"
+PKG="moode-player_8.0.0-1moode1pre8"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -67,6 +67,7 @@ rm $PKG*.deb
 
 cd $MOODE_DIR
 
+#TODO: detect if node_modules is missing and if so do both steps
 if [[ $NPM_CI -gt 0 ]]
 then
     npm ci
@@ -99,14 +100,14 @@ NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
 mkdir -p $NOT_OWNED_TEMP
 
 # /boot
-rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/boot/ $PKG_ROOT_DIR/boot/
+rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* --exclude *.ignore* $MOODE_DIR/boot/ $PKG_ROOT_DIR/boot/
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/etc/ $NOT_OWNED_TEMP/boot/
 
 # /etc
 rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/etc/ $PKG_ROOT_DIR/etc/
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/etc/ $NOT_OWNED_TEMP/etc/
 #TODO: remove this one and make sure it is generated on startup
-cp $MOODE_DIR/mpd/mpd.conf.default $NOT_OWNED_TEMP/etc/mpd.conf
+#cp $MOODE_DIR/mpd/mpd.conf.default $NOT_OWNED_TEMP/etc/mpd.conf
 
 # /home
 mkdir -p $PKG_ROOT_DIR/home
