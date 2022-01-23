@@ -93,8 +93,8 @@ function apt_update {
 }
 
 function rbl_check_build_dep {
-    dpkg -l $1 > /dev/null 2>&1
-    if [[ $? -gt 0 ]]
+    dpkg -l $1 | grep  "<none>" > /dev/null 2>&1
+    if [[ $? -eq 0 ]]
     then
         echo "${YELLOW} Package $1 : missing, installing it.${NORMAL}"
         apt_update
@@ -108,9 +108,10 @@ function rbl_check_build_dep {
 
 # install pre build requirements
 function check_deb_tools {
-    array=( libtool-bin build-essential fakeroot devscripts swig )
+    array=( libtool-bin build-essential fakeroot devscripts swig dh-make)
     for i in "${array[@]}"
     do
+        echo "${i}"
         rbl_check_build_dep $i
     done
 }
