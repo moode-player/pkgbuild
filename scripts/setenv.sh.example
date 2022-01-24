@@ -15,3 +15,4 @@
 
 export DEBFULLNAME=FooBar
 export DEBEMAIL=foobar@users.noreply.github.com
+export MOODE_DIR=~/moode.dev/moode
