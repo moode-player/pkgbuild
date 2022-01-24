@@ -111,7 +111,6 @@ function check_deb_tools {
     array=( libtool-bin build-essential fakeroot devscripts swig dh-make)
     for i in "${array[@]}"
     do
-        echo "${i}"
         rbl_check_build_dep $i
     done
 }
