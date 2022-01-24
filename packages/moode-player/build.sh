@@ -101,7 +101,7 @@ mkdir -p $NOT_OWNED_TEMP
 
 # /boot
 rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* --exclude *.ignore* $MOODE_DIR/boot/ $PKG_ROOT_DIR/boot/
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/etc/ $NOT_OWNED_TEMP/boot/
+rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/boot/ $NOT_OWNED_TEMP/boot/
 
 # /etc
 rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/etc/ $PKG_ROOT_DIR/etc/
