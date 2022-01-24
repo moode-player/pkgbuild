@@ -19,10 +19,10 @@ PKG="moode-player_8.0.0-1moode1pre8"
 # to use an already checkout ( and gulp build version of moode )
 # The enviroment var MOODE_DIR should be set to the location where the moode project source is.
 
-# sync required npm modules for gulp build
+# sync required npm modules for gulp build if if already exists
 NPM_CI=0
-# build web app with gulp
-BUILD_APP=0
+# build web app with gulp, to speed up test build without change to frontend (or manual build) diable this
+BUILD_APP=1
 
 GULP_BIN=$MOODE_DIR/node_modules/.bin/gulp
 
@@ -61,14 +61,14 @@ then
     exit 1
 fi
 
-rm $PKG*.deb
+rm -rf $PKG*.deb
 # ----------------------------------------------------------------------------
 # 2. Buildweb app an deploy to test directory (prepared for copy)
 
 cd $MOODE_DIR
 
 #TODO: detect if node_modules is missing and if so do both steps
-if [[ $NPM_CI -gt 0 ]]
+if [ $NPM_CI -gt 0 ]  || [ ! -d $MOODE_DIR/node_modules ]
 then
     npm ci
 fi
@@ -78,6 +78,7 @@ then
     $GULP_BIN clean --all
     $GULP_BIN build
 fi
+
 $GULP_BIN deploy --test
 
 cd $BUILD_ROOT_DIR
@@ -275,7 +276,6 @@ root/home/.=/home \
 root/mnt/.=/mnt \
 root/usr/.=/usr \
 root/etc/.=/etc
-
 
 if [[ $? -gt 0 ]]
 then
