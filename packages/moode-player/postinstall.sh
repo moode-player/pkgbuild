@@ -195,7 +195,21 @@ then
       #  find . -name "*.sed*" |sort
       PHP_VER="7.4"
 
+      # /etc/bluetooth/main.conf
+		  # Name = Moode Bluetooth
+		  # Class = 0x20041C		# 2  = Service Class: 		Audio
+				                		# 4  = Major Device Class	Audio/Video
+						               # 1C = Minor Device Class: 	Loudspeaker x14 + Headphones  x18
+		  # DiscoverableTimeout = 0	# Stay discoverable forever
+		  # ControllerMode = bredr 	# Enables Pi-to Pi connections
+      sed -i -e 's/[#]Name[ ]=[ ].*/Name = Moode Bluetooth/' \
+             -e 's/[#]Class[ ]=[ ].*/Class = 0x20041C/' \
+             -e 's/#DiscoverableTimeout[ ]/DiscoverableTimeout[ ]/' \
+             -e 's/[#]ControllerMode[ ]=[ ].*/ControllerMode = bredr/' \
+             /etc/bluetooth/main.conf
+
       # /etc/default/mpd
+      # Uncomment # MPDCONF=/etc/mpd.conf
       sed -i "s/^#[ ]MPDCONF/MPDCONF/" /etc/default/mpd
 
       # /etc/php/$PHP_VER/cli/php.ini
