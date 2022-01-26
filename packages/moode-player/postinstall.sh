@@ -126,6 +126,8 @@ then
           fi
           cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
           sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
+
+          /var/www/command/stationmanager.py --regeneratepls
       #else
       # echo "** Update database"
       # update
