@@ -168,8 +168,9 @@ then
       # ------------------------------------------------------------------------------------------
       SRC=/usr/share/moode-player
       cp -rf $SRC/etc/* /etc/
-      cp -rf $SRC/etc/* /lib/
-      cp -rf $SRC/etc/* /usr/
+      cp -rf $SRC/lib/* /lib/
+      cp -rf $SRC/usr/* /usr/
+      cp -rf $SRC/boot/* /boot/
 
       #cp -f $SRC/etc/upmpdcli.conf /etc/
 #      cp -f $SRC/etc/rc.local /etc/
