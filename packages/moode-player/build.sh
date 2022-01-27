@@ -270,6 +270,8 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends xorg \
 --depends lsb-release \
 --depends chromium-browser \
+--depends python3-dbus \
+--depends expect \
 root/boot/.=/boot \
 root/var/.=/var \
 root/home/.=/home \
