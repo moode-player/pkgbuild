@@ -126,6 +126,8 @@ then
           fi
           cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
           sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
+
+          /var/www/command/stationmanager.py --regeneratepls
       #else
       # echo "** Update database"
       # update
@@ -168,8 +170,9 @@ then
       # ------------------------------------------------------------------------------------------
       SRC=/usr/share/moode-player
       cp -rf $SRC/etc/* /etc/
-      cp -rf $SRC/etc/* /lib/
-      cp -rf $SRC/etc/* /usr/
+      cp -rf $SRC/lib/* /lib/
+      cp -rf $SRC/usr/* /usr/
+      cp -rf $SRC/boot/* /boot/
 
       #cp -f $SRC/etc/upmpdcli.conf /etc/
 #      cp -f $SRC/etc/rc.local /etc/

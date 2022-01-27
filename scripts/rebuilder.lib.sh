@@ -93,8 +93,8 @@ function apt_update {
 }
 
 function rbl_check_build_dep {
-    dpkg -s $1 |grep Status | grep -v "installed" > /dev/null 2>&1
-    if [[ $? -eq 0 ]]
+    dpkg -s $1 2>&1 | grep Status | grep "installed" > /dev/null 2>&1
+    if [[ ! $? -eq 0 ]]
     then
         echo "${YELLOW} Package $1 : missing, installing it.${NORMAL}"
         apt_update
