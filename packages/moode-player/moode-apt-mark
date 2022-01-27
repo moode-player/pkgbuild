@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# Shorthand for locking and unlocking important packages for moode
+#
+# bitlab C 2022
+#
+
+echo "moOde-apt-hold"
+if [[ -z "$1" ]] || [[ "$1" != "hold" ]] && [[  "$1" != "unhold" ]]
+then
+   echo "argument should be hold or unhold."
+   exit
+fi
+
+cmd=$1
+pkgstr=""
+package_list="/etc/moode-apt-mark.conf"
+while IFS= read -r line
+do
+
+  package=`echo "$line" | sed -e 's/[[:space:]]*#.*// ; /^[[:space:]]*$/d'`
+  if [[ -n "$package" ]]
+  then
+    pkgstr+="$package "
+    if [ $? -gt 1 ]
+    then
+      echo "oeps something did go wrong, aborting ..."
+      exit 1
+    fi
+  fi
+done < "$package_list"
+apt-mark "$cmd" "$package" $pkgstr
+if [ $? -gt 1 ]
+then
+    echo "oeps something did go wrong"
+    exit 1
+fi
