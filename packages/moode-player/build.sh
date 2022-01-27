@@ -122,7 +122,7 @@ rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="
 
 # /mnt (mount points)
 mkdir -p $PKG_ROOT_DIR/mnt/{NAS,SDCARD,UPNP}
-cp -r "$MOODE_DIR/other/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
+cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
 
 # /usr
 rsync -av --prune-empty-dirs --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
@@ -287,5 +287,3 @@ fi
 rbl_move_to_dist
 
 echo "done"
-
-
