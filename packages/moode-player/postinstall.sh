@@ -335,8 +335,6 @@ function on_install() {
       sed -i "s/raspberrypi/moode/" /etc/hosts
 
       echo "moode-player install finished, please reboot"
-
-      moode-apt-mark hold
 }
 
 function on_upgrade() {
@@ -350,7 +348,6 @@ function on_upgrade() {
       timeout 30s bash -c 'until mpc status; do sleep 3; done';
       mpc status
       echo "moode-player upgrade finished, please reboot"
-      moode-apt-mark hold
 }
 
 
