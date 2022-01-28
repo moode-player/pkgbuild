@@ -137,7 +137,6 @@ mkdir -p $PKG_ROOT_DIR/var/lib/mpd
 cp $MOODE_DIR/mpd/sticker.sql $PKG_ROOT_DIR/var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/playlists
-cp -r $MOODE_DIR/mpd/RADIO/* $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 cp $MOODE_DIR/mpd/playlists/* $PKG_ROOT_DIR/var/lib/mpd/playlists
 
 # /var/local/php
@@ -187,8 +186,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 -m moodeaudio.org \
 --description 'moOde audio player' \
 --after-install $BASE_DIR/postinstall.sh \
---deb-config /usr/share/camilladsp/configs/* \
---deb-config /usr/share/camilladsp/coeffs/* \
 --depends rpi-update \
 --depends php-fpm \
 --depends nginx \
