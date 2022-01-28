@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.0-1moode1pre8"
+PKG="moode-player_8.0.0-1moode1~pre1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -107,8 +107,7 @@ rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="
 # /etc
 rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/etc/ $PKG_ROOT_DIR/etc/
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/etc/ $NOT_OWNED_TEMP/etc/
-#TODO: remove this one and make sure it is generated on startup
-#cp $MOODE_DIR/mpd/mpd.conf.default $NOT_OWNED_TEMP/etc/mpd.conf
+cp $BASE_DIR/moode-apt-mark.conf  $PKG_ROOT_DIR/etc/
 
 # /home
 mkdir -p $PKG_ROOT_DIR/home
@@ -127,6 +126,7 @@ cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
 # /usr
 rsync -av --prune-empty-dirs --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $NOT_OWNED_TEMP/usr/
+cp $BASE_DIR/moode-apt-mark $PKG_ROOT_DIR/usr/local/bin
 
 # /var
 rsync -av --exclude='moode-sqlite3.db' $MOODE_DIR/var/ $PKG_ROOT_DIR/var
@@ -137,7 +137,6 @@ mkdir -p $PKG_ROOT_DIR/var/lib/mpd
 cp $MOODE_DIR/mpd/sticker.sql $PKG_ROOT_DIR/var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/playlists
-cp -r $MOODE_DIR/mpd/RADIO/* $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 cp $MOODE_DIR/mpd/playlists/* $PKG_ROOT_DIR/var/lib/mpd/playlists
 
 # /var/local/php
@@ -145,7 +144,7 @@ mkdir -p $PKG_ROOT_DIR/var/local/php
 
 # /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
-cp -r $MOODE_DIR/build/distr/var/www/* $PKG_ROOT_DIR/var/www/
+cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
 
 
 # In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
@@ -157,14 +156,7 @@ function rename_files() {
 export -f rename_files;
 find $NOT_OWNED_TEMP -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
 
-#chmod -R 0644  $PKG_ROOT_DIR/etc/*
-#chmod -R 0644  $NOT_OWNED_TEMP/*
-# exit
-# chmod -R -644  $PKG_ROOT_DIR/etc/*
-# chmod -R -644  $NOT_OWNED_TEMP/*
-
 # echo "** Reset permissions"
-# #TODO: maybe set the rights before packed
 chmod -R 0755  $PKG_ROOT_DIR/var/www
 chmod 0755  $PKG_ROOT_DIR/var/www/command/*
 chmod -R 0755  $PKG_ROOT_DIR/var/local/www
@@ -194,6 +186,10 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 -m moodeaudio.org \
 --description 'moOde audio player' \
 --after-install $BASE_DIR/postinstall.sh \
+--deb-config /usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
+--deb-config /usr/share/camilladsp/configs/peq_ae_oratory1990_hd800s \
+--deb-config /usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
+--deb-config /usr/share/camilladsp/configs/peq_oratory1990_hd800s.yml \
 --depends rpi-update \
 --depends php-fpm \
 --depends nginx \
