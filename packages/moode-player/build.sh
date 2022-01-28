@@ -187,6 +187,8 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 -m moodeaudio.org \
 --description 'moOde audio player' \
 --after-install $BASE_DIR/postinstall.sh \
+--deb-config /usr/share/camilladsp/configs/* \
+--deb-config /usr/share/camilladsp/coeffs/* \
 --depends rpi-update \
 --depends php-fpm \
 --depends nginx \
