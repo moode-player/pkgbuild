@@ -144,7 +144,7 @@ mkdir -p $PKG_ROOT_DIR/var/local/php
 
 # /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
-cp -r $MOODE_DIR/build/distr/var/www/* $PKG_ROOT_DIR/var/www/
+cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
 
 
 # In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
