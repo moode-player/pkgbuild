@@ -152,15 +152,19 @@ function on_install() {
 
       # /etc/bluetooth/main.conf
 		  # Name = Moode Bluetooth
-		  # Class = 0x20041C		# 2  = Service Class: 		Audio
-				                		# 4  = Major Device Class	Audio/Video
-						               # 1C = Minor Device Class: 	Loudspeaker x14 + Headphones  x18
-		  # DiscoverableTimeout = 0	# Stay discoverable forever
-		  # ControllerMode = bredr 	# Enables Pi-to Pi connections
+		  # Class = 0x20041C
+          #   2  = Service Class: Audio
+          #   4  = Major Device Class: Audio/Video
+          #   1C = Minor Device Class: Loudspeaker x14 & Headphones  x18
+		  # DiscoverableTimeout = 0
+          #   Stay discoverable forever
+		  # ControllerMode = dual
+          #   Both BR/EDR and LE transports enabled (when supported by the HW)
+          #   NOTE: May need to have UI option to set ControllerMode = bredr to enable Pi-to Pi connections
       sed -i -e 's/[#]Name[ ]=[ ].*/Name = Moode Bluetooth/' \
              -e 's/[#]Class[ ]=[ ].*/Class = 0x20041C/' \
-             -e 's/#DiscoverableTimeout[ ]/DiscoverableTimeout[ ]/' \
-             -e 's/[#]ControllerMode[ ]=[ ].*/ControllerMode = bredr/' \
+             -e 's/#DiscoverableTimeout[ ]/DiscoverableTimeout /' \
+             -e 's/[#]ControllerMode[ ]=[ ].*/ControllerMode = dual/' \
              /etc/bluetooth/main.conf
 
       # /etc/default/mpd
