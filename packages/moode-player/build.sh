@@ -186,10 +186,10 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 -m moodeaudio.org \
 --description 'moOde audio player' \
 --after-install $BASE_DIR/postinstall.sh \
---deb-config /usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
---deb-config /usr/share/camilladsp/configs/peq_ae_oratory1990_hd800s \
---deb-config /usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
---deb-config /usr/share/camilladsp/configs/peq_oratory1990_hd800s.yml \
+--deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
+--deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/peq_ae_oratory1990_hd800s \
+--deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
+--deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/peq_oratory1990_hd800s.yml \
 --depends rpi-update \
 --depends php-fpm \
 --depends nginx \
