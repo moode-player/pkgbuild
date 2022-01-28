@@ -2,14 +2,12 @@
 
 #TODO: make sure the package can upgrade an reinstalled without sideeffects, requires splitting in part that should be done only once and what should be done on upgrade or always
 
-echo "$1"
-echo "$1 $2" >> /tmp/moode.log
+ACTION=$1
+VERSION=$2
 
-if [ "$1" = "configure" ]
-then
-  # if [ ! -z "$2" ]
-  # then
-      # DURING DEVELOPMENT TEMPORARY DISABLED
+
+function on_install() {
+      # perform install
       # timedatectl set-timezone "America/Detroit"
       echo "pi:moodeaudio" | chpasswd
 
@@ -65,16 +63,7 @@ then
       # mkdir -p /var/run/bluealsa # not present ?
 
       echo "** Create MPD runtime environment"
-      # useradd mpd # already done my mpd pkg
-      # mkdir /var/lib/mpd # already done my mpd pkg
-      # mkdir /var/lib/mpd/music # already done my mpd pkg
-      # mkdir /var/lib/mpd/playlists # already done my mpd pkg
       touch /var/lib/mpd/state
-      chown -R mpd:audio /var/lib/mpd
-      # mkdir /var/log/mpd # already done my mpd pkg
-      touch /var/log/mpd/log
-      chmod 644 /var/log/mpd/log
-      chown -R mpd:audio /var/log/mpd
       #TODO: Is it really needed to copy(is conflict with mpd itself), anyway it is generated at the start of worker.php
       # cp ./moode/mpd/mpd.conf.default /etc/mpd.conf
 
@@ -82,19 +71,9 @@ then
       usermod -a -G audio mpd
 
       echo "** Create symlinks"
-      if [ ! -e /var/lib/mpd/music/NAS ]
-      then
-        ln -s /mnt/NAS /var/lib/mpd/music/NAS
-      fi
-
-      if [ ! -e /var/lib/mpd/music/SDCARD ]
-      then
-        ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
-      fi
-      if [ ! -e /var/lib/mpd/music/USB ]
-      then
-        ln -s /media /var/lib/mpd/music/USB
-      fi
+      [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
+      [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
+      [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
 
       echo "** Create logfiles"
       touch /var/log/moode.log
@@ -115,24 +94,15 @@ then
 
       chmod -R a+rw /usr/share/camilladsp
 
-      #if [ ! -f /var/local/www/db/moode-sqlite3.db ]
-      #then
-        echo "** Create database"
-      # fresh install
+      echo "** Create database"
+      if [ -f /var/local/www/db/moode-sqlite3.db ]
+      then
+        rm /var/local/www/db/moode-sqlite3.db
+      fi
+      cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
+      sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
 
-          if [ -f /var/local/www/db/moode-sqlite3.db ]
-          then
-            rm /var/local/www/db/moode-sqlite3.db
-          fi
-          cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
-          sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
-
-          /var/www/command/stationmanager.py --regeneratepls
-      #else
-      # echo "** Update database"
-      # update
-      # Do patch work
-      #fi
+      /var/www/command/stationmanager.py --regeneratepls
 
       LIBCACHE_BASE="/var/local/www/libcache"
       echo "** Initial permissions for certain files. These also get set during moOde Worker startup"
@@ -142,7 +112,6 @@ then
       chmod 0777 /var/local/www/currentsong.txt
 
     	echo "** Establish permissions"
-    	# chmod 0777 /var/lib/mpd/music/RADIO # is part of mpd pkg
 	    chmod -R 0777 /var/local/www/db
 	    chown www-data:www-data /var/local/php
 
@@ -173,23 +142,6 @@ then
       cp -rf $SRC/lib/* /lib/
       cp -rf $SRC/usr/* /usr/
       cp -rf $SRC/boot/* /boot/
-
-      #cp -f $SRC/etc/upmpdcli.conf /etc/
-#      cp -f $SRC/etc/rc.local /etc/
- #     cp -f $SRC/etc/udisks-glue.conf /etc/
-
-#      cp $SRC/etc/upmpdcli.conf /etc/
-
-      # alsa
-#      rsync -av --exclude=-'20-bluealsa.conf' $SRC/etc/alsa/conf.d/ /etc/alsa/conf.d
-
-      # nginx + php + php74-fpm
-
-      # /etc/nginx/nginx.conf
-
-#      cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
-      # /etc/nginx/fastcgi_params
-#      cp -f $SRC/etc/nginx/fastcgi_params /etc/nginx/fastcgi_params
 
       # ------------------------------------------------------------------------------------------
       # Patch files with sed
@@ -333,15 +285,10 @@ then
 
       cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
-      # samba
-      # cp -f $SRC/etc/samba/smb.conf /etc/samba
-
       # mpd
-      #cp -f $SRC/etc/mpd.conf /etc/
       touch /etc/mpd.conf
       chown mpd:audio /etc/mpd.conf
       chmod 0666 /etc/mpd.conf
-
 
       # incase any changes are made to systemd file reload config
       systemctl daemon-reload
@@ -351,7 +298,7 @@ then
       #--------------------------------------------------------------------------------------------------------
       # bring it a live ;-)
       #--------------------------------------------------------------------------------------------------------
-      echo "** Sarting servers"
+      echo "** Starting servers"
       # restart some services to pickup new configuration
       systemctl stop nginx
       systemctl restart php7.4-fpm
@@ -388,9 +335,38 @@ then
       sed -i "s/raspberrypi/moode/" /etc/hosts
 
       echo "moode-player install finished, please reboot"
-  # fi
 
-else
-  echo "test2"
+      moode-apt-mark hold
+}
 
+function on_upgrade() {
+      #--------------------------------------------------------------------------------------------------------
+      # bring it a live ;-)
+      #--------------------------------------------------------------------------------------------------------
+
+      # just start it to add playlist and then stop it
+      echo "wait at max 30 seconds until mpd is started ...."
+      /usr/local/bin/moodeutl -r
+      timeout 30s bash -c 'until mpc status; do sleep 3; done';
+      mpc status
+      echo "moode-player upgrade finished, please reboot"
+      moode-apt-mark hold
+}
+
+
+if [ "$ACTION" = "configure" ] && [ -z $VERSION ] || [ "$ACTION" = "abort-remove" ]
+then
+      on_install
+elif [ "$ACTION" = "configure" ] && [ -n $VERSION ]
+then
+      #--------------------------------------------------------------------------------------------------------
+      # perform upgrade"
+      # Existing configuration files that are change are NOT updated.
+      # If you need to patch a config file this is the right place
+      #--------------------------------------------------------------------------------------------------------
+      on_upgrade
+elif echo "${ACTION}" | grep -E -q "(abort|fail)"
+then
+      echo "Failed to install before the post-installation script was run." >&2
+      exit 1
 fi
