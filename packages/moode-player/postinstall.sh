@@ -111,9 +111,14 @@ function on_install() {
       chmod 0777 /var/local/www/playhistory.log
       chmod 0777 /var/local/www/currentsong.txt
 
-    	echo "** Establish permissions"
-	    chmod -R 0777 /var/local/www/db
-	    chown www-data:www-data /var/local/php
+      echo "** Establish permissions"
+      chmod -R 0777 /var/local/www/db
+      chown www-data:www-data /var/local/php
+
+      echo "** Generate alsaequal binary"
+      amixer -D alsaequal > /dev/null
+      chmod 0755 /usr/local/bin/alsaequal.bin
+      chown mpd:audio /usr/local/bin/alsaequal.bin
 
       echo "** Misc deletes"
       if [ -d "/var/www/html" ]
@@ -300,7 +305,7 @@ function on_install() {
       sync
 
       #--------------------------------------------------------------------------------------------------------
-      # bring it a live ;-)
+      # bring it alive ;-)
       #--------------------------------------------------------------------------------------------------------
       echo "** Starting servers"
       # restart some services to pickup new configuration
