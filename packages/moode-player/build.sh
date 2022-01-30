@@ -241,6 +241,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends hostapd \
 --depends bluez-firmware \
 --depends pi-bluetooth \
+--depends ashuffle \
 --depends alsa-cdsp \
 --depends alsacap \
 --depends bluez \
