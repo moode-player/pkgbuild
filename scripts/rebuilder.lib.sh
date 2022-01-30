@@ -510,6 +510,18 @@ function rbl_get_current_kernel_version {
     echo "$_kernel_ver"
 }
 
+# copies an patch while replacing the maintainer to the current env vars DEBFULLNAME and DEBEMAIL
+function rbl_fix_control_patch_maintainer () {
+    if [ -z "$1" ] || [ -z "$2"]
+    then
+        echo "${RED}Error: missing source and or  destination ${NORMAL}"
+    exit 1
+    fi
+    src=$1
+    dest=$2
+    cat $src | sed "s/Maintainer: .*/Maintainer: ${DEBFULLNAME} <${DEBEMAIL}>/" > $dest
+}
+
 # -------------------------------------------------------------------------
 # dkms helper funcions
 # -------------------------------------------------------------------------
