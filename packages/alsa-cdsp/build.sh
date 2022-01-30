@@ -33,7 +33,9 @@ EDITOR=/bin/true dpkg-source --commit . fix_make_clean.patch
 patch -p1 < $BASE_DIR/fix_libdir_for_deb_build.patch
 EDITOR=/bin/true dpkg-source --commit . fix_deb_build.patch
 
-patch -p1 < $BASE_DIR/debian.control.patch
+rbl_fix_control_patch_maintainer $BASE_DIR/debian.control.patch $BUILD_ROOT_DIR/debian.control.patch
+patch -p1 < $BUILD_ROOT_DIR/debian.control.patch
+
 patch -p1 < $BASE_DIR/debian.rules.patch
 
 pandoc -r markdown -w man ./README.md -o ./debian/manpage.1

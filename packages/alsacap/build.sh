@@ -24,7 +24,8 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 dh_make -s -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../COPYING -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 
-patch -p1 < $BASE_DIR/debian.control.patch
+rbl_fix_control_patch_maintainer $BASE_DIR/debian.control.patch $BUILD_ROOT_DIR/debian.control.patch
+patch -p1 < $BUILD_ROOT_DIR/debian.control.patch
 
 rm debian/manpage.*.ex
 rm debian/README.*
