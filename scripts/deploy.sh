@@ -8,7 +8,7 @@
 #
 #########################################################################
 
-REPO=moodeaudio/m8x/raspbian/bullseye
+REPO=moodeaudio/m8y/raspbian/bullseye
 
 cloudsmith --version > /dev/null 2>&1
 if [[ $? -gt 0 ]]
