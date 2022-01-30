@@ -139,9 +139,10 @@ function on_install() {
       # ------------------------------------------------------------------------------------------
       SRC=/usr/share/moode-player
       cp -rf $SRC/etc/* /etc/
-      cp -rf $SRC/lib/* /lib/
-      cp -rf $SRC/usr/* /usr/
-      cp -rf $SRC/boot/* /boot/
+      cp -rf $SRC/lib/* /lib/ > /dev/null 2>&1
+      cp -rf $SRC/usr/* /usr/ > /dev/null 2>&1
+      cp -rf $SRC/boot/* /boot/ > /dev/null 2>&1
+
 
       # ------------------------------------------------------------------------------------------
       # Patch files with sed
