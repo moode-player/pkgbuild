@@ -44,7 +44,7 @@ All forms with src as output can be rebuild from source packages (also present i
 | [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 0.6.2-1moode1 | stdeb |  |
 | [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.20.1~-1moode1 | git   |  |
 | [*shairport-sync*](https://github.com/mikebrady/shairport-sync) | *3.3.7*| ***stock*** |
-| [*squeezelite*](https://github.com/ralph-irving/squeezelite)| *1.9+git20210102.78fef68-3* | ***stock*** |
+| [squeezelite](https://github.com/ralph-irving/squeezelite)| 1.9+git20210102.78fef68-3 | rebuild | | yes
 | [trx](http://www.pogo.org.uk/~mark/trx/)        | 0.6-1moode1    |  git+dh_make |  |
 | [udisks](https://www.freedesktop.org/wiki/Software/udisks/) | 1.0.5-1moode1 | ***upport*** | yes |
 | [udisks-glue](https://github.com/fernandotcl/udisks-glue) | 1.3.5-1moode3 | git+debsrc |  |
