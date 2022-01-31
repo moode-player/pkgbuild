@@ -274,6 +274,7 @@ root/var/.=/var \
 root/home/.=/home \
 root/mnt/.=/mnt \
 root/usr/.=/usr \
+root/lib/.=/lib \
 root/etc/.=/etc
 
 if [[ $? -gt 0 ]]
