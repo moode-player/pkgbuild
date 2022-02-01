@@ -319,7 +319,10 @@ function rbl_rebuild_from_source_package {
 }
 
 function rbl_prepare_from_dsc_url {
-    PKG=`basename $1 .dsc`
+    if [ -z "$PKG" ]
+    then
+        PKG=`basename $1 .dsc`
+    fi
     echo "building $PKG"
     _rbl_decode_pkg_version
     _rbl_check_curr_is_package_dir
