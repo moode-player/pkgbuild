@@ -512,10 +512,10 @@ function rbl_get_current_kernel_version {
 
 # copies an patch while replacing the maintainer to the current env vars DEBFULLNAME and DEBEMAIL
 function rbl_fix_control_patch_maintainer () {
-    if [ -z "$1" ] || [ -z "$2"]
+    if [ -z "$1" ] || [ -z "$2" ]
     then
         echo "${RED}Error: missing source and or  destination ${NORMAL}"
-    exit 1
+        exit 1
     fi
     src=$1
     dest=$2
