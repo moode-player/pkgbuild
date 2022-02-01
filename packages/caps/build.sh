@@ -1,6 +1,12 @@
 #!/bin/bash
-
-DEBSUFFIX=moode
+#########################################################################
+#
+# Build recipe for caps debian package with 12 band peq
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
 . ../../scripts/rebuilder.lib.sh
 
 PKG_DSC_URL="http://deb.debian.org/debian/pool/main/c/caps/caps_0.9.26-1.dsc"
