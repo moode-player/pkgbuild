@@ -5,7 +5,7 @@
  # Enable ffmpeg, soxr resampling, visualisation export and disable dlopening
  # libraries
 -export OPTS := -DDSD -DFFMPEG -DRESAMPLE -DVISEXPORT -DLINKALL -DIR -DUSE_SSL
-+export OPTS := -DDSD -DFFMPEG -DRESAMPLE -DVISEXPORT -DLINKALL -DIR -DUSE_SSL -DGPIO -DRPI
++export OPTS := -DDSD -DFFMPEG -DRESAMPLE -DVISEXPORT -DLINKALL -DIR -DUSE_SSL -DGPIO -DRPI -march=armv6
 
  # Enable all hardening build flags
  export DEB_BUILD_MAINT_OPTIONS := hardening=+all
