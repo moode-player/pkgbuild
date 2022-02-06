@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.0-1moode1~pre1"
+PKG="moode-player_8.0.0-1moode1~pre2"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -135,18 +135,12 @@ rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="
 cp $BASE_DIR/moode-apt-mark $PKG_ROOT_DIR/usr/local/bin
 
 # /var
-rsync -av --exclude='moode-sqlite3.db' $MOODE_DIR/var/ $PKG_ROOT_DIR/var
+# ignore includes of radio stations logos, those will be part of the stations backup
+rsync -av --exclude='moode-sqlite3.db' --exclude='radio-logos' $MOODE_DIR/var/ $PKG_ROOT_DIR/var
+mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
 
 # /var/lib/mpd
-# TODO: maybe move the file $PKG_ROOT_DIR/mpd into the correct filesystem location
-mkdir -p $PKG_ROOT_DIR/var/lib/mpd
-#cp $MOODE_DIR/mpd/sticker.sql $PKG_ROOT_DIR/var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
-mkdir -p $PKG_ROOT_DIR/var/lib/mpd/playlists
-#cp $MOODE_DIR/mpd/playlists/* $PKG_ROOT_DIR/var/lib/mpd/playlists
-
-# /var/local/php
-mkdir -p $PKG_ROOT_DIR/var/local/php
 
 # /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
