@@ -95,6 +95,12 @@ cd $BUILD_ROOT_DIR
 #
 # ----------------------------------------------------------------------------
 
+# generate moode radio stations backup file (used for populating the station from the installer)
+cat $MOODE_DIR/var/local/www/db/moode-sqlite3.db.sql | sqlite3 $BUILD_ROOT_DIR/moode-sqlite3.db
+$MOODE_DIR/www/command/stationmanager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --scope moode --export $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip
+rm -f $BUILD_ROOT_DIR/moode-sqlite3.db || true
+# move it to the dist location
+mv -f $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip  $BASE_DIR/dist/binary/
 
 # location for files that should overwrite existing files (not owned by moode-player)
 NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
