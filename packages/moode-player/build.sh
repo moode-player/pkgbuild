@@ -140,10 +140,10 @@ rsync -av --exclude='moode-sqlite3.db' $MOODE_DIR/var/ $PKG_ROOT_DIR/var
 # /var/lib/mpd
 # TODO: maybe move the file $PKG_ROOT_DIR/mpd into the correct filesystem location
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd
-cp $MOODE_DIR/mpd/sticker.sql $PKG_ROOT_DIR/var/lib/mpd
+#cp $MOODE_DIR/mpd/sticker.sql $PKG_ROOT_DIR/var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/playlists
-cp $MOODE_DIR/mpd/playlists/* $PKG_ROOT_DIR/var/lib/mpd/playlists
+#cp $MOODE_DIR/mpd/playlists/* $PKG_ROOT_DIR/var/lib/mpd/playlists
 
 # /var/local/php
 mkdir -p $PKG_ROOT_DIR/var/local/php
