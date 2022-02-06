@@ -5,6 +5,36 @@
 ACTION=$1
 VERSION=$2
 
+#TODO: make sure the build.sh sets this var
+PKG_VERSION="8.0.0"
+
+#TODO: support mode [full|update]
+function import_stations() {
+    #mode=$1
+    #url=$2
+    url="https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_$PKG_VERSION.zip"
+    if [ -z "$MOODE_STATIONS_URL" ]
+    then
+      MOODE_STATIONS_URL="$url"
+    fi
+
+    TMP_STATIONS_BACKUP="/tmp"`basename $url`
+
+    if [ -f $MOODE_STATIONS_URL ]
+    then
+      cp $MOODE_STATIONS_URL $TMP_STATIONS_BACKUP
+    else
+      wget -O $TMP_STATIONS_BACKUP $STATIONS_URL $MOODE_STATIONS_URL || true
+    fi
+
+    if [ -f $TMP_STATIONS_BACKUP $STATIONS_URL ]
+    then
+      /var/www/command/stationmanager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP $STATIONS_URL > /dev/null
+      rm -f $TMP_STATIONS_BACKUP $STATIONS_URL
+    else
+      echo "Couldn't import stations file from $MOODE_STATIONS_URL"
+    fi
+}
 
 function on_install() {
       # perform install
@@ -99,10 +129,12 @@ function on_install() {
       then
         rm /var/local/www/db/moode-sqlite3.db
       fi
-      cat /var/local/www/db/moode-sqlite3.db.sql | sqlite3 /var/local/www/db/moode-sqlite3.db
+      # strip creation of radion stations from the sql, stations are create by the station backup import
+      cat /var/local/www/db/moode-sqlite3.db.sql | grep -v "INSERT INTO cfg_radio" | sqlite3 /var/local/www/db/moode-sqlite3.db
       sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
 
-      /var/www/command/stationmanager.py --regeneratepls
+      # /var/www/command/stationmanager.py --regeneratepls
+      import_stations
 
       LIBCACHE_BASE="/var/local/www/libcache"
       echo "** Initial permissions for certain files. These also get set during moOde Worker startup"
@@ -351,6 +383,8 @@ function on_upgrade() {
       #--------------------------------------------------------------------------------------------------------
       # bring it a live ;-)
       #--------------------------------------------------------------------------------------------------------
+      # TODO: support update of stations
+      #import_stations update
 
       # just start it to add playlist and then stop it
       echo "wait at max 30 seconds until mpd is started ...."
