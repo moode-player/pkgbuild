@@ -334,6 +334,7 @@ function on_install() {
       systemctl restart php7.4-fpm
       systemctl start nginx
       systemctl restart smbd
+      systemctl restart nmbd
 
       #don't now why there is a empty database dir instead of a database file
       if [ -d /var/lib/mpd/database ]
