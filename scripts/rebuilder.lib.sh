@@ -288,6 +288,24 @@ function rbl_check_cargo {
     else
         echo "${GREEN}cargo-deb: already installed${NORMAL}"
     fi
+
+    rustup show | grep stable-armv7-unknown-linux-gnueabihf > /dev/null
+    if [[ $? -gt 0 ]]
+    then
+        echo "${YELLOW}rustup: armv7 toolchain not installed, installing it.${NORMAL}"a
+        rustup toolchain install stable-armv7-unknown-linux-gnueabihf
+    else
+        echo "${GREEN}rustup: armv7 toolchain already installed${NORMAL}"
+    fi
+
+    rustup show | grep stable-arm-unknown-linux-gnueabihf > /dev/null
+    if [[ $? -gt 0 ]]
+    then
+        echo "${YELLOW}rustup: armv6 toolchain not installed, installing it.${NORMAL}"a
+        rustup toolchain install stable-arm-unknown-linux-gnueabihf
+    else
+        echo "${GREEN}rustup: armv6 toolchain already installed${NORMAL}"
+    fi
 }
 
 function rbl_check_fpm {
