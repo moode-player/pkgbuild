@@ -268,6 +268,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends lsb-release \
 --depends chromium-browser \
 --depends python3-dbus \
+--depends python3-musicpd \
 --depends expect \
 root/boot/.=/boot \
 root/var/.=/var \
