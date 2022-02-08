@@ -26,6 +26,7 @@ echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
 # echo "" >> Cargo.toml
 
 # Build it for arch with neon support
+rustup default stable-armv7-unknown-linux-gnueabihf
 RUSTFLAGS='-C target-feature=+neon -C target-cpu=native' cargo-deb -- --no-default-features --features alsa-backend --features websocket
 if [[ $? -gt 0 ]]
 then
