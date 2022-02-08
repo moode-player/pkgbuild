@@ -149,8 +149,10 @@ function on_install() {
 
       echo "** Generate alsaequal binary"
       amixer -D alsaequal > /dev/null
-      chmod 0755 /usr/local/bin/alsaequal.bin
-      chown mpd:audio /usr/local/bin/alsaequal.bin
+      mkdir /opt/alsaequal/
+      mv /usr/local/bin/alsaequal.bin /opt/alsaequal/
+      chmod 0755 /opt/alsaequal/alsaequal.bin
+      chown mpd:audio /opt/alsaequal//alsaequal.bin
 
       echo "** Misc deletes"
       if [ -d "/var/www/html" ]
