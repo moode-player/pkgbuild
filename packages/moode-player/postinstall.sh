@@ -269,18 +269,6 @@ function on_install() {
       # add line i2c-dev
       [[ -z $(grep "^i2c-dev" /etc/modules) ]] && sed -i '$a i2c-dev' /etc/modules
 
-      # /etc/nsswitch.conf
-      # passwd:         compat
-      # group:          compat
-      # shadow:         compat
-      # hosts:          files mdns4_minimal [NOTFOUND=return] dns wins mdns4
-      sed -i -e '/^passwd:/s/files/compat/' \
-             -e '/^group:/s/files/compat/' \
-             -e '/^shadow:/s/files/compat/' \
-             -e 's/^hosts:.*/hosts:          files mdns4_minimal [NOTFOUND=return] dns wins mdns4/' \
-             -e '/^hosts/s/files.*/files mdns4_minimal [NOTFOUND=return] dns wins mdns4/' \
-             /etc/nsswitch.conf
-
       # /etc/shairport-sync.conf
 			# interpolation = "soxr";
       # audio_backend_latency_offset_in_seconds = 0.0;
@@ -346,7 +334,6 @@ function on_install() {
       systemctl restart php7.4-fpm
       systemctl start nginx
       systemctl restart smbd
-      systemctl restart winbind
 
       #don't now why there is a empty database dir instead of a database file
       if [ -d /var/lib/mpd/database ]
