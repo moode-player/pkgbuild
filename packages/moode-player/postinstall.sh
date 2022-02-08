@@ -316,6 +316,10 @@ function on_install() {
              -e 's/[#]ohproductroom[ ]=.*/ohproductroom = Moode UPNP/' \
             /etc/upmpdcli.conf
 
+        # /etc/X11/Xwrapper.config
+  		# allowed_users=anybody
+        sed -i "s/^allowed_users.*/allowed_users=anybody/" /etc/X11/Xwrapper.config
+
       cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
       # mpd
