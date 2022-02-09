@@ -371,9 +371,6 @@ function on_install() {
       sed -i "s/raspberrypi/moode/" /etc/hostname
       sed -i "s/raspberrypi/moode/" /etc/hosts
 
-      # Free up some disk space
-      apt-get clean
-
       echo "moode-player install finished, please reboot"
 }
 
