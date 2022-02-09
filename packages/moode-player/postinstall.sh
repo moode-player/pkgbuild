@@ -58,7 +58,6 @@ function on_install() {
       systemctl stop apt-daily-upgrade.timer
       systemctl disable apt-daily-upgrade.timer
       systemctl mask apt-daily-upgrade.timer
-      systemctl disable winbind
 
       echo "** Systemd enable/disable"
       systemctl daemon-reload
@@ -83,7 +82,8 @@ function on_install() {
           squeezelite \
           triggerhappy \
           udisks2 \
-          upmpdcli )
+          upmpdcli \
+          winbind)
 
       for service in "${disable_services[@]}"
       do
