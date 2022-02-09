@@ -1,18 +1,36 @@
---- mpd-0.23.5/debian/rules.org	2022-01-05 12:13:56.836000000 +0000
-+++ mpd-0.23.5/debian/rules	2022-01-05 12:11:38.782337102 +0000
-@@ -32,7 +32,7 @@
+--- mpd-0.23.5/debian/rules.org	2021-11-07 00:12:49.000000000 -0400
++++ mpd-0.23.5/debian/rules	2022-02-09 14:42:58.546614111 -0500
+@@ -31,39 +31,41 @@
+ 		-Dzzip=enabled
  
  # Autodiscovery support
- ENABLE_AUTODISCOVERY=-Dneighbor=true \
+-ENABLE_AUTODISCOVERY=-Dneighbor=true \
 -		-Dupnp=pupnp \
++ENABLE_AUTODISCOVERY=-Dneighbor=false \
 +		-Dupnp=disabled \
  		-Dzeroconf=avahi
  
  # Client support
-@@ -49,10 +49,11 @@
+-ENABLE_CLIENTS=-Dipv6=enabled \
++ENABLE_CLIENTS=-Dipv6=disabled \
+ 	 	-Dtcp=true \
+ 	 	-Dlocal_socket=true
+ 
+ # Storage support
+-ENABLE_STORAGE=-Dnfs=enabled \
+-	 	${ENABLE_SMBCLIENT} \
+-	 	-Dwebdav=enabled
++ENABLE_STORAGE=-Dnfs=disabled \
++	 	-Dsmbclient=disabled \
++		-Dudisks=disabled \
++	 	-Dwebdav=disabled
+ 
+ # File format support
  ENABLE_FILEFORMATS=-Dfaad=enabled \
- 		-Dadplug=enabled \
- 		-Daudiofile=enabled \
+-		-Dadplug=enabled \
+-		-Daudiofile=enabled \
++		-Dadplug=disabled \
++		-Daudiofile=disabled \
 +		-Ddsd=true \
  		-Dffmpeg=enabled \
  		-Dflac=enabled \
@@ -21,11 +39,15 @@
 +		-Dfluidsynth=disabled \
 +		-Dgme=disabled \
  		-Dmad=enabled \
- 		-Dmikmod=enabled \
- 		-Dmodplug=enabled \
-@@ -60,10 +61,10 @@
+-		-Dmikmod=enabled \
+-		-Dmodplug=enabled \
+-		-Dmpcdec=enabled \
++		-Dmikmod=disabled \
++		-Dmodplug=disabled \
++		-Dmpcdec=disabled \
  		-Dmpg123=enabled \
- 		-Dopenmpt=enabled \
+-		-Dopenmpt=enabled \
++		-Dopenmpt=disabled \
  		-Dopus=enabled \
 -		-Dsidplay=enabled \
 -		-Dsndfile=enabled \
@@ -37,7 +59,7 @@
  
  # Other features
  ENABLE_OTHER=-Dcue=true \
-@@ -73,7 +74,7 @@
+@@ -73,7 +75,7 @@
  		-Dlibmpdclient=enabled \
  		-Dinotify=true \
  		-Dsoxr=enabled \
@@ -46,30 +68,48 @@
  		-Dsqlite=enabled \
  		-Dsyslog=enabled \
  		-Dyajl=enabled \
-@@ -89,13 +90,13 @@
- 		-Dsndio=enabled \
+@@ -81,23 +83,23 @@
+ 
+ # Metadata support
+ ENABLE_METADATA=-Did3tag=enabled \
+-		-Dchromaprint=enabled
++		-Dchromaprint=disabled
+ 
+ # Playback support
+ # Note: ALSA is in WITH_LINUX
+ ENABLE_PLAYBACKS=-Dfifo=true \
+-		-Dsndio=enabled \
++		-Dsndio=disabled \
  		-Drecorder=true \
  		-Dhttpd=true \
 -		-Djack=enabled \
 -		-Dao=enabled \
 -		-Doss=enabled \
+-		-Dopenal=enabled \
 +		-Djack=disabled \
 +		-Dao=disabled \
 +		-Doss=disabled \
- 		-Dopenal=enabled \
++		-Dopenal=disabled \
  		-Dpipe=true \
- 		-Dpipewire=enabled \
+-		-Dpipewire=enabled \
 -		-Dpulse=enabled \
++		-Dpipewire=disabled \
 +		-Dpulse=disabled \
  		-Dshout=enabled \
- 		-Dsnapcast=true
+-		-Dsnapcast=true
++		-Dsnapcast=false
  
-@@ -108,7 +109,7 @@
+ # Streaming encoder support
+ # Note: FLAC and Opus enabled under file formats, vorbisenc at top (!tremor)
+@@ -108,9 +110,9 @@
  # Streaming support
  ENABLE_STREAMING=-Dcdio_paranoia=enabled \
  		-Dcurl=enabled \
 -		-Dsoundcloud=enabled \
 +		-Dsoundcloud=disabled \
  		-Dqobuz=disabled \
- 		-Dmms=enabled
+-		-Dmms=enabled
++		-Dmms=disabled
  
+ # Sphinx documentation
+ ENABLE_DOCUMENTATION=-Ddocumentation=enabled
