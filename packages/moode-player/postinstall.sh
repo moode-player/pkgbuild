@@ -366,9 +366,6 @@ function on_install() {
          echo "(check if after reboot the problem is fixed.)"
       fi
 
-      sed -i "s/raspberrypi/moode/" /etc/hostname
-      sed -i "s/raspberrypi/moode/" /etc/hosts
-
       echo "moode-player install finished, please reboot"
 }
 
