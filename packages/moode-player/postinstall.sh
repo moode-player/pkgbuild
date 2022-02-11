@@ -38,7 +38,6 @@ function import_stations() {
 
 function on_install() {
       # perform install
-      echo "pi:moodeaudio" | chpasswd
 
       # Done as last step of the script:
       # sed -i "s/raspberrypi/moode/" /etc/hostname
