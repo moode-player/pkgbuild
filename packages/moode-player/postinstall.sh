@@ -38,7 +38,6 @@ function import_stations() {
 
 function on_install() {
       # perform install
-      timedatectl set-timezone "America/Detroit"
       echo "pi:moodeaudio" | chpasswd
 
       # Done as last step of the script:
