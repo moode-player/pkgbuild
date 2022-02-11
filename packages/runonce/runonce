@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# Idea taken from:
+# https://serverfault.com/questions/148341/linux-schedule-command-to-run-once-after-reboot-runonce-equivalent
+#
+for file in /etc/runonce.d/*
+do
+    if [ ! -f "$file" ]
+    then
+        continue
+    fi
+    chmod +x "$file"
+    "$file"
+    mv "$file" "/etc/runonce.d/ran/$(basename $file).$(date +%Y%m%dT%H%M%S)"
+    logger -t runonce -p local3.info "$file"
+done
