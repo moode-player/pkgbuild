@@ -1,4 +1,4 @@
-#/!bin/bash
+#!/usr/bin/bash
 #########################################################################
 #
 # Helper script for upload deb + source to cloudsmith repo
