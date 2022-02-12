@@ -20,7 +20,7 @@ function import_stations() {
       MOODE_STATIONS_URL="$url"
     fi
 
-    TMP_STATIONS_BACKUP="/tmp"`basename $url`
+    TMP_STATIONS_BACKUP="/tmp/"`basename $url`
 
     if [ -f $MOODE_STATIONS_URL ]
     then
