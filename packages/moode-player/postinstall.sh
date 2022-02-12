@@ -44,22 +44,22 @@ function on_install() {
       echo "** Basic optimizations"
       dphys-swapfile swapoff
       dphys-swapfile uninstall
-      systemctl disable dphys-swapfile
-      systemctl disable cron.service
-      systemctl enable rpcbind
-      systemctl set-default multi-user.target
-      systemctl stop apt-daily.timer
-      systemctl disable apt-daily.timer
-      systemctl mask apt-daily.timer
-      systemctl stop apt-daily-upgrade.timer
-      systemctl disable apt-daily-upgrade.timer
-      systemctl mask apt-daily-upgrade.timer
+      systemctl disable dphys-swapfile /dev/null 2>&1
+      systemctl disable cron.service /dev/null 2>&1
+      systemctl enable rpcbind /dev/null 2>&1
+      systemctl set-default multi-user.target /dev/null 2>&1
+      systemctl stop apt-daily.timer /dev/null 2>&1
+      systemctl disable apt-daily.timer /dev/null 2>&1
+      systemctl mask apt-daily.timer /dev/null 2>&1
+      systemctl stop apt-daily-upgrade.timer /dev/null 2>&1
+      systemctl disable apt-daily-upgrade.timer /dev/null 2>&1
+      systemctl mask apt-daily-upgrade.timer /dev/null 2>&1
 
       echo "** Systemd enable/disable"
-      systemctl daemon-reload
-      systemctl enable haveged
+      systemctl daemon-reload /dev/null 2>&1
+      systemctl enable haveged /dev/null 2>&1
 
-      systemctl unmask hostapd
+      systemctl unmask hostapd /dev/null 2>&1
 
       disable_services=(
           bluetooth \
@@ -83,8 +83,8 @@ function on_install() {
 
       for service in "${disable_services[@]}"
       do
-        systemctl stop "${service}"
-        systemctl disable "${service}"
+        systemctl stop "${service}" > /dev/null 2>&1
+        systemctl disable "${service}" > /dev/null 2>&1
       done
 
       echo "** Create MPD runtime environment"
