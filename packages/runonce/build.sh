@@ -30,7 +30,6 @@ cd $BUILD_ROOT_DIR
 mkdir -p $PKGDIR/usr/local/bin
 cp $BASE_DIR/runonce $PKGDIR/usr/local/bin/
 mkdir -p $PKGDIR/etc/runonce.d/ran
-echo "test" > $PKGDIR/etc/runonce.d/test
 
 # build the package
 fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
