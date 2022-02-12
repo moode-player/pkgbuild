@@ -38,12 +38,6 @@ function import_stations() {
 
 function on_install() {
       # perform install
-      timedatectl set-timezone "America/Detroit"
-      echo "pi:moodeaudio" | chpasswd
-
-      # Done as last step of the script:
-      # sed -i "s/raspberrypi/moode/" /etc/hostname
-      # sed -i "s/raspberrypi/moode/" /etc/hosts
 
       echo "** Basic optimizations"
       dphys-swapfile swapoff
@@ -91,12 +85,8 @@ function on_install() {
         systemctl disable "${service}"
       done
 
-      # mkdir -p /var/run/bluealsa # not present ?
-
       echo "** Create MPD runtime environment"
       touch /var/lib/mpd/state
-      #TODO: Is it really needed to copy(is conflict with mpd itself), anyway it is generated at the start of worker.php
-      # cp ./moode/mpd/mpd.conf.default /etc/mpd.conf
 
       echo "** Set permissions for D-Bus (for bluez-alsa)"
       usermod -a -G audio mpd
@@ -112,16 +102,13 @@ function on_install() {
       touch /var/log/php_errors.log
       chmod 0666 /var/log/php_errors.log
 
-      #chmod 0755 /var/www/command/*
       chmod 0755 /home/pi/*.sh
 
       echo "** Reset permissions"
-      #TODO: maybe set the rights before packed
       chmod -R 0755 /var/www
       chmod -R 0755 /var/local/www
       chmod -R 0777 /var/local/www/db
       chmod -R ug-s /var/local/www
-      # chmod -R 0755 /usr/local/bin
 
       chmod -R a+rw /usr/share/camilladsp
 
@@ -134,7 +121,6 @@ function on_install() {
       cat /var/local/www/db/moode-sqlite3.db.sql | grep -v "INSERT INTO cfg_radio" | sqlite3 /var/local/www/db/moode-sqlite3.db
       sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
 
-      # /var/www/command/stationmanager.py --regeneratepls
       import_stations
 
       LIBCACHE_BASE="/var/local/www/libcache"
@@ -367,9 +353,6 @@ function on_install() {
          echo "hmmm problem mpd isn't started!"
          echo "(check if after reboot the problem is fixed.)"
       fi
-
-      sed -i "s/raspberrypi/moode/" /etc/hostname
-      sed -i "s/raspberrypi/moode/" /etc/hosts
 
       echo "moode-player install finished, please reboot"
 }
