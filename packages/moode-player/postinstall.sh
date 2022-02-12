@@ -44,22 +44,22 @@ function on_install() {
       echo "** Basic optimizations"
       dphys-swapfile swapoff
       dphys-swapfile uninstall
-      systemctl disable dphys-swapfile /dev/null 2>&1
-      systemctl disable cron.service /dev/null 2>&1
-      systemctl enable rpcbind /dev/null 2>&1
-      systemctl set-default multi-user.target /dev/null 2>&1
-      systemctl stop apt-daily.timer /dev/null 2>&1
-      systemctl disable apt-daily.timer /dev/null 2>&1
-      systemctl mask apt-daily.timer /dev/null 2>&1
-      systemctl stop apt-daily-upgrade.timer /dev/null 2>&1
-      systemctl disable apt-daily-upgrade.timer /dev/null 2>&1
-      systemctl mask apt-daily-upgrade.timer /dev/null 2>&1
+      systemctl disable dphys-swapfile > /dev/null 2>&1
+      systemctl disable cron.service > /dev/null 2>&1
+      systemctl enable rpcbind > /dev/null 2>&1
+      systemctl set-default multi-user.target > /dev/null 2>&1
+      systemctl stop apt-daily.timer > /dev/null 2>&1
+      systemctl disable apt-daily.timer > /dev/null 2>&1
+      systemctl mask apt-daily.timer > /dev/null 2>&1
+      systemctl stop apt-daily-upgrade.timer > /dev/null 2>&1
+      systemctl disable apt-daily-upgrade.timer > /dev/null 2>&1
+      systemctl mask apt-daily-upgrade.timer > /dev/null 2>&1
 
       echo "** Systemd enable/disable"
-      systemctl daemon-reload /dev/null 2>&1
-      systemctl enable haveged /dev/null 2>&1
+      systemctl daemon-reload > /dev/null 2>&1
+      systemctl enable haveged > /dev/null 2>&1
 
-      systemctl unmask hostapd /dev/null 2>&1
+      systemctl unmask hostapd > /dev/null 2>&1
 
       disable_services=(
           bluetooth \
