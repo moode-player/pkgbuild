@@ -1,6 +1,8 @@
 #!/bin/bash
-
-#TODO: make sure the package can upgrade an reinstalled without sideeffects, requires splitting in part that should be done only once and what should be done on upgrade or always
+#
+# moOde audio player - package post install script
+#
+# (C) bitkeeper 2022 http://moodeaudio.org
 
 ACTION=$1
 VERSION=$2
@@ -8,7 +10,7 @@ VERSION=$2
 #TODO: make sure the build.sh sets this var
 PKG_VERSION="8.0.0"
 
-#TODO: support mode [full|update]
+#TODO: support mode [full|update], required when the first update needs to be created
 function import_stations() {
     #mode=$1
     #url=$2
@@ -321,13 +323,17 @@ function on_install() {
       #--------------------------------------------------------------------------------------------------------
       # bring it alive ;-)
       #--------------------------------------------------------------------------------------------------------
-      echo "** Starting servers"
+      #echo "** Starting servers"
       # restart some services to pickup new configuration
-      systemctl stop nginx
-      systemctl restart php7.4-fpm
-      systemctl start nginx
-      systemctl restart smbd
-      systemctl restart nmbd
+      # systemctl stop nginx
+      # systemctl restart php7.4-fpm
+      # systemctl start nginx
+      # systemctl restart smbd
+      # systemctl restart nmbd
+
+      #TODO: make this a systemd service
+      # /usr/bin/udisks-glue --config=/etc/udisks-glue.conf > /dev/null 2>&1
+      # systemctl restart udisks-glue
 
       #don't now why there is a empty database dir instead of a database file
       if [ -d /var/lib/mpd/database ]
@@ -335,24 +341,17 @@ function on_install() {
         rmdir -rf /var/lib/mpd/database
       fi
 
-      /usr/bin/udisks-glue --config=/etc/udisks-glue.conf > /dev/null 2>&1
-
-      # just start it to add playlist and then stop it
-      echo "wait at max 30 seconds until mpd is started ...."
-      /usr/local/bin/moodeutl -r
-      timeout 30s bash -c 'until mpc status; do sleep 3; done';
-      mpc status
-      if [[ $? -eq 0 ]]
-      then
-        mpc load "Default Playlist"
-        echo "** List MPD outputs"
-        mpc outputs
-        echo "** Enable only output 1"
-        mpc enable only 1
-      else
-         echo "hmmm problem mpd isn't started!"
-         echo "(check if after reboot the problem is fixed.)"
-      fi
+      # On boot set default playlist and output 1
+cat > /etc/runonce.d/moode_first_boot <<EOL
+#!/bin/bash
+timeout 30s bash -c 'until mpc status; do sleep 3; done';
+mpc status
+if [[ $? -eq 0 ]]
+then
+  mpc load "Default Playlist"
+  mpc enable only 1
+fi
+EOL
 
       echo "moode-player install finished, please reboot"
 }
