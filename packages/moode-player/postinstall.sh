@@ -26,7 +26,7 @@ function import_stations() {
     then
       cp $MOODE_STATIONS_URL $TMP_STATIONS_BACKUP
     else
-      wget -O $TMP_STATIONS_BACKUP $STATIONS_URL $MOODE_STATIONS_URL || true
+      wget --no-verbose -O $TMP_STATIONS_BACKUP $STATIONS_URL $MOODE_STATIONS_URL || true
     fi
 
     if [ -f $TMP_STATIONS_BACKUP $STATIONS_URL ]
