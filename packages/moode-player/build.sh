@@ -270,6 +270,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends python3-dbus \
 --depends python3-musicpd \
 --depends expect \
+--depends runonce \
 root/boot/.=/boot \
 root/var/.=/var \
 root/home/.=/home \

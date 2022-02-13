@@ -1,6 +1,8 @@
 #!/bin/bash
-
-#TODO: make sure the package can upgrade an reinstalled without sideeffects, requires splitting in part that should be done only once and what should be done on upgrade or always
+#
+# moOde audio player - package post install script
+#
+# (C) bitkeeper 2022 http://moodeaudio.org
 
 ACTION=$1
 VERSION=$2
@@ -8,7 +10,7 @@ VERSION=$2
 #TODO: make sure the build.sh sets this var
 PKG_VERSION="8.0.0"
 
-#TODO: support mode [full|update]
+#TODO: support mode [full|update], required when the first update needs to be created
 function import_stations() {
     #mode=$1
     #url=$2
@@ -18,13 +20,13 @@ function import_stations() {
       MOODE_STATIONS_URL="$url"
     fi
 
-    TMP_STATIONS_BACKUP="/tmp"`basename $url`
+    TMP_STATIONS_BACKUP="/tmp/"`basename $url`
 
     if [ -f $MOODE_STATIONS_URL ]
     then
       cp $MOODE_STATIONS_URL $TMP_STATIONS_BACKUP
     else
-      wget -O $TMP_STATIONS_BACKUP $STATIONS_URL $MOODE_STATIONS_URL || true
+      wget --no-verbose -O $TMP_STATIONS_BACKUP $STATIONS_URL $MOODE_STATIONS_URL || true
     fi
 
     if [ -f $TMP_STATIONS_BACKUP $STATIONS_URL ]
@@ -38,32 +40,26 @@ function import_stations() {
 
 function on_install() {
       # perform install
-      timedatectl set-timezone "America/Detroit"
-      echo "pi:moodeaudio" | chpasswd
-
-      # Done as last step of the script:
-      # sed -i "s/raspberrypi/moode/" /etc/hostname
-      # sed -i "s/raspberrypi/moode/" /etc/hosts
 
       echo "** Basic optimizations"
       dphys-swapfile swapoff
       dphys-swapfile uninstall
-      systemctl disable dphys-swapfile
-      systemctl disable cron.service
-      systemctl enable rpcbind
-      systemctl set-default multi-user.target
-      systemctl stop apt-daily.timer
-      systemctl disable apt-daily.timer
-      systemctl mask apt-daily.timer
-      systemctl stop apt-daily-upgrade.timer
-      systemctl disable apt-daily-upgrade.timer
-      systemctl mask apt-daily-upgrade.timer
+      systemctl disable dphys-swapfile > /dev/null 2>&1
+      systemctl disable cron.service > /dev/null 2>&1
+      systemctl enable rpcbind > /dev/null 2>&1
+      systemctl set-default multi-user.target > /dev/null 2>&1
+      systemctl stop apt-daily.timer > /dev/null 2>&1
+      systemctl disable apt-daily.timer > /dev/null 2>&1
+      systemctl mask apt-daily.timer > /dev/null 2>&1
+      systemctl stop apt-daily-upgrade.timer > /dev/null 2>&1
+      systemctl disable apt-daily-upgrade.timer > /dev/null 2>&1
+      systemctl mask apt-daily-upgrade.timer > /dev/null 2>&1
 
       echo "** Systemd enable/disable"
-      systemctl daemon-reload
-      systemctl enable haveged
+      systemctl daemon-reload > /dev/null 2>&1
+      systemctl enable haveged > /dev/null 2>&1
 
-      systemctl unmask hostapd
+      systemctl unmask hostapd > /dev/null 2>&1
 
       disable_services=(
           bluetooth \
@@ -87,16 +83,12 @@ function on_install() {
 
       for service in "${disable_services[@]}"
       do
-        systemctl stop "${service}"
-        systemctl disable "${service}"
+        systemctl stop "${service}" > /dev/null 2>&1
+        systemctl disable "${service}" > /dev/null 2>&1
       done
-
-      # mkdir -p /var/run/bluealsa # not present ?
 
       echo "** Create MPD runtime environment"
       touch /var/lib/mpd/state
-      #TODO: Is it really needed to copy(is conflict with mpd itself), anyway it is generated at the start of worker.php
-      # cp ./moode/mpd/mpd.conf.default /etc/mpd.conf
 
       echo "** Set permissions for D-Bus (for bluez-alsa)"
       usermod -a -G audio mpd
@@ -112,16 +104,13 @@ function on_install() {
       touch /var/log/php_errors.log
       chmod 0666 /var/log/php_errors.log
 
-      #chmod 0755 /var/www/command/*
       chmod 0755 /home/pi/*.sh
 
       echo "** Reset permissions"
-      #TODO: maybe set the rights before packed
       chmod -R 0755 /var/www
       chmod -R 0755 /var/local/www
       chmod -R 0777 /var/local/www/db
       chmod -R ug-s /var/local/www
-      # chmod -R 0755 /usr/local/bin
 
       chmod -R a+rw /usr/share/camilladsp
 
@@ -135,7 +124,6 @@ function on_install() {
       # Set to Carrot for moOde 8 series
       sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
 
-      # /var/www/command/stationmanager.py --regeneratepls
       import_stations
 
       LIBCACHE_BASE="/var/local/www/libcache"
@@ -151,7 +139,7 @@ function on_install() {
 
       echo "** Generate alsaequal binary"
       amixer -D alsaequal > /dev/null
-      mkdir /opt/alsaequal/
+      mkdir -p /opt/alsaequal/
       mv /usr/local/bin/alsaequal.bin /opt/alsaequal/
       chmod 0755 /opt/alsaequal/alsaequal.bin
       chown mpd:audio /opt/alsaequal//alsaequal.bin
@@ -336,13 +324,17 @@ function on_install() {
       #--------------------------------------------------------------------------------------------------------
       # bring it alive ;-)
       #--------------------------------------------------------------------------------------------------------
-      echo "** Starting servers"
+      #echo "** Starting servers"
       # restart some services to pickup new configuration
-      systemctl stop nginx
-      systemctl restart php7.4-fpm
-      systemctl start nginx
-      systemctl restart smbd
-      systemctl restart nmbd
+      # systemctl stop nginx
+      # systemctl restart php7.4-fpm
+      # systemctl start nginx
+      # systemctl restart smbd
+      # systemctl restart nmbd
+
+      #TODO: make this a systemd service
+      # /usr/bin/udisks-glue --config=/etc/udisks-glue.conf > /dev/null 2>&1
+      # systemctl restart udisks-glue
 
       #don't now why there is a empty database dir instead of a database file
       if [ -d /var/lib/mpd/database ]
@@ -350,27 +342,17 @@ function on_install() {
         rmdir -rf /var/lib/mpd/database
       fi
 
-      /usr/bin/udisks-glue --config=/etc/udisks-glue.conf > /dev/null 2>&1
-
-      # just start it to add playlist and then stop it
-      echo "wait at max 30 seconds until mpd is started ...."
-      /usr/local/bin/moodeutl -r
-      timeout 30s bash -c 'until mpc status; do sleep 3; done';
-      mpc status
-      if [[ $? -eq 0 ]]
-      then
-        mpc load "Default Playlist"
-        echo "** List MPD outputs"
-        mpc outputs
-        echo "** Enable only output 1"
-        mpc enable only 1
-      else
-         echo "hmmm problem mpd isn't started!"
-         echo "(check if after reboot the problem is fixed.)"
-      fi
-
-      sed -i "s/raspberrypi/moode/" /etc/hostname
-      sed -i "s/raspberrypi/moode/" /etc/hosts
+      # On boot set default playlist and output 1
+cat > /etc/runonce.d/moode_first_boot <<EOL
+#!/bin/bash
+timeout 30s bash -c 'until mpc status; do sleep 3; done';
+mpc status
+if [[ $? -eq 0 ]]
+then
+  mpc load "Default Playlist"
+  mpc enable only 1
+fi
+EOL
 
       echo "moode-player install finished, please reboot"
 }
