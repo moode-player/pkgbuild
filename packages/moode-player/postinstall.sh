@@ -132,7 +132,8 @@ function on_install() {
       fi
       # strip creation of radion stations from the sql, stations are create by the station backup import
       cat /var/local/www/db/moode-sqlite3.db.sql | grep -v "INSERT INTO cfg_radio" | sqlite3 /var/local/www/db/moode-sqlite3.db
-      sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Emerald' WHERE param='accent_color'"
+      # Set to Carrot for moOde 8 series
+      sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
 
       # /var/www/command/stationmanager.py --regeneratepls
       import_stations
