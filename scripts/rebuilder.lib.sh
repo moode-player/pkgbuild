@@ -108,7 +108,7 @@ function rbl_check_build_dep {
 
 # install pre build requirements
 function check_deb_tools {
-    array=( libtool-bin build-essential fakeroot devscripts swig dh-make)
+    array=( libtool-bin build-essential fakeroot devscripts swig dh-make pv )
     for i in "${array[@]}"
     do
         rbl_check_build_dep $i
@@ -485,6 +485,7 @@ function rbl_get_kernel_source {
     KERNEL_DOWNLOAD_LOCATION="$PKGBUILD_ROOT/tmp"
     mkdir -p $KERNEL_DOWNLOAD_LOCATION
     KERNEL_SOURCE_ARCHIVE=`rpi-source --dry-run --skip-update --download-only --dest $KERNEL_DOWNLOAD_LOCATION | grep "kernel source tarball:" | sed -r "s/.* (.*linux-.*[.]tar[.]gz)/\1/"`
+    # KERNEL_SOURCE_ARCHIVE=`rpi-source --dry-run --skip-update --download-only --uri https://github.com/raspberrypi/rpi-firmware --dest $KERNEL_DOWNLOAD_LOCATION | grep "kernel source tarball:" | sed -r "s/.* (.*linux-.*[.]tar[.]gz)/\1/"`
     if [[ $? -gt 0 ]]
     then
         echo "${RED}Error: failure during running rpi-source!${NORMAL}"
@@ -511,6 +512,32 @@ function rbl_get_kernel_source {
         fi
 
     fi
+}
+
+# check if kernel headers are present, else unpack the kernel source if needed and set the flag MODULE_BUILD_USE_SOURCE
+function rbl_check_kernel_headers {
+    local  _KERNEL_VER=$(rbl_get_current_kernel_version)
+    if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -le 1 ]
+    then
+        prev_path=`pwd`
+        KERNEL_DIR="$KERNEL_DOWNLOAD_LOCATION/source/$(basename $KERNEL_SOURCE_ARCHIVE .tar.gz)"
+        if [ ! -d $KERNEL_DIR ]
+        then
+            echo "${YELLOW}Warning: No kernel headers present, trying to setup source instead${NORMAL}"
+            echo "The first time this will take a while ..."
+            mkdir -p $KERNEL_DOWNLOAD_LOCATION/source
+            cd $KERNEL_DOWNLOAD_LOCATION/source
+            pv $KERNEL_SOURCE_ARCHIVE | tar -xz
+        else
+            echo "${YELLOW}Warning: No kernel headers present, using source instead${NORMAL}"
+        fi
+        cd $prev_path
+        export KERNEL_SOURCE_DIR=$KERNEL_DIR
+        MODULE_BUILD_USE_SOURCE=1
+    else
+        MODULE_BUILD_USE_HEADERS=1
+    fi
+
 }
 
 function rbl_build {
@@ -602,20 +629,24 @@ function rbl_dkms_prepare {
 
     rbl_check_build_dep dkms
 
-    # for intree modules builds the kernel source (not only the headers is required)
-    if [ "$mode" = "intree" ]
-    then
+    # for intree modules builds the kernel source (not only the headers is required), but if no headers are present the source is also required
+    #if [ "$mode" = "intree" ]
+    #then
         # make sure we have the rpi-source package available
         rbl_check_build_dep rpi-source
         # this will download the kernel source if needed and set the ENV KERNEL_SOURCE_ARCHIVE to the location of the tarball
         # if already present the cached source will be used
         rbl_get_kernel_source
-    fi
+    #fi
+
+    # normally kernel headers are used, but when not present we need to use the source tree instead
+    rbl_check_kernel_headers
 
     echo "dkms build prepared at: $BUILD_ROOT_DIR/source/$SRC_DIR"
     mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
 
     # create dkms source project files:
+    cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/prepkernel.sh $BUILD_ROOT_DIR/source/$SRC_DIR/
     cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms-patchmodule.intree.sh $BUILD_ROOT_DIR/source/$SRC_DIR/dkms-patchmodule.sh
     chmod +x $BUILD_ROOT_DIR/source/$SRC_DIR/*.sh
     rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR/dkms.conf
