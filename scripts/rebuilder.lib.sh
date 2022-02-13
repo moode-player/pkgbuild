@@ -534,8 +534,10 @@ function rbl_check_kernel_headers {
         cd $prev_path
         export KERNEL_SOURCE_DIR=$KERNEL_DIR
         MODULE_BUILD_USE_SOURCE=1
+        MODULE_BUILD_USE_HEADERS=0
     else
         MODULE_BUILD_USE_HEADERS=1
+        MODULE_BUILD_USE_SOURCE=0
     fi
 
 }
