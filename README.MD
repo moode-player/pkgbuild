@@ -38,7 +38,7 @@ All forms with src as output can be rebuilt from source packages (also present i
 | [*mediainfo*](https://mediaarea.net/nl/MediaInfo)  | *20.09-1* | ***stock*** |
 | [*minidlna*](https://sourceforge.net/projects/minidlna/)   | *1.3.0+dfsg-2* | ***stock*** |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
-| [mpd](https://www.musicpd.org/)        | 0.23.5-1moode2 | backport    | yes |
+| [mpd](https://www.musicpd.org/)        | 0.23.5-1moode3 | backport    | yes |
 | [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 0.6.0-1moode1 | stdeb |  |
 | [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 0.6.2-1moode1 | stdeb |  |
 | [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.20.1~-1moode1 | git   |  |
