@@ -141,6 +141,7 @@ mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
 
 # /var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
+chmod 0777 $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 
 # /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
