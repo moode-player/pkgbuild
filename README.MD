@@ -49,8 +49,8 @@ All forms with src as output can be rebuilt from source packages (also present i
 | [udisks-glue](https://github.com/fernandotcl/udisks-glue) | 1.3.5-1moode3 | git+debsrc |  |
 | [upmpdcli](https://www.lesbonscomptes.com/upmpdcli/index.html)   | 1.5.12-1moode1 | git |  |
 
-Patches* means patches required for the source code, excludes patches for the packing itself.
-Stock pacakge can be directly used, no need to rebuild.
+Patches* means patches required for the source code and excludes patches for the packing itself.
+Stock pacakges can be directly used, no need to rebuild.
 
 camillagui-backend is bundled with the camillagui package.
 
