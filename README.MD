@@ -1,9 +1,9 @@
-# moOde package repository builder
+# moOde audio player packages
 
-This git repository contains scripts to build the used third-party software for moOde audio player running on Raspbian Bullseye.
+This repository contains scripts to build packages for the third-party software components used in moOde audio player.
 
 ## Origin and build type
-The a several ways how the package is build and where the source is coming from:
+There are several ways in which packages are built and sources obtained.
 
 | How   | Description |  Output        |
 |------------|-------------| --|
@@ -17,10 +17,9 @@ The a several ways how the package is build and where the source is coming from:
 | [stdeb](https://github.com/astraw/stdeb)   | Git clone source, generate package with stdeb| deb+src |
 | [stock](https://packages.debian.org/bullseye/)      | No need to build, use stock available | - |
 
-All forms with src as output can be rebuild from source packages (also present in the repo).
+All forms with src as output can be rebuilt from source packages (also present in the repo).
 
-## Overview of the current used thirdparty package
-
+## Overview of the third party packages that are used.
 
 | Package    |      Version    | How  | Patches* |
 |----------  |-----------------|:----|---------------|
@@ -50,12 +49,13 @@ All forms with src as output can be rebuild from source packages (also present i
 | [udisks-glue](https://github.com/fernandotcl/udisks-glue) | 1.3.5-1moode3 | git+debsrc |  |
 | [upmpdcli](https://www.lesbonscomptes.com/upmpdcli/index.html)   | 1.5.12-1moode1 | git |  |
 
-Patches means patches required for the source code, excludes patches for the packing it self.
-Stock pacakge can be directly used, no need to rebuild.
+Patches* means patches required for the source code and excludes patches for the packing itself.
+Stock pacakges can be directly used, no need to rebuild.
 
 camillagui-backend is bundled with the camillagui package.
 
-## Other packages (like drivers) in the repo
+## Other packages in the repo for example drivers.
+
 | Package    |      Version    | How  | Patches* | Descriptions |
 |----------  |-----------------|:----|---------------|----------|
 | [aloop](https://github.com/moode-player/pkgbuild )    | 5.10.63-1moode1  | fpm | yes | 384kHz patch for in tree module
@@ -65,10 +65,6 @@ camillagui-backend is bundled with the camillagui package.
 | [rpi-source](https://github.com/RPi-Distro/rpi-source)    | 0.1-1moode1  | git | yes | Fixes to let it work with Python 3. Only needed with development.
 | [rtl88xxau](https://github.com/aircrack-ng/rtl8812au)    | 5.6.4.2-1moode1  | git |  | Required for SIG Wifi.
 | [runonce](https://github.com/moode-player/pkgbuild ) | 0.1.0-1moode1 | fpm | | service for running scripts once during boot
-
-
-
-
 
 ## Usage
 
@@ -102,5 +98,3 @@ Go to a package dir that is builded and run the deploy command.
 cd packages/alsacap
 ../../scripts/deploy.sh alsacap_1.0.1
 ```
-
-
