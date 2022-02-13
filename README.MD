@@ -1,4 +1,4 @@
-# moOde package repository builder
+# moOde audio player packages
 
 This git repository contains scripts to build the used third-party software for moOde audio player running on Raspbian Bullseye.
 
@@ -101,5 +101,3 @@ Go to a package dir that is builded and run the deploy command.
 cd packages/alsacap
 ../../scripts/deploy.sh alsacap_1.0.1
 ```
-
-
