@@ -78,8 +78,7 @@ function on_install() {
           squeezelite \
           triggerhappy \
           udisks2 \
-          upmpdcli \
-          winbind)
+          upmpdcli)
 
       for service in "${disable_services[@]}"
       do
@@ -288,6 +287,18 @@ function on_install() {
              -e 's/\/\/[[:space:]]\+disable_standby_mode[ ]=[ ]\"never\"[;]\(.*\)/disable_standby_mode = "auto";\1/' \
              /etc/shairport-sync.conf
 
+      # /etc/nsswitch.conf
+      # passwd:         compat
+      # group:          compat
+      # shadow:         compat
+      # hosts:          files mdns4_minimal [NOTFOUND=return] dns wins mdns4
+      sed -i -e '/^passwd:/s/files/compat/' \
+             -e '/^group:/s/files/compat/' \
+             -e '/^shadow:/s/files/compat/' \
+             -e 's/^hosts:.*/hosts:          files mdns4_minimal [NOTFOUND=return] dns wins mdns4/' \
+             -e '/^hosts/s/files.*/files mdns4_minimal [NOTFOUND=return] dns wins mdns4/' \
+             /etc/nsswitch.conf
+
       # /etc/upmpdcli.conf
 	    # friendlyname = Moode UPNP
       # avfriendlyname = Moode UPNP
@@ -316,7 +327,7 @@ function on_install() {
       chown mpd:audio /etc/mpd.conf
       chmod 0666 /etc/mpd.conf
 
-      # incase any changes are made to systemd file reload config
+      # in case any changes are made to systemd file reload config
       systemctl daemon-reload
 
       sync
@@ -331,6 +342,7 @@ function on_install() {
       # systemctl start nginx
       # systemctl restart smbd
       # systemctl restart nmbd
+      # systemctl restart winbind
 
       #TODO: make this a systemd service
       # /usr/bin/udisks-glue --config=/etc/udisks-glue.conf > /dev/null 2>&1
