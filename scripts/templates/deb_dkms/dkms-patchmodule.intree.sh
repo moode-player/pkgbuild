@@ -8,7 +8,7 @@ if [ -z "$kernelver" ] ; then
 fi
 
 # When no kernel headers are present, prep an kernel source
-HEADERS_DIR="/usr/src/linux-headers-foobar${kernelver}"
+HEADERS_DIR="/usr/src/linux-headers-${kernelver}"
 if [ ! -d "$HEADERS_DIR" ]
 then
   prev_path=`pwd`
