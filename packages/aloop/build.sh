@@ -27,7 +27,13 @@ rbl_dkms_prepare intree
 # Custom part of the packing
 
 # 1. build the modules with dkms:
-dkms build --dkmstree $BUILD_ROOT_DIR --sourcetree $BUILD_ROOT_DIR/source -k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+ $DKMS_MODULE
+dkms build --dkmstree $BUILD_ROOT_DIR ${DKMS_OPTS[@]} --sourcetree $BUILD_ROOT_DIR/source -k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+ $DKMS_MODULE
+
+if [ $? -gt 0 ]
+then
+  echo "${RED}Error: problem during dkms build${NORMAL}"
+  exit 1
+fi
 
 # 2. packed it with fpm:
 # (wanted multiple arch deb which isn't possible with dkms and wanted to prevent install deps of dkms and related)
