@@ -520,6 +520,10 @@ function rbl_check_kernel_headers {
     if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -le 1 ]
     then
         prev_path=`pwd`
+        if [ -z $KERNEL_SOURCE_ARCHIVE ]
+        then
+            rbl_get_kernel_source
+        fi
         KERNEL_DIR="$KERNEL_DOWNLOAD_LOCATION/source/$(basename $KERNEL_SOURCE_ARCHIVE .tar.gz)"
         if [ ! -d $KERNEL_DIR ]
         then
@@ -535,6 +539,8 @@ function rbl_check_kernel_headers {
         export KERNEL_SOURCE_DIR=$KERNEL_DIR
         MODULE_BUILD_USE_SOURCE=1
         MODULE_BUILD_USE_HEADERS=0
+        # required to point dkms to the alternative kernel source:
+        DKMS_OPTS=(--kernelsourcedir "$KERNEL_DIR")
     else
         MODULE_BUILD_USE_HEADERS=1
         MODULE_BUILD_USE_SOURCE=0
