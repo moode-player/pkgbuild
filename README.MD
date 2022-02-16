@@ -1,4 +1,4 @@
-# moOde audio player packages
+# moOde audio player - package builder
 
 This repository contains scripts to build packages for the third-party software components used in moOde audio player.
 
