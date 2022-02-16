@@ -535,6 +535,18 @@ function rbl_check_kernel_headers {
         else
             echo "${YELLOW}Warning: No kernel headers present, using source instead${NORMAL}"
         fi
+
+        # Required by some modules build processes if headers doesn't exists,
+        # normally when headers exits build points to the same location.
+        for i in "${ARCHS[@]}"
+        do
+            if [ ! -e "/lib/modules/5.15.21-${i}/build" ]
+            then
+                echo "Creating symlink /lib/modules/${_KERNEL_VER}-${i}/build -> $KERNEL_DIR"
+                sudo ln -s $KERNEL_DIR /lib/modules/${_KERNEL_VER}-${i}/build
+            fi
+        done
+
         cd $prev_path
         export KERNEL_SOURCE_DIR=$KERNEL_DIR
         MODULE_BUILD_USE_SOURCE=1
