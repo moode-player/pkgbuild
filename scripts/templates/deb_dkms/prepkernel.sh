@@ -21,7 +21,7 @@ fi
 
 # lookup lists for different architecture indexes:
 SYMBOLS=( 7 7l 8)
-DEFCONFIGS=(bcmrpi_defconfig bcm2709_defconfig bcm2711_defconfig)
+DEFCONFIGS=(bcm2709_defconfig bcm2711_defconfig bcm2711_defconfig)
 
 KERNEL_HASH=`rpi-source --dry-run --skip-update --download-only --dest /tmp | grep 'Firmware' | sed -r 's/.*revision[:][ ]//'`
 SYMBOL="${SYMBOLS[$INDEX]}"
@@ -35,7 +35,7 @@ echo "defconfig : $DEFCONFIG"
 echo "location  : $(pwd)"
 echo ""
 
-make clean
+make mrproper
 if [ ! -f "Module$SYMBOL.symvers" ]
 then
    wget --no-verbose -O ./Module$SYMBOL.symvers https://raw.githubusercontent.com/raspberrypi/rpi-firmware/$KERNEL_HASH/Module$SYMBOL.symvers
