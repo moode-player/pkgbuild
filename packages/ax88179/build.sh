@@ -10,6 +10,7 @@
 #
 #########################################################################
 
+
 . ../../scripts/rebuilder.lib.sh
 
 KERNEL_VER=$(rbl_get_current_kernel_version)
@@ -19,7 +20,7 @@ PKG="ax88179_2.0-1"
 # required for creating a dkms project:
 DKMS_MODULE="ax88179_178a/2.0"
 SRC_DIR="ax88179_178a-2.0"
-ARCHS=( v7l+ )
+ARCHS=( v7l+ v7+ )
 MODULE="ax88179_178a.ko"
 MODULE_PATH='drivers/net/usb'
 
@@ -41,7 +42,7 @@ git archive  --format=tar --output $BUILD_ROOT_DIR/source/$SRC_DIR/USBridgeSig-A
 
 # 2. build the modules with dkms:
 #TODO: create arch args automatic
-dkms build --dkmstree $BUILD_ROOT_DIR ${DKMS_OPTS[@]} --sourcetree $BUILD_ROOT_DIR/source -k $KERNEL_VER-v7l+ $DKMS_MODULE
+dkms build --dkmstree $BUILD_ROOT_DIR ${DKMS_OPTS[@]} --sourcetree $BUILD_ROOT_DIR/source  -k $KERNEL_VER-v7+ -k $KERNEL_VER-v7l+ $DKMS_MODULE
 
 if [ $? -gt 0 ]
 then
