@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="alsa-cdsp_1.0.0-1moode2"
+PKG="alsa-cdsp_1.0.1-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsa_cdsp.git"
-PKG_SOURCE_GIT_TAG="v1.0.0"
+PKG_SOURCE_GIT_TAG="v1.0.1"
 
 # used for converting readme.md to man page
 rbl_check_build_dep pandoc
