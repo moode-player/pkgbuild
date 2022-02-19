@@ -182,7 +182,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --category sound \
 -S moode \
 --iteration $DEBVER$DEBLOC \
--a all
+-a all \
 --deb-priority optional \
 --url https://www.moode.org \
 -m moodeaudio.org \
