@@ -35,6 +35,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --category misc \
 -S moode \
 --iteration $DEBVER$DEBLOC \
+-a all \
 --deb-priority optional \
 --url https://github.com/allocom/allo_boss2_oled_p3 \
 -m moodeaudio.org \

@@ -37,6 +37,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --category misc \
 -S moode \
 --iteration $DEBVER$DEBLOC \
+-a all \
 --deb-priority optional \
 --url https://github.com/moode-player/pkgbuild \
 -m $DEBEMAIL \

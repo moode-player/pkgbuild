@@ -80,6 +80,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --category sound \
 -S moode \
 --iteration $DEBVER$DEBLOC \
+-a all \
 --deb-priority optional \
 --url https://github.com/HEnquist/camilladsp \
 -m moodeaudio.org \
