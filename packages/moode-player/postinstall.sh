@@ -137,9 +137,8 @@ function on_install() {
       chown www-data:www-data /var/local/php
 
       echo "** Generate alsaequal binary"
-      amixer -D alsaequal > /dev/null
       mkdir -p /opt/alsaequal/
-      mv /usr/local/bin/alsaequal.bin /opt/alsaequal/
+      amixer -D alsaequal > /dev/null
       chmod 0755 /opt/alsaequal/alsaequal.bin
       chown mpd:audio /opt/alsaequal//alsaequal.bin
 
