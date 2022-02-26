@@ -1,4 +1,13 @@
 #!/bin/bash
+#########################################################################
+#
+# Scripts for building moode packages
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
+
 # kernelver is not set on kernel upgrade from apt, but DPKG_MAINTSCRIPT_PACKAGE
 # contains the kernel image or header package upgraded
 
@@ -65,4 +74,3 @@ then
     patch -p$depth < $i
   done
 fi
-

@@ -1,4 +1,12 @@
 #!/bin/bash
+#########################################################################
+#
+# Scripts for building moode packages
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
 
 . ../../scripts/rebuilder.lib.sh
 
@@ -40,4 +48,3 @@ mv target/debian/* $BUILD_ROOT_DIR
 rbl_move_to_dist
 
 echo "done"
-
