@@ -1,4 +1,12 @@
 #!/bin/bash
+#########################################################################
+#
+# Scripts for building moode packages
+#
+# (C) bitkeeper 2021 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
 
 KERNEL_VER=%KERNEL_VER%
 ARCHS=( %ARCHS% )
