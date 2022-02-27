@@ -16,8 +16,8 @@ PKG="moode-player_8.0.0-1moode1~pre5"
 # PKG_SOURCE_GIT_TAG="r760prod"
 
 # For now git isn't used to get the source. During development it is much handier
-# to use an already checkout ( and gulp build version of moode )
-# The enviroment var MOODE_DIR should be set to the location where the moode project source is.
+# to use an already checked out and Gulp built version of moode.
+# The enviroment var MOODE_DIR should be set to the location where the moode source repo.
 
 # sync required npm modules for gulp build if if already exists
 NPM_CI=0

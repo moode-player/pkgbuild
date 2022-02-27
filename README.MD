@@ -19,7 +19,9 @@ There are several ways in which packages are built and sources obtained.
 
 All forms with src as output can be rebuilt from source packages (also present in the repo).
 
-## Overview of the third party packages that are used.
+## Overview of the third party packages that are used
+
+The versions represented in the table are only for example and may not represent the latest versions being used.
 
 | Package    |      Version    | How  | Patches* |
 |----------  |-----------------|:----|---------------|
@@ -52,7 +54,7 @@ All forms with src as output can be rebuilt from source packages (also present i
 Patches* means patches required for the source code and excludes patches for the packing itself.
 Stock pacakges can be directly used, no need to rebuild.
 
-camillagui-backend is bundled with the camillagui package.
+Note: camillagui-backend is bundled with the camillagui package.
 
 ## Other packages in the repo for example drivers.
 
@@ -70,13 +72,16 @@ camillagui-backend is bundled with the camillagui package.
 
 Requirements:
 * Pi with Raspbian Lite Bullseye installed.
+
 ### Setup enviroment settings
 * Copy the setenv.sh.example to `setenv.sh`
-* Change the content to reflext your settings.
+* Change the content to reflect your settings.
 
 ```bash
+# The var MOODE_DIR refers to the location of the cloned moode source repo
 export DEBFULLNAME=FooBar
 export DEBEMAIL=foobar@users.noreply.github.com
+export MOODE_DIR=~/moode.dev/moode
 ```
 
 ### Building a package
@@ -86,13 +91,12 @@ Go to a package dir in the subdir packages and run the `build.sh` script
 cd packages/alsacap
 ./build.sh
 ```
-The output will be in the `dist` directory.
+The output will be in the `dist` subdirectory.
+
 ### Deploy package and source
+There is a helper script that deploys packages to a Cloudsmith package repository. This requires a Cloudsmith account with access to the moOde repository.
 
-There is an helper script that deploys packages to a CloudSmith Repo.
-This requires an account.
-
-Go to a package dir that is builded and run the deploy command.
+After a package has been built run the deploy command.
 
 ```bash
 cd packages/alsacap
