@@ -4,9 +4,11 @@
 # Example of setting the required environment settings.
 #
 # Use:
-# - Copy it to setend.sh and customize the settings
-# - Include it in your current shell by running
-# . ./setenv.sh
+# - Copy it to setenv.sh and customize the settings
+# - Include it in your current shell by running ./setenv.sh
+#
+# The environment var MOODE_DIR refers to the location of the moode source repo
+# - git clone https://github.com/moode-player/moode.git
 #
 # (C) bitkeeper 2021 http://moodeaudio.org
 # License: GPLv3
