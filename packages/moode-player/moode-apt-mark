@@ -1,14 +1,17 @@
 #!/bin/bash
+#########################################################################
 #
-# Shorthand for locking and unlocking important packages for moode
+# Script for locking and unlocking important packages for moode
 #
-# bitlab C 2022
+# (C) bitkeeper 2022 http://moodeaudio.org
+# License: GPLv3
 #
+#########################################################################
 
 echo "moOde-apt-hold"
 if [[ -z "$1" ]] || [[ "$1" != "hold" ]] && [[  "$1" != "unhold" ]]
 then
-   echo "argument should be hold or unhold."
+   echo "Argument should be hold or unhold."
    exit
 fi
 
@@ -24,7 +27,7 @@ do
     pkgstr+="$package "
     if [ $? -gt 1 ]
     then
-      echo "oeps something did go wrong, aborting ..."
+      echo "Oops something went wrong, aborting ..."
       exit 1
     fi
   fi
@@ -32,6 +35,6 @@ done < "$package_list"
 apt-mark "$cmd" "$package" $pkgstr
 if [ $? -gt 1 ]
 then
-    echo "oeps something did go wrong"
+    echo "Oops something went wrong"
     exit 1
 fi

@@ -1,7 +1,7 @@
 #!/bin/bash
 #########################################################################
 #
-# Scripts for building moode packages
+# Script for building moode-player package
 #
 # (C) bitkeeper 2021 http://moodeaudio.org
 # License: GPLv3

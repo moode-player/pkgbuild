@@ -1,8 +1,12 @@
 #!/bin/bash
+#########################################################################
 #
-# moOde audio player - package post install script
+# Script for post processing afer moode-player package installation
 #
 # (C) bitkeeper 2022 http://moodeaudio.org
+# License: GPLv3
+#
+#########################################################################
 
 ACTION=$1
 VERSION=$2
@@ -58,9 +62,8 @@ function on_install() {
       echo "** Systemd enable/disable"
       systemctl daemon-reload > /dev/null 2>&1
       systemctl enable haveged > /dev/null 2>&1
-
       systemctl unmask hostapd > /dev/null 2>&1
-
+      # These services are started on-demand or by moOde worker daemon (worker.php)
       disable_services=(
           bluetooth \
           bluez-alsa \
