@@ -46,9 +46,10 @@ function on_install() {
       # perform install
 
       echo "** Basic optimizations"
-      dphys-swapfile swapoff
-      dphys-swapfile uninstall
-      systemctl disable dphys-swapfile > /dev/null 2>&1
+      # TEST leave swap enabled since we auto-expand at boot which should leave plenty of free disk space
+      #dphys-swapfile swapoff
+      #dphys-swapfile uninstall
+      #systemctl disable dphys-swapfile > /dev/null 2>&1
       systemctl disable cron.service > /dev/null 2>&1
       systemctl enable rpcbind > /dev/null 2>&1
       systemctl set-default multi-user.target > /dev/null 2>&1
