@@ -25,7 +25,7 @@ The versions represented in the table are only for example and may not represent
 
 | Package    |      Version    | How  | Patches* |
 |----------  |-----------------|:----|---------------|
-| [alsa-cdsp](https://github.com/scripple/alsa_cdsp)  | 1.0.0-1moode1  | git+dh_make | yes |
+| [alsa-cdsp](https://github.com/scripple/alsa_cdsp)  | 1.1.0-1moode1  | git+dh_make | yes |
 | [alsacap](https://github.com/bubbapizza/alsacap)    | 1.0.1-1moode1  | git+dh_make |  |
 | [ashuffle](https://github.com/joshkunz/ashuffle)   | 3.12.5-1moode1 | git+dh_make |  |
 | [*bluez*](https://github.com/bluez/bluez)      | *5.55-3.1+rpt1* | ***stock*** |
