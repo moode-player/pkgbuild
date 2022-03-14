@@ -123,6 +123,8 @@ function on_install() {
       fi
       # strip creation of radion stations from the sql, stations are create by the station backup import
       cat /var/local/www/db/moode-sqlite3.db.sql | grep -v "INSERT INTO cfg_radio" | sqlite3 /var/local/www/db/moode-sqlite3.db
+      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499" | sqlite3 /var/local/www/db/moode-sqlite3.db
+
       # Set to Carrot for moOde 8 series
       sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
 
@@ -373,16 +375,24 @@ EOL
 
 function on_upgrade() {
       #--------------------------------------------------------------------------------------------------------
-      # bring it a live ;-)
+      # Upgrades can come from any version:
+      # - Detect if a patch is needed to apply
+      # - Make the upgrade patches as fault tolerant as p needed
       #--------------------------------------------------------------------------------------------------------
+
+      # Fix missing radio station seperator record with id 499, use instead of insert, insert or ignore
+      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
+
       # TODO: support update of stations
       #import_stations update
 
+      #--------------------------------------------------------------------------------------------------------
+      # bring it a live ;-)
+      #--------------------------------------------------------------------------------------------------------
       # just start it to add playlist and then stop it
       echo "wait at max 30 seconds until mpd is started ...."
       /usr/local/bin/moodeutl -r
       timeout 30s bash -c 'until mpc status; do sleep 3; done';
-      mpc status
       echo "moode-player upgrade finished, please reboot"
 }
 
