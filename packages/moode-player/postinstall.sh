@@ -304,7 +304,7 @@ function on_install() {
              /etc/nsswitch.conf
 
       # /etc/upmpdcli.conf
-	    # friendlyname = Moode UPNP
+	  # friendlyname = Moode UPNP
       # avfriendlyname = Moode UPNP
       # upnpav = 1
       # openhome = 0
@@ -320,9 +320,16 @@ function on_install() {
              -e 's/[#]ohproductroom[ ]=.*/ohproductroom = Moode UPNP/' \
             /etc/upmpdcli.conf
 
-        # /etc/X11/Xwrapper.config
-  		# allowed_users=anybody
-        sed -i "s/^allowed_users.*/allowed_users=anybody/" /etc/X11/Xwrapper.config
+      # /etc/X11/Xwrapper.config
+      # allowed_users=anybody
+      sed -i "s/^allowed_users.*/allowed_users=anybody/" /etc/X11/Xwrapper.config
+
+      # /etc/systemd/journald.conf
+      # SystemMaxUse=20M
+      # RuntimeMaxUse=20M
+      sed -i -e "s/^#SystemMaxUse.*/SystemMaxUse=20M/" \
+             -e "s/^#RuntimeMaxUse.*/RuntimeMaxUse=20M/" \
+             /etc/systemd/journald.conf
 
       cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
@@ -387,7 +394,7 @@ function on_upgrade() {
       #import_stations update
 
       #--------------------------------------------------------------------------------------------------------
-      # bring it a live ;-)
+      # bring it alive ;-)
       #--------------------------------------------------------------------------------------------------------
       # just start it to add playlist and then stop it
       echo "wait at max 30 seconds until mpd is started ...."
