@@ -397,9 +397,9 @@ function on_upgrade() {
       # bring it alive ;-)
       #--------------------------------------------------------------------------------------------------------
       # just start it to add playlist and then stop it
-      echo "wait at max 30 seconds until mpd is started ...."
-      /usr/local/bin/moodeutl -r
-      timeout 30s bash -c 'until mpc status; do sleep 3; done';
+      #echo "wait at max 30 seconds until mpd is started ...."
+      #/usr/local/bin/moodeutl -r
+      #timeout 30s bash -c 'until mpc status; do sleep 3; done';
       echo "moode-player upgrade finished, please reboot"
 }
 
