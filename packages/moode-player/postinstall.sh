@@ -316,7 +316,7 @@ function on_install() {
              -e 's/[#]upnpav[ ]=.*/upnpav = 1/' \
              -e 's/[#]openhome[ ]=.*/openhome = 0/' \
              -e 's/[#]checkcontentformat[ ]=.*/checkcontentformat = 1/' \
-             -e 's/[#]iconpath[ ]=.*/iconpath = \"\/usr\/share\/upmpdcli\/moode_audio.png\"/' \
+             -e 's/[#]iconpath[ ]=.*/iconpath = \/usr\/share\/upmpdcli\/moode_audio.png/' \
              -e 's/[#]ohproductroom[ ]=.*/ohproductroom = Moode UPNP/' \
             /etc/upmpdcli.conf
 
