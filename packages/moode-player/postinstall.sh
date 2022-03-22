@@ -12,13 +12,13 @@ ACTION=$1
 VERSION=$2
 
 #TODO: make sure the build.sh sets this var
-PKG_VERSION="8.0.0"
+PKG_VERSION="8.0.2"
 
 #TODO: support mode [full|update], required when the first update needs to be created
 function import_stations() {
-    #mode=$1
-    #url=$2
-    url="https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_$PKG_VERSION.zip"
+    mode=$1
+    url=$2
+    #url="https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_$PKG_VERSION.zip"
     if [ -z "$MOODE_STATIONS_URL" ]
     then
       MOODE_STATIONS_URL="$url"
@@ -35,7 +35,13 @@ function import_stations() {
 
     if [ -f $TMP_STATIONS_BACKUP $STATIONS_URL ]
     then
-      /var/www/command/stationmanager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP $STATIONS_URL > /dev/null
+      if [ "$mode" == "full" ]
+      then
+        /var/www/command/stationmanager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP $STATIONS_URL > /dev/null
+      else
+        /var/www/command/stationmanager.py --import --scope moode --how merge $TMP_STATIONS_BACKUP > /dev/null
+      fi
+
       rm -f $TMP_STATIONS_BACKUP $STATIONS_URL
     else
       echo "Couldn't import stations file from $MOODE_STATIONS_URL"
@@ -128,7 +134,7 @@ function on_install() {
       # Set to Carrot for moOde 8 series
       sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
 
-      import_stations
+      import_stations full "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_$PKG_VERSION.zip"
 
       LIBCACHE_BASE="/var/local/www/libcache"
       echo "** Initial permissions for certain files. These also get set during moOde Worker startup"
@@ -390,8 +396,8 @@ function on_upgrade() {
       # Fix missing radio station seperator record with id 499, use instead of insert, insert or ignore
       cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
 
-      # TODO: support update of stations
       #import_stations update
+      import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
       #--------------------------------------------------------------------------------------------------------
       # bring it alive ;-)

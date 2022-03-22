@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.1-1moode1"
+PKG="moode-player_8.0.2-1moode1~pre1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -25,6 +25,9 @@ NPM_CI=0
 BUILD_APP=1
 
 GULP_BIN=$MOODE_DIR/node_modules/.bin/gulp
+
+# Used as reference for generating station patch files. Should be the first releas of a major
+MAJOR_BASE_STATIONS=../dist/binary/moode-stations-full_8.0.0.zip
 
 # ----------------------------------------------------------------------------
 # 1. Prepare pacakge build dir and build deps
@@ -98,9 +101,16 @@ cd $BUILD_ROOT_DIR
 # generate moode radio stations backup file (used for populating the station from the installer)
 cat $MOODE_DIR/var/local/www/db/moode-sqlite3.db.sql | sqlite3 $BUILD_ROOT_DIR/moode-sqlite3.db
 $MOODE_DIR/www/command/stationmanager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --scope moode --export $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip
+if [ ! -f $MAJOR_BASE_STATIONS ]
+then
+    echo "${RED}Error: radio station base backup $MAJOR_BASE_STATIONS not found!${NORMAL}"
+    cd ..
+    exit 1
+fi
+$MOODE_DIR/www/command/stationmanager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --diff $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip --scope moode $MAJOR_BASE_STATIONS
 rm -f $BUILD_ROOT_DIR/moode-sqlite3.db || true
 # move it to the dist location
-mv -f $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip  $BASE_DIR/dist/binary/
+mv -f $BUILD_ROOT_DIR/moode-stations-*_$PKGVERSION.zip  $BASE_DIR/dist/binary/
 
 # location for files that should overwrite existing files (not owned by moode-player)
 NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
