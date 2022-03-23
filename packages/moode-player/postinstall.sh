@@ -199,11 +199,13 @@ function on_install() {
           #   Stay discoverable forever
 		  # ControllerMode = dual
           #   Both BR/EDR and LE transports enabled (when supported by the HW)
-          #   NOTE: May need to have UI option to set ControllerMode = bredr to enable Pi-to Pi connections
+          # TemporaryTimeout = 90
+          #   How long to keep temporary devices around
       sed -i -e 's/[#]Name[ ]=[ ].*/Name = Moode Bluetooth/' \
              -e 's/[#]Class[ ]=[ ].*/Class = 0x20041C/' \
              -e 's/#DiscoverableTimeout[ ]/DiscoverableTimeout /' \
              -e 's/[#]ControllerMode[ ]=[ ].*/ControllerMode = dual/' \
+             -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' \
              /etc/bluetooth/main.conf
 
       # /etc/default/mpd
