@@ -199,6 +199,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 -m moodeaudio.org \
 --description 'moOde audio player' \
 --after-install $BUILD_ROOT_DIR/postinstall.sh \
+--before-remove $BASE_DIR/preremove.sh \
 --deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
 --deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/peq_ae_oratory1990_hd800s \
 --deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
