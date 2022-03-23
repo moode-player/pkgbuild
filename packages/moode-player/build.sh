@@ -181,7 +181,8 @@ chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
 
 # ------------------------------------------------------------
 # 5. Create the package
-
+# Copy and fix version number is postinstall script
+cat $BASE_DIR/postinstall.sh | sed -e "s/^PKG_VERSION=.*/PKG_VERSION=\"$PKGVERSION\"/" > $BUILD_ROOT_DIR/postinstall.sh
 #TODO: Critical look at the deps, remove unneeded.
 #TODO: Add license and readme, improve description
 
@@ -197,7 +198,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --url https://www.moode.org \
 -m moodeaudio.org \
 --description 'moOde audio player' \
---after-install $BASE_DIR/postinstall.sh \
+--after-install $BUILD_ROOT_DIR/postinstall.sh \
 --deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \
 --deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/peq_ae_oratory1990_hd800s \
 --deb-config $PKG_ROOT_DIR/usr/share/camilladsp/configs/conv_ae_oratory1990_hd800s.yml \

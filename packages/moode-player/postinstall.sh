@@ -11,8 +11,8 @@
 ACTION=$1
 VERSION=$2
 
-#TODO: make sure the build.sh sets this var
-PKG_VERSION="8.0.2"
+# Version number is set by build process
+PKG_VERSION="x.x.x"
 
 #TODO: support mode [full|update], required when the first update needs to be created
 function import_stations() {
