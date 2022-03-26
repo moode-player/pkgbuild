@@ -398,7 +398,11 @@ function on_upgrade() {
       # Fix missing radio station seperator record with id 499, use instead of insert, insert or ignore
       cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
 
-      #import_stations update
+      # Increase trust timeout for scanned, un-paired devices
+      # If it's already been set the command won't have any effect which is what we want
+      sed -i -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' /etc/bluetooth/main.conf
+
+      # Import_stations update
       import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
       #--------------------------------------------------------------------------------------------------------
