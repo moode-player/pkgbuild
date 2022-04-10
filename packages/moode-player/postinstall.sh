@@ -392,11 +392,14 @@ function on_upgrade() {
       #--------------------------------------------------------------------------------------------------------
       # Upgrades can come from any version:
       # - Detect if a patch is needed to apply
-      # - Make the upgrade patches as fault tolerant as p needed
+      # - Make the upgrade patches as fault tolerant as needed
       #--------------------------------------------------------------------------------------------------------
 
-      # Fix missing radio station seperator record with id 499, use instead of insert, insert or ignore
+      # Fix missing radio station seperator record with id 499, use "insert or ignore" instead of "insert"
       cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
+
+      # Add new cfg_system column (r810)
+      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
 
       # Increase trust timeout for scanned, un-paired devices
       # If it's already been set the command won't have any effect which is what we want
