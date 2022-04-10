@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camilladsp_0.6.3-1moode2"
+PKG="camilladsp_0.6.3-1moode3"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camilladsp.git"
 PKG_SOURCE_GIT_TAG="v0.6.3"
@@ -27,6 +27,8 @@ rbl_check_build_dep libasound2-dev
 
 # Set install location to /usr/local/bin
 patch -p1 < $BASE_DIR/camilladsp_cargo-deb.patch
+mkdir debian
+cp $BASE_DIR/camilladsp.service debian/service
 
 # Add to [package.metadata.deb] section of Cargo.toml:
 echo "" >> Cargo.toml
