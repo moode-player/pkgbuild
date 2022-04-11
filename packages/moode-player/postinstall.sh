@@ -395,16 +395,22 @@ function on_upgrade() {
       # - Make the upgrade patches as fault tolerant as needed
       #--------------------------------------------------------------------------------------------------------
 
+      # Introduced in r801
       # Fix missing radio station seperator record with id 499, use "insert or ignore" instead of "insert"
       cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
 
-      # Add new cfg_system column (r810)
-      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
-
+      # Introduced in r802
       # Increase trust timeout for scanned, un-paired devices
       # If it's already been set the command won't have any effect which is what we want
       sed -i -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' /etc/bluetooth/main.conf
 
+      # Introduced in r810
+      # Add new cfg_system column
+      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
+      # Create new cfg_ssid table
+      sqlite3 /var/local/www/db/moode-sqlite3.db "CREATE TABLE cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))" >/dev/null 2>&1
+
+      # Any release may contain station updates
       # Import_stations update
       import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
