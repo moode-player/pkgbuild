@@ -1,6 +1,6 @@
 # moOde audio player - package builder
 
-This repository contains scripts to build packages for the third-party software components used in moOde audio player.
+This repository contains scripts to build the packages containing the software components used in moOde audio player.
 
 ## Origin and build type
 There are several ways in which packages are built and sources obtained.
@@ -19,9 +19,9 @@ There are several ways in which packages are built and sources obtained.
 
 All forms with src as output can be rebuilt from source packages (also present in the repo).
 
-## Overview of the third party packages that are used
+## Overview of the packages that are used
 
-The versions represented in the table are only for example and may not represent the latest versions being used.
+Note: The versions represented in the table are only for example and may not represent the latest versions being used and the table may not contain all the packages in the repo.
 
 | Package    |      Version    | How  | Patches* |
 |----------  |-----------------|:----|---------------|
@@ -39,6 +39,7 @@ The versions represented in the table are only for example and may not represent
 | [libupnpp6](https://www.lesbonscomptes.com/upmpdcli/index.html)  | 0.21.0-1moode1 | git         |  |
 | [*mediainfo*](https://mediaarea.net/nl/MediaInfo)  | *20.09-1* | ***stock*** |
 | [*minidlna*](https://sourceforge.net/projects/minidlna/)   | *1.3.0+dfsg-2* | ***stock*** |
+| [moode-player](https://github.com/moode-player/moode)       | 8.0.2-1moode1 | git+dh_make     |  |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
 | [mpd](https://www.musicpd.org/)        | 0.23.5-1moode3 | backport    | yes |
 | [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 0.6.0-1moode1 | stdeb |  |
@@ -51,10 +52,9 @@ The versions represented in the table are only for example and may not represent
 | [udisks-glue](https://github.com/fernandotcl/udisks-glue) | 1.3.5-1moode3 | git+debsrc |  |
 | [upmpdcli](https://www.lesbonscomptes.com/upmpdcli/index.html)   | 1.5.12-1moode1 | git |  |
 
-Patches* means patches required for the source code and excludes patches for the packing itself.
-Stock pacakges can be directly used, no need to rebuild.
+Patches* means patches required for the source code and excludes patches for the packing itself. Stock pacakges can be directly used, no need to rebuild.
 
-Note: camillagui-backend is bundled with the camillagui package.
+Note: The camillagui-backend is bundled with the camillagui package.
 
 ## Other packages in the repo for example drivers.
 
@@ -79,11 +79,11 @@ Requirements:
 
 ```bash
 # The var MOODE_DIR refers to the location of the cloned moode source repo
-export DEBFULLNAME=FooBar
-export DEBEMAIL=foobar@users.noreply.github.com
-export MOODE_DIR=~/moode.dev/moode
+# These commands should be added to ~/.bashrc
+export DEBFULLNAME=John
+export DEBEMAIL=john@noreply.com
+export MOODE_DIR=~/home/pi/moode
 ```
-
 ### Building a package
 Go to a package dir in the subdir packages and run the `build.sh` script
 
