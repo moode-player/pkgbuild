@@ -14,6 +14,8 @@ VERSION=$2
 # Version number is set by build process
 PKG_VERSION="x.x.x"
 
+SQLDB=/var/local/www/db/moode-sqlite3.db
+
 #TODO: support mode [full|update], required when the first update needs to be created
 function import_stations() {
     mode=$1
@@ -123,16 +125,16 @@ function on_install() {
       chmod -R a+rw /usr/share/camilladsp
 
       echo "** Create database"
-      if [ -f /var/local/www/db/moode-sqlite3.db ]
+      if [ -f $SQLDB ]
       then
-        rm /var/local/www/db/moode-sqlite3.db
+        rm $SQLDB
       fi
       # strip creation of radion stations from the sql, stations are create by the station backup import
-      cat /var/local/www/db/moode-sqlite3.db.sql | grep -v "INSERT INTO cfg_radio" | sqlite3 /var/local/www/db/moode-sqlite3.db
-      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499" | sqlite3 /var/local/www/db/moode-sqlite3.db
+      cat $SQLDB".sql" | grep -v "INSERT INTO cfg_radio" | sqlite3 $SQLDB
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499" | sqlite3 $SQLDB
 
       # Set to Carrot for moOde 8 series
-      sqlite3 /var/local/www/db/moode-sqlite3.db "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
+      sqlite3 $SQLDB "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
 
       import_stations full "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_$PKG_VERSION.zip"
 
@@ -397,7 +399,7 @@ function on_upgrade() {
 
       # Introduced in r801
       # Fix missing radio station seperator record with id 499, use "insert or ignore" instead of "insert"
-      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
 
       # Introduced in r802
       # Increase trust timeout for scanned, un-paired devices
@@ -406,9 +408,11 @@ function on_upgrade() {
 
       # Introduced in r810
       # Add new cfg_system column
-      cat /var/local/www/db/moode-sqlite3.db.sql | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 /var/local/www/db/moode-sqlite3.db
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       # Create new cfg_ssid table
-      sqlite3 /var/local/www/db/moode-sqlite3.db "CREATE TABLE cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))" >/dev/null 2>&1
+      sqlite3 $SQLDB "CREATE TABLE cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))" >/dev/null 2>&1
+      # Create new cfg_playlist table
+      sqlite3 $SQLDB "CREATE TABLE cfg_playlist (id INTEGER PRIMARY KEY, name CHAR (32), title CHAR (32), description CHAR (32), genre CHAR (32))""
 
       # Any release may contain station updates
       # Import_stations update
