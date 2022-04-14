@@ -412,7 +412,7 @@ function on_upgrade() {
       # Create new cfg_ssid table
       sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))"
       # Create new cfg_playlist table
-      sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_playlist (id INTEGER PRIMARY KEY, name CHAR (32), title CHAR (32), description CHAR (32), genre CHAR (32))""
+      sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_playlist (id INTEGER PRIMARY KEY, name CHAR (32), title CHAR (32), description CHAR (32), genre CHAR (32))"
 
       # Any release may contain station updates
       # Import_stations update
