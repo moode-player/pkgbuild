@@ -75,6 +75,11 @@ then
     exit 1
 fi
 
+uname -m | grep "64" > /dev/null
+if [[ $? -eq 0 ]]
+then
+    ARCH64=1
+fi
 PKGBUILD_ROOT=`realpath $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/..`
 
 
