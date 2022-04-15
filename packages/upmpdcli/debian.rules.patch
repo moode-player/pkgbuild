@@ -1,0 +1,13 @@
+--- upmpdcli-1.5.12/debian/rules.org	2022-04-14 17:12:23.768135464 +0100
++++ upmpdcli-1.5.12/debian/rules	2022-04-14 17:12:30.050028880 +0100
+@@ -19,8 +19,8 @@
+ 	dh $@  --with autoreconf,systemd --parallel
+ 
+ 
+-override_dh_auto_configure:
+-	dh_auto_configure -- --enable-confgui --enable-spotify
++# override_dh_auto_configure:
++# 	dh_auto_configure -- --enable-confgui --enable-spotify
+ 
+ override_dh_auto_install:
+ 	dh_auto_install
