@@ -250,7 +250,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends libzen0v5 \
 --depends winbind \
 --depends libnss-winbind \
---depends djmount \
 --depends haveged \
 --depends python3-pip \
 --depends xfsprogs \
