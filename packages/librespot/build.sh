@@ -28,9 +28,15 @@ rbl_check_build_dep libasound2-dev
 echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
 
 # Build it for V6 and higher arch (else it doesn't runs on the P2 and less)
-rustup default stable-arm-unknown-linux-gnueabihf
-RUSTFLAGS='-Ccodegen-units=1 -Ctarget-feature=+v6,+vfp2' cargo-deb -- --features alsa-backend
-rustup default stable-armv7-unknown-linux-gnueabihf
+if [ $ARCH64 -eq 1 ]
+then
+    rustup default stable-aarch64-unknown-linux-gnu
+    RUSTFLAGS='-Ccodegen-units=1' cargo-deb -- --features alsa-backend
+else
+    rustup default stable-arm-unknown-linux-gnueabihf
+    RUSTFLAGS='-Ccodegen-units=1 -Ctarget-feature=+v6,+vfp2' cargo-deb -- --features alsa-backend
+    rustup default stable-armv7-unknown-linux-gnueabihf
+fi
 
 if [[ $? -gt 0 ]]
 then

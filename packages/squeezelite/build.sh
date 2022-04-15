@@ -19,7 +19,12 @@ rbl_prepare_from_dsc_url $PKG_DSC_URL
 # Custom part of the packing
 
 # patch and add patch to debian
-patch -p1 < $BASE_DIR/debian.rules.patch
+if [ $ARCH64 -eq 1 ]
+then
+    patch -p1 < $BASE_DIR/debian.rules.64.patch
+else
+    patch -p1 < $BASE_DIR/debian.rules.patch
+fi
 
 # set debian local suffix flag
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --local $DEBSUFFIX "Rebuild for moOde bullseye with RPI and GPIO options."
