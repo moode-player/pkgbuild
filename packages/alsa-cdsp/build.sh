@@ -15,6 +15,7 @@ PKG="alsa-cdsp_1.1.0-1moode1"
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsa_cdsp.git"
 PKG_SOURCE_GIT_TAG="v1.1.0"
 
+rbl_check_build_dep libasound2-dev
 # used for converting readme.md to man page
 rbl_check_build_dep pandoc
 

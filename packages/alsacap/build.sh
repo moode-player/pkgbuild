@@ -15,7 +15,9 @@ PKG="alsacap_1.0.1-1moode1"
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsacap.git"
 PKG_SOURCE_GIT_TAG="master"
 
-rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
+rbl_check_build_dep libasound2-dev
+# rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------
