@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.0.2-1moode1"
+PKG="moode-player_8.1.0-1moode1~pre1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -100,6 +100,13 @@ cd $BUILD_ROOT_DIR
 
 # generate moode radio stations backup file (used for populating the station from the installer)
 cat $MOODE_DIR/var/local/www/db/moode-sqlite3.db.sql | sqlite3 $BUILD_ROOT_DIR/moode-sqlite3.db
+if [[ $? -gt 0 ]]
+then
+    echo "${RED}Error: couldn't create temporary database!${NORMAL}"
+    cd ..
+    exit 1
+fi
+
 $MOODE_DIR/www/command/stationmanager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --scope moode --export $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip
 if [ ! -f $MAJOR_BASE_STATIONS ]
 then
@@ -108,6 +115,19 @@ then
     exit 1
 fi
 $MOODE_DIR/www/command/stationmanager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --diff $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip --scope moode $MAJOR_BASE_STATIONS
+
+if [ ! -f $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip ]
+then
+    echo "${RED}Error: radio station full file not generated!${NORMAL}"
+    cd ..
+    exit 1
+fi
+if [ ! -f $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip ]
+then
+    echo "${RED}Error: radio station update file not generated!${NORMAL}"
+    cd ..
+    exit 1
+fi
 rm -f $BUILD_ROOT_DIR/moode-sqlite3.db || true
 # move it to the dist location
 mv -f $BUILD_ROOT_DIR/moode-stations-*_$PKGVERSION.zip  $BASE_DIR/dist/binary/

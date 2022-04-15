@@ -32,19 +32,19 @@ function import_stations() {
     then
       cp $MOODE_STATIONS_URL $TMP_STATIONS_BACKUP
     else
-      wget --no-verbose -O $TMP_STATIONS_BACKUP $STATIONS_URL $MOODE_STATIONS_URL || true
+      wget --no-verbose -O $TMP_STATIONS_BACKUP $MOODE_STATIONS_URL || true
     fi
 
-    if [ -f $TMP_STATIONS_BACKUP $STATIONS_URL ]
+    if [ -f $TMP_STATIONS_BACKUP ]
     then
       if [ "$mode" == "full" ]
       then
-        /var/www/command/stationmanager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP $STATIONS_URL > /dev/null
+        /var/www/command/stationmanager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP > /dev/null
       else
         /var/www/command/stationmanager.py --import --scope moode --how merge $TMP_STATIONS_BACKUP > /dev/null
       fi
 
-      rm -f $TMP_STATIONS_BACKUP $STATIONS_URL
+      rm -f $TMP_STATIONS_BACKUP
     else
       echo "Couldn't import stations file from $MOODE_STATIONS_URL"
     fi
