@@ -20,7 +20,12 @@ PKG_SOURCE_GIT="https://github.com/aircrack-ng/rtl8812au.git"
 PKG_SOURCE_GIT_TAG="v5.6.4.2"
 
 # required for creating a dkms project:
-ARCHS=( v7l+ v7+ )
+if [ $ARCH64 -eq 1 ]
+then
+  ARCHS=( v8+ )
+else
+  ARCHS=( v7l+ v7+ )
+fi
 MODULE="88XXau.ko"
 
 rbl_check_fpm
@@ -47,7 +52,9 @@ then
   chmod a+x $BUILD_ROOT_DIR/$PKGNAME-$PKGVERSION/prepkernel.sh
 fi
 
-dkms build --dkmstree $BUILD_ROOT_DIR --sourcetree $BUILD_ROOT_DIR -k $KERNEL_VER-v7+ -k $KERNEL_VER-v7l+ $DKMS_MODULE
+
+dkms build --dkmstree $BUILD_ROOT_DIR --sourcetree $BUILD_ROOT_DIR $DKMS_KERNEL_STRING $DKMS_MODULE
+
 if [ $? -gt 0 ]
 then
   echo "${RED}Error: problem during dkms build${NORMAL}"

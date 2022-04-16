@@ -17,7 +17,12 @@ PKG="pcm1794a_0.1-1"
 # required for creating a dkms project:
 DKMS_MODULE="pcm1794a/0.1"
 SRC_DIR="pcm1794a-0.1"
-ARCHS=( v7l+ v7+ )
+if [ $ARCH64 -eq 1 ]
+then
+  ARCHS=( v8+ )
+else
+  ARCHS=( v7l+ v7+ )
+fi
 MODULE="snd-soc-pcm1794a.ko"
 MODULE_PATH='sound/soc/codecs'
 
@@ -27,7 +32,7 @@ rbl_dkms_prepare intree
 # Custom part of the packing
 
 # 1. build the modules with dkms:
-dkms build --dkmstree $BUILD_ROOT_DIR ${DKMS_OPTS[@]} --sourcetree $BUILD_ROOT_DIR/source -k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+ $DKMS_MODULE
+dkms build --dkmstree $BUILD_ROOT_DIR ${DKMS_OPTS[@]} --sourcetree $BUILD_ROOT_DIR/source $DKMS_KERNEL_STRING $DKMS_MODULE
 
 if [ $? -gt 0 ]
 then
@@ -38,7 +43,12 @@ fi
 # examples of other dkms outputs:
 # build the packing:
 # package for single arch
-dkms mkbmdeb --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v7+ $DKMS_MODULE
+# if [ $ARCH64 -eq 1 ]
+# then
+#   dkms mkbmdeb --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v8+ $DKMS_MODULE
+# else
+#   dkms mkbmdeb --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v7+ $DKMS_MODULE
+# fi
 # package for single arch
 # dkms mkbmdeb --dkmstree $BUILD_ROOT_DIR -k $KERNEL_VER-v7l+ $DKMS_MODULE
 # rebuildable tarball which can be installed with with dkms

@@ -522,7 +522,7 @@ function rbl_get_kernel_source {
 # check if kernel headers are present, else unpack the kernel source if needed and set the flag MODULE_BUILD_USE_SOURCE
 function rbl_check_kernel_headers {
     local  _KERNEL_VER=$(rbl_get_current_kernel_version)
-    if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -le 1 ]
+    if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -lt 1 ]
     then
         prev_path=`pwd`
         if [ -z $KERNEL_SOURCE_ARCHIVE ]
@@ -627,8 +627,15 @@ function rbl_dkms_apply_template {
 function rbl_dkms_grab_modules {
     for i in "${ARCHS[@]}"
     do
+        echo "Grab $i"
         mkdir -p $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
-        install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+        if [ $ARCH64 -eq 1 ]
+        then
+            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+        else
+            # with dkms there is always a armv7l subdir also for armv7+
+            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+        fi
         if [[ $? -gt 0 ]]
         then
             echo "${RED}Error: failure during rbl_dkms_grab_modules!${NORMAL}"
@@ -644,6 +651,14 @@ function rbl_dkms_prepare {
     then
         echo "Error: rbl_dkms_prepare is missing mode argument: should be set to \"intree\" or \"outtree\"!${NORMAL}"
         exit 1
+    fi
+
+    #TODO: improve it by using the ARCHS (contains list of architecture to build) instead the 64bit test flag
+    if [ $ARCH64 -eq 1 ]
+    then
+        DKMS_KERNEL_STRING="-k $KERNEL_VER-v8+"
+    else
+        DKMS_KERNEL_STRING="-k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+"
     fi
 
     rbl_check_fpm
