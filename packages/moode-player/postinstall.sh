@@ -407,8 +407,10 @@ function on_upgrade() {
       sed -i -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' /etc/bluetooth/main.conf
 
       # Introduced in r810
-      # Add new cfg_system column
+      # Add new cfg_system columns
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "playlist_pos"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "plview_sort_group"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       # Create new cfg_ssid table
       sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))"
       # Create new cfg_playlist table
