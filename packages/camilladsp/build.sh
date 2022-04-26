@@ -36,15 +36,13 @@ echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
 # echo "" >> Cargo.toml
 
 # Build it for arch with neon support
-
 if [ $ARCH64 -eq 1 ]
 then
     rustup default stable-aarch64-unknown-linux-gnu
-    RUSTFLAGS='-C target-cpu=native' cargo-deb -- --no-default-features --features alsa-backend --features websocket
 else
     rustup default stable-armv7-unknown-linux-gnueabihf
-    RUSTFLAGS='-C target-feature=+neon -C target-cpu=native' cargo-deb -- --no-default-features --features alsa-backend --features websocket
 fi
+RUSTFLAGS='-C target-feature=+neon -C target-cpu=native' cargo-deb -- --no-default-features --features alsa-backend --features websocket
 
 if [[ $? -gt 0 ]]
 then
