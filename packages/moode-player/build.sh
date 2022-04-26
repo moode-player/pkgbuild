@@ -156,7 +156,7 @@ rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/lib/ $NOT_OWNED_TEMP/lib/
 
 # /mnt (mount points)
-mkdir -p $PKG_ROOT_DIR/mnt/{NAS,SDCARD,UPNP}
+mkdir -p $PKG_ROOT_DIR/mnt/{NAS,SDCARD}
 cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
 
 # /usr

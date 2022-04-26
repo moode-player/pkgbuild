@@ -415,8 +415,12 @@ function on_upgrade() {
       sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))"
       # Create new cfg_playlist table
       sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_playlist (id INTEGER PRIMARY KEY, name CHAR (32), genre CHAR (32), cover CHAR (32))"
-      # Import playlists into cfg_playlists table
+      # Import playlists into cfg_playlist table
+      # If playlist name already in table then its import will be skipped
       moodeutl -p > /dev/null 2&>1
+      # NOTE: Placeholder for UPnP browser (djmount) removal
+      # apt purge djmount? There will be a dependency between djmount and moode-player packages
+      # rmdir /mnt/UPNP? What if user has a UPnP mount?
 
       # Any release may contain station updates
       # Import_stations update
