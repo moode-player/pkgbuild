@@ -411,16 +411,17 @@ function on_upgrade() {
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "playlist_pos"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "plview_sort_group"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      # Create new cfg_ssid table
+      # Create new cfg_ssid table and insert configured ssid if any
       sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))"
-      # Create new cfg_playlist table
-      sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_playlist (id INTEGER PRIMARY KEY, name CHAR (32), genre CHAR (32), cover CHAR (32))"
-      # Import playlists into cfg_playlist table
-      # If playlist name already in table then its import will be skipped
-      moodeutl -p > /dev/null 2&>1
-      # NOTE: Placeholder for UPnP browser (djmount) removal
-      # apt purge djmount? There will be a dependency between djmount and moode-player packages
-      # rmdir /mnt/UPNP? What if user has a UPnP mount?
+      RESULT=$(sqlite3 $SQLDB "SELECT wlan_psk FROM cfg_network WHERE id='2'")
+      if [ $RESULT != "" ]; then
+          sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_ssid VALUES ('1', '', '', '')"
+          sqlite3 $SQLDB "UPDATE cfg_ssid SET ssid = net.wlanssid, sec = net.wlansec, psk = net.wlan_psk FROM (SELECT id, wlanssid, wlansec, wlan_psk FROM cfg_network) AS net WHERE net.id = 2"
+      fi
+      # Remove UPnP browser (djmount)
+      sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_47', value='' WHERE param='upnp_browser'"
+      # - apt purge djmount? There will be a dependency between djmount and moode-player package.
+      # - rmdir /mnt/UPNP? What if user has an existing UPnP mount?
 
       # Any release may contain station updates
       # Import_stations update
