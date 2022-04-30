@@ -420,8 +420,8 @@ function on_upgrade() {
       fi
       # Remove UPnP browser (djmount)
       sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_47', value='' WHERE param='upnp_browser'"
-      # - apt purge djmount? There will be a dependency between djmount and moode-player package.
-      # - rmdir /mnt/UPNP? What if user has an existing UPnP mount?
+      # - TODO: apt purge djmount? There will be a dependency between djmount and moode-player package.
+      # - TODO: rmdir /mnt/UPNP? What if user has an existing UPnP mount?
 
       # Any release may contain station updates
       # Import_stations update
