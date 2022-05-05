@@ -275,7 +275,7 @@ function rbl_check_cargo {
     # Install cargo + rust tools
     CARGO_VER=`cargo --version`
     # RUST_CHAIN="stable" until 1.61 is available on stable switch to nightly
-    $RUST_CHAIN="nightly"
+    RUST_CHAIN="nightly"
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}cargo: not installed, installing it${NORMAL}"
