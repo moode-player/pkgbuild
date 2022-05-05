@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="pycamilladsp-plot_0.6.2-1moode1"
+PKG="pycamilladsp-plot_1.0.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/pycamilladsp-plot.git"
-PKG_SOURCE_GIT_TAG="v0.6.2"
+PKG_SOURCE_GIT_TAG="v1.0.0"
 
 rbl_build_py_from_git
 
