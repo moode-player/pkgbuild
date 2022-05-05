@@ -30,8 +30,8 @@ Note: The versions represented in the table are only for example and may not rep
 | [ashuffle](https://github.com/joshkunz/ashuffle)   | 3.12.5-1moode1 | git+dh_make |  |
 | [*bluez*](https://github.com/bluez/bluez)      | *5.55-3.1+rpt1* | ***stock*** |
 | [bluez-alsa](https://github.com/Arkq/bluez-alsa) | 3.0.0-2moode1  | backport    |  |
-| [camilladsp](https://github.com/HEnquist/camilladsp) | 0.6.3-1moode1  | cargo-deb   |  |
-| [camillagui](https://github.com/HEnquist/camillagui) | 0.6.0-1moode1  | fpm   | yes |
+| [camilladsp](https://github.com/HEnquist/camilladsp) | 1.0.0-1moode1  | cargo-deb   |  |
+| [camillagui](https://github.com/HEnquist/camillagui) | 1.0.0-1moode1  | fpm   | yes |
 | [*camillagui-backend*](https://github.com/HEnquist/camillagui-backend) | *0.8.0-1moode1*  | *-*  | *yes* |
 | [caps](http://quitte.de/dsp/caps.html)       | 0.9.26-1moode1 | rebuild     | yes |
 | [libnpupnp1](https://www.lesbonscomptes.com/upmpdcli/index.html) | 4.0.14-1moode1 | git         |  |
@@ -42,8 +42,8 @@ Note: The versions represented in the table are only for example and may not rep
 | [moode-player](https://github.com/moode-player/moode)       | 8.0.2-1moode1 | git+dh_make     |  |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
 | [mpd](https://www.musicpd.org/)        | 0.23.5-1moode3 | backport    | yes |
-| [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 0.6.0-1moode1 | stdeb |  |
-| [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 0.6.2-1moode1 | stdeb |  |
+| [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 1.0.0-1moode1 | stdeb |  |
+| [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 1.0.0-1moode1 | stdeb |  |
 | [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.20.1~-1moode1 | git   |  |
 | [shairport-sync](https://github.com/mikebrady/shairport-sync) | 3.3.8-1moode1| backport | |
 | [squeezelite](https://github.com/ralph-irving/squeezelite)| 1.9+git20210102.78fef68-3moode1 | rebuild |  yes |
