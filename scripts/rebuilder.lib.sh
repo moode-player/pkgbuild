@@ -271,8 +271,11 @@ function rbl_check_cargo {
     export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
     export PATH=$PATH:/home/pi/.cargo/bin
 
+    RUSTC_MIN_VERSION="1.61"
     # Install cargo + rust tools
     CARGO_VER=`cargo --version`
+    # RUST_CHAIN="stable" until 1.61 is available on stable switch to nightly
+    $RUST_CHAIN="nightly"
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}cargo: not installed, installing it${NORMAL}"
@@ -285,6 +288,22 @@ function rbl_check_cargo {
         echo "${GREEN}cargo: already installed${NORMAL}"
     fi
 
+    RUSTC_VER=`rustc --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/"`
+
+    dpkg --compare-versions $RUSTC_VER ge $RUSTC_MIN_VERSION
+    if [ $? -gt 0 ]
+    then
+        echo "${YELLOW}rust version = $RUSTC_VER , needs update ${NORMAL}"
+        # as long as 1.61 isn't stable switch to nightly build
+        echo "${YELLOW}rustup: Using nightly build!${NORMAL}"
+        rustup default $RUST_CHAIN
+        #rustup default stable
+        rustup update
+    else
+        echo "${GREEN}rust version = $RUSTC_VER${NORMAL}"
+    fi
+    rustup default $RUST_CHAIN
+
     CARGO_DEB_VER=`cargo-deb --version`
     if [[ $? -gt 0 ]]
     then
@@ -294,7 +313,7 @@ function rbl_check_cargo {
         echo "${GREEN}cargo-deb: already installed${NORMAL}"
     fi
 
-    rustup show | grep stable-armv7-unknown-linux-gnueabihf > /dev/null
+    rustup show | grep $RUST_CHAIN-armv7-unknown-linux-gnueabihf > /dev/null
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}rustup: armv7 toolchain not installed, installing it.${NORMAL}"a
@@ -303,7 +322,7 @@ function rbl_check_cargo {
         echo "${GREEN}rustup: armv7 toolchain already installed${NORMAL}"
     fi
 
-    rustup show | grep stable-arm-unknown-linux-gnueabihf > /dev/null
+    rustup show | grep $RUST_CHAIN-arm-unknown-linux-gnueabihf > /dev/null
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}rustup: armv6 toolchain not installed, installing it.${NORMAL}"a

@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camilladsp_0.6.3-1moode3"
+PKG="camilladsp_1.0.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camilladsp.git"
-PKG_SOURCE_GIT_TAG="v0.6.3"
+PKG_SOURCE_GIT_TAG="v1.0.0"
 
 rbl_check_cargo
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
@@ -36,13 +36,14 @@ echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
 # echo "" >> Cargo.toml
 
 # Build it for arch with neon support
-if [ $ARCH64 -eq 1 ]
-then
-    rustup default stable-aarch64-unknown-linux-gnu
-else
-    rustup default stable-armv7-unknown-linux-gnueabihf
-fi
-RUSTFLAGS='-C target-feature=+neon -C target-cpu=native' cargo-deb -- --no-default-features --features alsa-backend --features websocket
+# if [ $ARCH64 -eq 1 ]
+# then
+#     rustup default stable-aarch64-unknown-linux-gnu
+# else
+#     rustup default stable-armv7-unknown-linux-gnueabihf
+# fi
+
+RUSTFLAGS='-C target-feature=+neon -C target-cpu=native' cargo-deb -- --no-default-features --features websocket
 
 if [[ $? -gt 0 ]]
 then
