@@ -107,14 +107,14 @@ then
     exit 1
 fi
 
-$MOODE_DIR/www/command/stationmanager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --scope moode --export $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip
+$MOODE_DIR/www/util/station_manager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --scope moode --export $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip
 if [ ! -f $MAJOR_BASE_STATIONS ]
 then
     echo "${RED}Error: radio station base backup $MAJOR_BASE_STATIONS not found!${NORMAL}"
     cd ..
     exit 1
 fi
-$MOODE_DIR/www/command/stationmanager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --diff $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip --scope moode $MAJOR_BASE_STATIONS
+$MOODE_DIR/www/util/station_manager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --diff $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip --scope moode $MAJOR_BASE_STATIONS
 
 if [ ! -f $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip ]
 then
@@ -190,6 +190,7 @@ find $NOT_OWNED_TEMP -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
 # echo "** Reset permissions"
 chmod -R 0755  $PKG_ROOT_DIR/var/www
 chmod 0755  $PKG_ROOT_DIR/var/www/command/*
+chmod 0755  $PKG_ROOT_DIR/var/www/util/*
 chmod -R 0755  $PKG_ROOT_DIR/var/local/www
 chmod -R 0777  $PKG_ROOT_DIR/var/local/www/commandw/*
 chmod -R 0766  $PKG_ROOT_DIR/var/local/www/db

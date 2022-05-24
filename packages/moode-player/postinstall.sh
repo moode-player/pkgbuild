@@ -39,9 +39,9 @@ function import_stations() {
     then
       if [ "$mode" == "full" ]
       then
-        /var/www/command/stationmanager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP > /dev/null
+        /var/www/util/station_manager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP > /dev/null
       else
-        /var/www/command/stationmanager.py --import --scope moode --how merge $TMP_STATIONS_BACKUP > /dev/null
+        /var/www/util/station_manager.py --import --scope moode --how merge $TMP_STATIONS_BACKUP > /dev/null
       fi
 
       rm -f $TMP_STATIONS_BACKUP
