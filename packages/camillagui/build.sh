@@ -10,13 +10,13 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camillagui_1.0.0-1moode1"
+PKG="camillagui_1.0.0-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camillagui.git"
-PKG_SOURCE_GIT_TAG="v1.0.0"
+PKG_SOURCE_GIT_TAG="v1.0.0-rc3"
 
 PKG_SOURCE_GIT_BACKEND="https://github.com/HEnquist/camillagui-backend.git"
-PKG_SOURCE_GIT_TAG_BACKEND="v1.0.0-rc2"
+PKG_SOURCE_GIT_TAG_BACKEND="v1.0.0-rc4"
 
 # gui is a react app
 rbl_check_build_dep npm
@@ -31,13 +31,14 @@ _rbl_change_to_build_root
 # ------------------------------------------------------------
 # Custom part of the packing
 
-
+echo "build root : $BUILD_ROOT_DIR"
 # ---------------------------------------------------------------
 # A. camillagui
 # ---------------------------------------------------------------
 git clone $PKG_SOURCE_GIT
 cd camillagui
-git checkout -b $PKG_SOURCE_GIT_TAG origin/$PKG_SOURCE_GIT_TAG
+# git checkout -b $PKG_SOURCE_GIT_TAG origin/$PKG_SOURCE_GIT_TAG
+git checkout -b $PKG_SOURCE_GIT_TAG $PKG_SOURCE_GIT_TAG
 # add option to hide files tab on expert mode:
 patch -p1 < $BASE_DIR/camillagui_hide_files.patch
 # installing npm deps with npm ci failed, so use npm install instead
@@ -53,7 +54,8 @@ cd ..
 # ---------------------------------------------------------------
 git clone $PKG_SOURCE_GIT_BACKEND
 cd camillagui-backend
-git checkout -b $PKG_SOURCE_GIT_TAG_BACKEND origin/$PKG_SOURCE_GIT_TAG_BACKEND
+# git checkout -b $PKG_SOURCE_GIT_TAG_BACKEND origin/$PKG_SOURCE_GIT_TAG_BACKEND
+git checkout -b $PKG_SOURCE_GIT_TAG_BACKEND $PKG_SOURCE_GIT_TAG_BACKEND
 # add option to hide files tab on expert mode:
 patch -p1 < $BASE_DIR/camillagui_backend_hide_files.patch
 cd ..

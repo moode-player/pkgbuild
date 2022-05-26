@@ -2,11 +2,11 @@ diff --git a/backend/settings.py b/backend/settings.py
 index aed51e6..9e03c28 100644
 --- a/backend/settings.py
 +++ b/backend/settings.py
-@@ -15,6 +15,7 @@ GUI_CONFIG_DEFAULTS = {
-     "hide_capture_device": False,
+@@ -16,6 +16,7 @@ GUI_CONFIG_DEFAULTS = {
      "hide_playback_device": False,
      "applyConfigAutomatically": False,
-+    "hide_file_manager": False
+     "status_update_interval": 100,
++    "hide_file_manager": False,
  }
 
- def _load_yaml(path):
+ # Default values for the optional settings.
