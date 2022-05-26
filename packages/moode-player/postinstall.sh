@@ -418,6 +418,19 @@ function on_upgrade() {
           sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_ssid VALUES ('1', '', '', '')"
           sqlite3 $SQLDB "UPDATE cfg_ssid SET ssid = net.wlanssid, sec = net.wlansec, psk = net.wlan_psk FROM (SELECT id, wlanssid, wlansec, wlan_psk FROM cfg_network) AS net WHERE net.id = 2"
       fi
+      # NOTE: Do these files need to be updated here?
+      /etc/rc.local.overwrite /etc/rc.local
+      /etc/udisks-glue.overwrite.conf /etc/udisks-glue.conf
+      /home/xinitrc.default /home/pi/.xinitrc
+      /lib/systemd/system/rotenc.service /lib/systemd/system/
+      /usr/local/bin/moodeutl /usr/local/bin/
+      rm /var/local/www/commandw/lcdup.py
+      /var/local/www/commandw/lcd_updater.py /var/local/www/commandw/
+      /var/local/www/commandw/slpower.sh /var/local/www/commandw/
+      /var/local/www/commandw/spotevent.sh /var/local/www/commandw/
+      /var/local/www/commandw/spspost.sh /var/local/www/commandw/
+      /var/local/www/commandw/spspre.sh /var/local/www/commandw/
+
       # Remove UPnP browser (djmount)
       sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_47', value='' WHERE param='upnp_browser'"
       # - TODO: apt purge djmount? There will be a dependency between djmount and moode-player package.
