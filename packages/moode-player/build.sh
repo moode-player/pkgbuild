@@ -305,6 +305,11 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends python3-musicpd \
 --depends expect \
 --depends runonce \
+--depends fonts-arphic-ukai \
+--depends fonts-arphic-uming \
+--depends fonts-ipafont-mincho \
+--depends fonts-ipafont-gothic \
+--depends fonts-unfonts-core \
 root/boot/.=/boot \
 root/var/.=/var \
 root/home/.=/home \
