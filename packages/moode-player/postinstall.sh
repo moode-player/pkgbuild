@@ -414,7 +414,7 @@ function on_upgrade() {
       # Create new cfg_ssid table and insert configured ssid if any
       sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))"
       RESULT=$(sqlite3 $SQLDB "SELECT wlan_psk FROM cfg_network WHERE id='2'")
-      if [ $RESULT != "" ]; then
+      if [ -n "$RESULT" ]; then
           sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_ssid VALUES ('1', '', '', '')"
           sqlite3 $SQLDB "UPDATE cfg_ssid SET ssid = net.wlanssid, sec = net.wlansec, psk = net.wlan_psk FROM (SELECT id, wlanssid, wlansec, wlan_psk FROM cfg_network) AS net WHERE net.id = 2"
       fi
