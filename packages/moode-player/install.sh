@@ -33,7 +33,7 @@ sudo apt install moode-player
 KERNEL_VER=$(uname -r | sed -r "s/([0-9.]*)[-].*/\1/")
 echo "Checking for drivers built for kernel version: ${KERNEL_VER}"
 # NOTE: Be sure to update this array
-SUPPORTED_KERNELS=(5.10.63 5.10.92 5.15.23)
+SUPPORTED_KERNELS=(5.10.63 5.10.92 5.15.23 5.15.32)
 inarray=$(echo ${SUPPORTED_KERNELS[@]} | grep -o "$KERNEL_VER" | wc -w)
 if [ $inarray -eq 1 ]
 then
