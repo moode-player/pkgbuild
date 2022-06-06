@@ -79,6 +79,8 @@ uname -m | grep "64" > /dev/null
 if [[ $? -eq 0 ]]
 then
     ARCH64=1
+else
+    ARCH64=0
 fi
 PKGBUILD_ROOT=`realpath $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/..`
 
@@ -680,39 +682,47 @@ function rbl_dkms_prepare {
         DKMS_KERNEL_STRING="-k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+"
     fi
 
-    rbl_check_fpm
-    _rbl_decode_pkg_version
-    _rbl_check_curr_is_package_dir
-    _rbl_cleanup_previous_build
-    _rbl_change_to_build_root
+    # $FULL_VERSION is already set this is sign that another build step prep the build tree (like rbl_prepare_clone_from_git)
+    # In that case we skip the prep steps
+    if [ -z "$FULL_VERSION" ]
+    then
+        rbl_check_fpm
+        _rbl_decode_pkg_version
+        _rbl_check_curr_is_package_dir
+        _rbl_cleanup_previous_build
+    fi
 
+    _rbl_change_to_build_root
     rbl_check_build_dep dkms
 
     # for intree modules builds the kernel source (not only the headers is required), but if no headers are present the source is also required
-    #if [ "$mode" = "intree" ]
-    #then
+    if [ "$mode" = "intree" ]
+    then
         # make sure we have the rpi-source package available
         rbl_check_build_dep rpi-source
         # this will download the kernel source if needed and set the ENV KERNEL_SOURCE_ARCHIVE to the location of the tarball
         # if already present the cached source will be used
         rbl_get_kernel_source
-    #fi
 
-    # normally kernel headers are used, but when not present we need to use the source tree instead
-    rbl_check_kernel_headers
+        # normally kernel headers are used, but when not present we need to use the source tree instead
+        rbl_check_kernel_headers
 
-    echo "dkms build prepared at: $BUILD_ROOT_DIR/source/$SRC_DIR"
-    mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
+        echo "dkms build prepared at: $BUILD_ROOT_DIR/source/$SRC_DIR"
+        mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
 
-    # create dkms source project files:
-    cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/prepkernel.sh $BUILD_ROOT_DIR/source/$SRC_DIR/
-    cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms-patchmodule.intree.sh $BUILD_ROOT_DIR/source/$SRC_DIR/dkms-patchmodule.sh
-    chmod +x $BUILD_ROOT_DIR/source/$SRC_DIR/*.sh
-    rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR/dkms.conf
+        # create dkms source project files:
+        cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/prepkernel.sh $BUILD_ROOT_DIR/source/$SRC_DIR/
+        cp $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms-patchmodule.intree.sh $BUILD_ROOT_DIR/source/$SRC_DIR/dkms-patchmodule.sh
+        chmod +x $BUILD_ROOT_DIR/source/$SRC_DIR/*.sh
+        rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/dkms.conf $BUILD_ROOT_DIR/source/$SRC_DIR/dkms.conf
 
-    # if patched or tar files are needed for the dkms project
-    cp $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
-    cp $BASE_DIR/*.tar $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
+        # if patched or tar files are needed for the dkms project
+        cp $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
+        cp $BASE_DIR/*.tar $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
+    else
+        # normally kernel headers are used, but when not present we need to use the source tree instead
+        rbl_check_kernel_headers
+    fi
 }
 
 

@@ -36,21 +36,15 @@ fi
 MODULE="motu.ko"
 
 
-# allo source with module replacement:
+# allow source with module replacement:
 # SOURCE_GIT="https://github.com/Drumfix/motu-avb-usb.git"
 # SOURCE_GIT_TAG="master"
 
-# rbl_dkms_prepare outree
-
-rbl_check_fpm
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
-rbl_check_kernel_headers
+rbl_dkms_prepare outtree
 
 DKMS_MODULE="$PKGNAME/$PKGVERSION"
-# MODULE_PATH='net/wireless/realtek/rtlwifi'
-
-cd $BUILD_ROOT_DIR
 
 #------------------------------------------------------------
 # Custom part of the packing
