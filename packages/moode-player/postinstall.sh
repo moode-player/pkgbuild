@@ -420,7 +420,7 @@ function on_upgrade() {
       fi
 
       sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/rc.local
-      sed -i -e 's/^\/var\/www\/command\/worker.php//var\/www\/daemon\/worker.php/' /etc/rc.local
+      sed -i -e 's/^\/var\/www\/command\/worker.php/\/var\/www\/daemon\/worker.php/' /etc/rc.local
       sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/udisks-glue.conf
 
       # Remove UPnP browser (djmount)
