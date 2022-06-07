@@ -37,6 +37,8 @@ rbl_check_build_dep npm
 # For packign fpm is used, which is created with Ruby
 rbl_check_fpm
 
+rbl_check_build_dep sqlite3
+
 _rbl_decode_pkg_version
 _rbl_check_curr_is_package_dir
 
