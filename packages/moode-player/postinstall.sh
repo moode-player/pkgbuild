@@ -97,6 +97,9 @@ function on_install() {
         systemctl disable "${service}" > /dev/null 2>&1
       done
 
+      echo "** Remove default login banner **"
+      mv /usr/share/userconf-pi/sshd_banner /usr/share/userconf-pi/sshd_banner.default
+
       echo "** Create MPD runtime environment"
       touch /var/lib/mpd/state
 
@@ -376,16 +379,17 @@ function on_install() {
       fi
 
       # On boot set default playlist and output 1
-cat > /etc/runonce.d/moode_first_boot <<EOL
+      # NOTE: Moved to worker.php for r810 release
+#cat > /etc/runonce.d/moode_first_boot <<EOL
 #!/bin/bash
-timeout 30s bash -c 'until mpc status; do sleep 3; done';
-mpc status
-if [[ $? -eq 0 ]]
-then
-  mpc load "Default Playlist"
-  mpc enable only 1
-fi
-EOL
+#timeout 30s bash -c 'until mpc status; do sleep 3; done';
+#mpc status
+#if [[ $? -eq 0 ]]
+#then
+#  mpc load "Default Playlist"
+#  mpc enable only 1
+#fi
+#EOL
 
       echo "moode-player install finished, please reboot"
 }
