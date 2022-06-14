@@ -97,8 +97,8 @@ function on_install() {
         systemctl disable "${service}" > /dev/null 2>&1
       done
 
-      echo "** Remove default login banner **"
-      mv /usr/share/userconf-pi/sshd_banner /usr/share/userconf-pi/sshd_banner.default
+      echo "** Remove default SSH banner **"
+      mv /etc/ssh/sshd_config.d/rename_user.conf /etc/ssh/sshd_config.d/rename_user.conf.default
 
       echo "** Create MPD runtime environment"
       touch /var/lib/mpd/state
