@@ -98,7 +98,7 @@ function on_install() {
       done
 
       echo "** Remove default SSH banner **"
-      mv /etc/ssh/sshd_config.d/rename_user.conf /etc/ssh/sshd_config.d/rename_user.conf.default
+      rm  /usr/share/userconf-pi/sshd_banner
 
       echo "** Create MPD runtime environment"
       touch /var/lib/mpd/state
