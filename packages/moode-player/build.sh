@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.1.0-1moode1"
+PKG="moode-player_8.1.1-1moode1~pre1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -310,6 +310,8 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends fonts-ipafont-mincho \
 --depends fonts-ipafont-gothic \
 --depends fonts-unfonts-core \
+--depends fonts-unfonts-core \
+--depends systemd-timesyncd \
 root/boot/.=/boot \
 root/var/.=/var \
 root/home/.=/home \
