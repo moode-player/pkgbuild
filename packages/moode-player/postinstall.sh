@@ -233,7 +233,7 @@ function on_install() {
       sed -i -e "s/^;session.save_path.*/session.save_path = \"0;666;\/var\/local\/php\"/" \
              -e "s/^max_execution_time.*/max_execution_time = 300/" \
              -e "s/^max_input_time.*/max_input_time = -1/" \
-             -e "s/^max_input_vars.*/max_input_vars = 10000/" \
+             -e "s/^;max_input_vars.*/max_input_vars = 32768/" \
              -e "s/^memory_limit.*/memory_limit = -1/" \
              -e "s/^post_max_size.*/post_max_size = 75M/" \
              -e "s/^upload_max_filesize.*/upload_max_filesize = 75M/" \
