@@ -420,9 +420,13 @@ function on_upgrade() {
           sqlite3 $SQLDB "UPDATE cfg_ssid SET ssid = net.wlanssid, sec = net.wlansec, psk = net.wlan_psk FROM (SELECT id, wlanssid, wlansec, wlan_psk FROM cfg_network) AS net WHERE net.id = 2"
       fi
 
+      # Use new subdirs from refactoring
       sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/rc.local
       sed -i -e 's/^\/var\/www\/command\/worker.php/\/var\/www\/daemon\/worker.php/' /etc/rc.local
       sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/udisks-glue.conf
+
+      # Introduced in r811
+      sed -i -e "s/^;max_input_vars.*/max_input_vars = 32768/" /etc/php/7.4/fpm/php.ini
 
       # Remove UPnP browser (djmount)
       sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_47', value='' WHERE param='upnp_browser'"
