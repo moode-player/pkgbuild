@@ -311,7 +311,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends fonts-ipafont-gothic \
 --depends fonts-unfonts-core \
 --depends fonts-unfonts-core \
---depends systemd-timesyncd \
 root/boot/.=/boot \
 root/var/.=/var \
 root/home/.=/home \
