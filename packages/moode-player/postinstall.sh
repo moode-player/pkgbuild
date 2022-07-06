@@ -425,7 +425,7 @@ function on_upgrade() {
       sed -i -e 's/^\/var\/www\/command\/worker.php/\/var\/www\/daemon\/worker.php/' /etc/rc.local
       sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/udisks-glue.conf
 
-      # Introduced in r811
+      # Introduced in r812
       sed -i -e "s/^;max_input_vars.*/max_input_vars = 32768/" /etc/php/7.4/fpm/php.ini
 
       # Remove UPnP browser (djmount)
