@@ -82,10 +82,13 @@ function on_install() {
           mpd \
           mpd.service \
           mpd.socket \
+          nfs-kernel-server \
+          nmbd.service \
           phpsessionclean.service \
           phpsessionclean.timer \
           shellinabox \
           shairport-sync \
+          smbd.service \
           squeezelite \
           triggerhappy \
           udisks2 \
@@ -107,6 +110,8 @@ function on_install() {
       [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
       [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
       [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
+      [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
+
 
       echo "** Create logfiles"
       touch /var/log/moode.log
@@ -431,6 +436,25 @@ function on_upgrade() {
       # Introduced in r812
       sed -i -e "s/^;max_input_vars.*/max_input_vars = 32768/" /etc/php/7.4/fpm/php.ini
 
+      # Introduced in r820
+      # Change from 7200 (2 hours) to 21600 (6 hours)
+      sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
+      # Add / update cfg_system columns for File sharing feature
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_smb"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs_access"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      sqlite3 $SQLDB "UPDATE cfg_system SET param='fs_nfs_options', value='rw,sync,no_subtree_check,no_root_squash' WHERE id='47'"
+      # Create symlink for NFS server
+      [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
+      # Refactor names of auto mount commands
+      # Udisks glue
+      sed -i -e "s/sysutil.sh smbadd/automount.sh add_mount_udisks/" /etc/udisks-glue.conf
+      sed -i -e "s/sysutil.sh smbrem/automount.sh remove_mount_udisks/" /etc/udisks-glue.conf
+      # Devmon
+      sed -i -e "s/sysutil.sh smb_add/automount.sh add_mount_devmon/" /etc/rc.local
+      sed -i -e "s/sysutil.sh smb_remove/automount.sh remove_mount_devmon/" /etc/rc.local
+
+      # General
       # Any release may contain station updates
       # Import_stations update
       import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
