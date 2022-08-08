@@ -437,20 +437,20 @@ function on_upgrade() {
       sed -i -e "s/^;max_input_vars.*/max_input_vars = 32768/" /etc/php/7.4/fpm/php.ini
 
       # Introduced in r820
-      # Change from 7200 (2 hours) to 21600 (6 hours)
+      # Maintenance interval: Change from 7200 (2 hours) to 21600 (6 hours)
       sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
-      # Add / update cfg_system columns for File sharing feature
+      # File sharing feature: Add / update cfg_system rows
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_smb"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs_access"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       sqlite3 $SQLDB "UPDATE cfg_system SET param='fs_nfs_options', value='rw,sync,no_subtree_check,no_root_squash' WHERE id='47'"
-      # Create symlink for NFS server
+      # Native lazyload option: Add cfg_system row
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "native_lazyload"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      # NFS server feature: Create symlink
       [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
-      # Refactor names of auto mount commands
-      # Udisks glue
+      # NFS server feature:  Update name of automount script
       sed -i -e "s/sysutil.sh smbadd/automount.sh add_mount_udisks/" /etc/udisks-glue.conf
       sed -i -e "s/sysutil.sh smbrem/automount.sh remove_mount_udisks/" /etc/udisks-glue.conf
-      # Devmon
       sed -i -e "s/sysutil.sh smb_add/automount.sh add_mount_devmon/" /etc/rc.local
       sed -i -e "s/sysutil.sh smb_remove/automount.sh remove_mount_devmon/" /etc/rc.local
       # AP Router mode: Add column wlan_router to cfg_network
