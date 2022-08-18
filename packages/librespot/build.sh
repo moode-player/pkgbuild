@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="librespot_0.4.1-1moode1"
+PKG="librespot_0.4.2-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/librespot-org/librespot.git"
-PKG_SOURCE_GIT_TAG="v0.4.1"
+PKG_SOURCE_GIT_TAG="v0.4.2"
 DEBSUFFIXVERSION=2
 
 rbl_check_cargo
@@ -51,4 +51,3 @@ mv target/debian/* ..
 rbl_move_to_dist
 
 echo "done"
-
