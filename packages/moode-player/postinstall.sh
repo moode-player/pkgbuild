@@ -439,6 +439,8 @@ function on_upgrade() {
       # Introduced in r820
       # Maintenance interval: Change from 7200 (2 hours) to 21600 (6 hours)
       sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
+      # Change to GitHub from AWS for hosting software update downloads
+      sqlite3 $SQLDB "UPDATE cfg_system SET value='https://raw.githubusercontent.com/moode-player/updates/main/moode-player' WHERE param='res_software_upd_url'"
       # File sharing feature: Add / update cfg_system rows
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_smb"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
