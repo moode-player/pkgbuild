@@ -1,6 +1,6 @@
 [Unit]
 Description=CamillaDSP GUI
-After=multi-user.target
+After=network-online.target
 
 [Service]
 Type=idle
