@@ -25,17 +25,17 @@ Note: The versions represented in the table are only for example and may not rep
 
 | Package    |      Version    | How  | Patches* |
 |----------  |-----------------|:----|---------------|
-| [alsa-cdsp](https://github.com/scripple/alsa_cdsp)  | 1.1.0-1moode1  | git+dh_make | yes |
+| [alsa-cdsp](https://github.com/scripple/alsa_cdsp)  | 1.2.0-1moode1  | git+dh_make | yes |
 | [alsacap](https://github.com/bubbapizza/alsacap)    | 1.0.1-1moode1  | git+dh_make |  |
 | [ashuffle](https://github.com/joshkunz/ashuffle)   | 3.12.5-1moode1 | git+dh_make |  |
 | [*bluez*](https://github.com/bluez/bluez)      | *5.55-3.1+rpt1* | ***stock*** |
 | [bluez-alsa](https://github.com/Arkq/bluez-alsa) | 3.0.0-2moode1  | backport    |  |
 | [camilladsp](https://github.com/HEnquist/camilladsp) | 1.0.0-1moode1  | cargo-deb   |  |
-| [camillagui](https://github.com/HEnquist/camillagui) | 1.0.0-1moode2  | fpm   | yes |
+| [camillagui](https://github.com/HEnquist/camillagui) | 1.0.0-1moode3  | fpm   | yes |
 | [*camillagui-backend*](https://github.com/HEnquist/camillagui-backend) | *0.8.0-1moode1*  | *-*  | *yes* |
 | [caps](http://quitte.de/dsp/caps.html)       | 0.9.26-1moode1 | rebuild     | yes |
 | [libnpupnp1](https://www.lesbonscomptes.com/upmpdcli/index.html) | 4.0.14-1moode1 | git         |  |
-| [librespot](https://github.com/librespot-org/librespot)  | 0.4.1-1moode1  | cargo-deb   |  |
+| [librespot](https://github.com/librespot-org/librespot)  | 0.4.2-1moode1  | cargo-deb   |  |
 | [libupnpp6](https://www.lesbonscomptes.com/upmpdcli/index.html)  | 0.21.0-1moode1 | git         |  |
 | [*mediainfo*](https://mediaarea.net/nl/MediaInfo)  | *20.09-1* | ***stock*** |
 | [*minidlna*](https://sourceforge.net/projects/minidlna/)   | *1.3.0+dfsg-2* | ***stock*** |
