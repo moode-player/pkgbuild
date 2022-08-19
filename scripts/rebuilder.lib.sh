@@ -94,6 +94,10 @@ DO_DEP_UPDATE=1
 function apt_update {
     if [[ $DO_DEP_UPDATE -gt 0 ]]
     then
+        if [[ ! -f "/etc/apt/sources.list.d/moodeaudio-m8y.list" ]]
+        then
+            curl -1sLf 'https://dl.cloudsmith.io/public/moodeaudio/m8y/setup.deb.sh' | sudo -E distro=raspbian codename=bullseye bash
+        fi
         sudo apt update
         DO_DEP_UPDATE=0
     fi
