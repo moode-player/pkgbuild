@@ -656,10 +656,10 @@ function rbl_dkms_grab_modules {
         mkdir -p $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
         if [ $ARCH64 -eq 1 ]
         then
-            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
         else
             # with dkms there is always a armv7l subdir also for armv7+
-            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
+            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
         fi
         if [[ $? -gt 0 ]]
         then
