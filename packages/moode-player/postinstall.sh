@@ -448,9 +448,10 @@ function on_upgrade() {
       sqlite3 $SQLDB "UPDATE cfg_system SET param='fs_nfs_options', value='rw,sync,no_subtree_check,no_root_squash' WHERE id='47'"
       # Native lazyload option: Add cfg_system row
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "native_lazyload"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      # NFS server feature: Create symlink
+      # NFS server feature:
+      # Create symlink
       [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
-      # NFS server feature:  Update name of automount script
+      # Update name of automount script
       sed -i -e "s/sysutil.sh smbadd/automount.sh add_mount_udisks/" /etc/udisks-glue.conf
       sed -i -e "s/sysutil.sh smbrem/automount.sh remove_mount_udisks/" /etc/udisks-glue.conf
       sed -i -e "s/sysutil.sh smb_add/automount.sh add_mount_devmon/" /etc/rc.local
@@ -459,7 +460,7 @@ function on_upgrade() {
       sqlite3 $SQLDB "CREATE TABLE sqlite_temp_table AS SELECT * FROM cfg_network"
       sqlite3 $SQLDB "DROP TABLE cfg_network"
       sqlite3 $SQLDB "CREATE TABLE cfg_network (id INTEGER PRIMARY KEY, iface CHAR (5), method CHAR (6), ipaddr CHAR (15), netmask CHAR (15), gateway CHAR (15), pridns CHAR (15), secdns CHAR (15), wlanssid CHAR (32), wlansec CHAR (4), wlanpwd CHAR (64), wlan_psk CHAR (64), wlan_country CHAR (2), wlan_channel CHAR (3), wlan_router CHAR (32))"
-      sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_network (id, iface, method, ipaddr, netmask, gateway, pridns, secdns, wlanssid, wlansec, wlanpwd, wlan_psk, wlan_country, wlan_channel) SELECT id, iface, method, ipaddr, netmask, gateway, pridns, secdns, wlanssid, wlansec, wlanpwd, wlan_psk, wlan_country, wlan_channel FROM sqlitestudio_temp_table"
+      sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_network (id, iface, method, ipaddr, netmask, gateway, pridns, secdns, wlanssid, wlansec, wlanpwd, wlan_psk, wlan_country, wlan_channel) SELECT id, iface, method, ipaddr, netmask, gateway, pridns, secdns, wlanssid, wlansec, wlanpwd, wlan_psk, wlan_country, wlan_channel FROM sqlite_temp_table"
       sqlite3 $SQLDB "DROP TABLE sqlite_temp_table"
       sqlite3 $SQLDB "UPDATE cfg_network SET wlan_router='Off' WHERE id='3'"
 
