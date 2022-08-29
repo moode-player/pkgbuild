@@ -448,6 +448,8 @@ function on_upgrade() {
       sqlite3 $SQLDB "UPDATE cfg_system SET param='fs_nfs_options', value='rw,sync,no_subtree_check,no_root_squash' WHERE id='47'"
       # Native lazyload option: Add cfg_system row
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "native_lazyload"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      # Playlist one-touch option: Add cfg_system row
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_onetouch_pl"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       # NFS server feature:
       # Create symlink
       [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
