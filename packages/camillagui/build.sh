@@ -10,13 +10,13 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camillagui_1.0.0-1moode3"
+PKG="camillagui_1.0.0-1moode4"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camillagui.git"
-PKG_SOURCE_GIT_TAG="v1.0.0-rc4"
+PKG_SOURCE_GIT_TAG="v1.0.0-rc5"
 
 PKG_SOURCE_GIT_BACKEND="https://github.com/HEnquist/camillagui-backend.git"
-PKG_SOURCE_GIT_TAG_BACKEND="v1.0.0-rc5"
+PKG_SOURCE_GIT_TAG_BACKEND="v1.0.0-rc6"
 
 # gui is a react app
 rbl_check_build_dep npm
