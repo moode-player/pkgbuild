@@ -584,6 +584,7 @@ function rbl_check_kernel_headers {
         # required to point dkms to the alternative kernel source:
         DKMS_OPTS=(--kernelsourcedir "$KERNEL_DIR")
     else
+        echo "${GREEN} Kernel headers are present!${NORMAL}"
         MODULE_BUILD_USE_HEADERS=1
         MODULE_BUILD_USE_SOURCE=0
     fi
