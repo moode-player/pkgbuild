@@ -7,6 +7,11 @@
 # License: GPLv3
 #
 #########################################################################
+# Used for coloured output
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+NORMAL=$(tput sgr0)
+
 echo "prepkernel"
 index=$1
 
@@ -15,7 +20,7 @@ ARCHS=(["v7+"]=0 ["v7l+"]=1 ["v8+"]=2)
 INDEX=${ARCHS[$index]}
 if [ -z $INDEX ]
 then
-    echo "Error: For arch $index no architecture lookup found!"
+    echo "${RED}Error: For arch $index no architecture lookup found!{$NORMAL}"
     exit 1
 fi
 
@@ -36,9 +41,21 @@ echo "location  : $(pwd)"
 echo ""
 
 make mrproper
+
 if [ ! -f "Module$SYMBOL.symvers" ]
 then
-   wget --no-verbose -O ./Module$SYMBOL.symvers https://raw.githubusercontent.com/raspberrypi/rpi-firmware/$KERNEL_HASH/Module$SYMBOL.symvers
+   # location of the symbol has changed:
+   # old variant (<5.15.61):
+   # wget --no-verbose -O ./Module$SYMBOL.symvers https://raw.githubusercontent.com/raspberrypi/rpi-firmware/$KERNEL_HASH/Module$SYMBOL.symvers
+   # new variant (>=5.15.61):
+   wget --no-verbose -O ./Module$SYMBOL.symvers https://raw.githubusercontent.com/raspberrypi/firmware/$KERNEL_HASH/extra/Module$SYMBOL.symvers
+   if [ $? -gt 0 ]
+   then
+     echo "${RED}Failed to download Module$SYMBOL.symvers!${NORMAL}"
+     exit 1
+   else
+     echo "${GREEN}Downloaded Module$SYMBOL.symvers${NORMAL}"
+   fi
 fi
 cp ./Module$SYMBOL.symvers ./Module.symvers
 make $DEFCONFIG

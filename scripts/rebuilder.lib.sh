@@ -547,7 +547,9 @@ function rbl_get_kernel_source {
 # check if kernel headers are present, else unpack the kernel source if needed and set the flag MODULE_BUILD_USE_SOURCE
 function rbl_check_kernel_headers {
     local  _KERNEL_VER=$(rbl_get_current_kernel_version)
-    if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -lt 1 ]
+    # if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -lt 1 ]
+    ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 | grep "No such file or directory" > /dev/null
+    if [ $? -eq 0 ]
     then
         prev_path=`pwd`
         if [ -z $KERNEL_SOURCE_ARCHIVE ]
