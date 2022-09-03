@@ -731,5 +731,3 @@ function rbl_dkms_prepare {
         rbl_check_kernel_headers
     fi
 }
-
-
