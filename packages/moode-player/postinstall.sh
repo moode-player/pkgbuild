@@ -450,6 +450,8 @@ function on_upgrade() {
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "native_lazyload"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       # Playlist one-touch option: Add cfg_system row
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_onetouch_pl"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      # Screen saver mode
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_mode"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       # NFS server feature:
       # Create symlink
       [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
