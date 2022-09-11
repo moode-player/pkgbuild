@@ -413,7 +413,7 @@ function on_upgrade() {
       sed -i -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' /etc/bluetooth/main.conf
 
       # Introduced in r810
-      # Add new cfg_system columns
+      # Add new cfg_system rows
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "playlist_pos"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "plview_sort_group"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
@@ -461,11 +461,10 @@ function on_upgrade() {
       sed -i -e "s/sysutil.sh smb_add/automount.sh add_mount_devmon/" /etc/rc.local
       sed -i -e "s/sysutil.sh smb_remove/automount.sh remove_mount_devmon/" /etc/rc.local
       # AP Router mode: Add column wlan_router to cfg_network
-      sqlite3 $SQLDB "CREATE TABLE temp_table AS SELECT * FROM cfg_network"
-      sqlite3 $SQLDB "DROP TABLE cfg_network"
-      sqlite3 $SQLDB "CREATE TABLE cfg_network (id INTEGER PRIMARY KEY, iface CHAR (5), method CHAR (6), ipaddr CHAR (15), netmask CHAR (15), gateway CHAR (15), pridns CHAR (15), secdns CHAR (15), wlanssid CHAR (32), wlansec CHAR (4), wlanpwd CHAR (64), wlan_psk CHAR (64), wlan_country CHAR (2), wlan_channel CHAR (3), wlan_router CHAR (32))"
-      sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_network (id, iface, method, ipaddr, netmask, gateway, pridns, secdns, wlanssid, wlansec, wlanpwd, wlan_psk, wlan_country, wlan_channel) SELECT id, iface, method, ipaddr, netmask, gateway, pridns, secdns, wlanssid, wlansec, wlanpwd, wlan_psk, wlan_country, wlan_channel FROM temp_table"
-      sqlite3 $SQLDB "DROP TABLE temp_table"
+      RESULT=$(sqlite3 $SQLDB "SELECT wlan_router FROM cfg_network")
+      if [ -z "$RESULT" ]; then
+          sqlite3 $SQLDB "ALTER TABLE cfg_network ADD COLUMN wlan_router CHAR(32)"
+      fi
       sqlite3 $SQLDB "UPDATE cfg_network SET wlan_router='Off' WHERE id='3'"
 
       # General
