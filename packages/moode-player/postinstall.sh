@@ -454,13 +454,18 @@ function on_upgrade() {
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_mode"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_layout"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
       # NFS server feature:
-      # Create symlink
+      # - Create symlink
       [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
-      # Update name of automount script
+      # - Update name of automount script
       sed -i -e "s/sysutil.sh smbadd/automount.sh add_mount_udisks/" /etc/udisks-glue.conf
       sed -i -e "s/sysutil.sh smbrem/automount.sh remove_mount_udisks/" /etc/udisks-glue.conf
       sed -i -e "s/sysutil.sh smb_add/automount.sh add_mount_devmon/" /etc/rc.local
       sed -i -e "s/sysutil.sh smb_remove/automount.sh remove_mount_devmon/" /etc/rc.local
+      # - Disable service
+      systemctl disable nfs-server.service
+      # SMB server feature
+      systemctl disable smbd.service
+      systemctl disable nmbd.service
       # AP Router mode: Add column wlan_router to cfg_network
       RESULT=$(sqlite3 $SQLDB "SELECT wlan_router FROM cfg_network")
       if [ -z "$RESULT" ]; then
