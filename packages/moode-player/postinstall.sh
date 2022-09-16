@@ -82,7 +82,7 @@ function on_install() {
           mpd \
           mpd.service \
           mpd.socket \
-          nfs-kernel-server \
+          nfs-server \
           nmbd.service \
           phpsessionclean.service \
           phpsessionclean.timer \
