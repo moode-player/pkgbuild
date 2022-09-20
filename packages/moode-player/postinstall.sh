@@ -473,6 +473,10 @@ function on_upgrade() {
       fi
       sqlite3 $SQLDB "UPDATE cfg_network SET wlan_router='Off' WHERE id='3'"
 
+      # Introduced in r821
+      # Receiver Master volume opt-in change default to 1 (Yes)
+      sqlite3 $SQLDB  "UPDATE cfg_multiroom SET value='1' WHERE param='rx_mastervol_opt_in'"
+
       # General
       # Any release may contain station updates
       # Import_stations update
