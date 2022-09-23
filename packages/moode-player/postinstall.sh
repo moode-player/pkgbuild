@@ -469,9 +469,8 @@ function on_upgrade() {
       # AP Router mode: Add column wlan_router to cfg_network
       RESULT=$(sqlite3 $SQLDB "SELECT wlan_router FROM cfg_network")
       if [ -z "$RESULT" ]; then
-          sqlite3 $SQLDB "ALTER TABLE cfg_network ADD COLUMN wlan_router CHAR(32)"
+          sqlite3 $SQLDB "ALTER TABLE cfg_network ADD COLUMN wlan_router CHAR(32) default 'Off'"
       fi
-      sqlite3 $SQLDB "UPDATE cfg_network SET wlan_router='Off' WHERE id='3'"
 
       # Introduced in r821
       # Receiver Master volume opt-in change default to 1 (Yes)
