@@ -474,7 +474,11 @@ function on_upgrade() {
 
       # Introduced in r821
       # Receiver Master volume opt-in change default to 1 (Yes)
-      sqlite3 $SQLDB  "UPDATE cfg_multiroom SET value='1' WHERE param='rx_mastervol_opt_in'"
+      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='1' WHERE param='rx_mastervol_opt_in'"
+      # Maintenance interval
+      sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
+      # CoverView extra metadata for wide mode
+      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_xmeta"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
 
       # General
       # Any release may contain station updates
