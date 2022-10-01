@@ -390,7 +390,8 @@ function rbl_prepare_from_git_with_deb_repo {
     git clone $PKG_SOURCE_GIT $PKGDIR
 
     _rbl_cd_source_dir
-    git checkout -b $PKG_SOURCE_GIT_TAG $PKG_SOURCE_GIT_TAG
+
+    git checkout -b $PKG_SOURCE_GIT_TAG origin/$PKG_SOURCE_GIT_TAG
     git archive  --format=tar.gz --output ../${PKGNAME}_${PKGVERSION}.orig.tar.gz $PKG_SOURCE_GIT_TAG
 }
 
