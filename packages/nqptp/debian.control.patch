@@ -1,0 +1,45 @@
+--- ./debian/control.org	2022-09-23 12:02:47.171969447 +0200
++++ ./debian/control	2022-09-23 12:06:24.181404001 +0200
+@@ -4,22 +4,26 @@
+ Build-Depends: debhelper-compat (= 13)
+ Standards-Version: 4.5.1
+ Section: libs
+-Homepage: <insert the upstream URL, if relevant>
+-#Vcs-Browser: https://salsa.debian.org/debian/nqptp
+-#Vcs-Git: https://salsa.debian.org/debian/nqptp.git
++Homepage: https://github.com/mikebrady/nqptp
++Vcs-Browser: https://github.com/mikebrady/nqptp
++Vcs-Git: https://github.com/mikebrady/nqptp
+ Rules-Requires-Root: no
+
+-Package: nqptp-dev
+-Section: libdevel
+-Architecture: any
+-Multi-Arch: same
+-Depends: nqptpBROKEN (= ${binary:Version}), ${misc:Depends}
+-Description: <insert up to 60 chars description>
+- <insert long description, indented with spaces>
++# Package: nqptp-dev
++# Section: libdevel
++# Architecture: any
++# Multi-Arch: same
++# Depends: nqptpBROKEN (= ${binary:Version}), ${misc:Depends}
++# Description: <insert up to 60 chars description>
++#  <insert long description, indented with spaces>
+
+-Package: nqptpBROKEN
+-Architecture: any
+-Multi-Arch: same
+-Depends: ${shlibs:Depends}, ${misc:Depends}
+-Description: <insert up to 60 chars description>
+- <insert long description, indented with spaces>
++Package: nqptp
++Architecture: any
++# Multi-Arch: same
++# Depends: ${shlibs:Depends}, ${misc:Depends}
++# Description: <insert up to 60 chars description>
++#  <insert long description, indented with spaces>
++Description: nqptp is a daemon that monitors timing data from any PTP clocks – up to 64 – it sees on ports 319 and 320.
++ nqptp is a daemon that monitors timing data from any PTP clocks – up to 64 – it sees on ports 319 and 320.
++ It maintains records for each clock, identified by Clock ID and IP.
++ It is a companion application to Shairport Sync and provides timing information for AirPlay 2 operation.
