@@ -1,0 +1,23 @@
+--- shairport-sync.org/debian/control	2022-09-28 18:06:03.497312500 +0200
++++ shairport-sync/debian/control	2022-09-28 18:06:42.307663997 +0200
+@@ -15,6 +15,11 @@
+  libsndfile1-dev,
+  libsoxr-dev,
+  libssl-dev,
++ libplist-dev,
++ libsodium-dev,
++ libavutil-dev,
++ libavcodec-dev,
++ libavformat-dev,
+  xmltoman,
+ Standards-Version: 4.6.0
+ Homepage: https://github.com/mikebrady/shairport-sync
+@@ -30,7 +30,7 @@
+ Package: shairport-sync
+ Architecture: linux-any
+ Pre-Depends: ${misc:Pre-Depends}
+-Depends: adduser, avahi-daemon, ${misc:Depends}, ${shlibs:Depends}
++Depends: adduser, avahi-daemon, nqptp, ${misc:Depends}, ${shlibs:Depends}
+ Description: AirPlay audio player
+  Plays audio streamed from iTunes, iOS devices and third-party AirPlay
+  sources such as ForkedDaapd and others. Audio played by a Shairport
