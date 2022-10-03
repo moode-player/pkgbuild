@@ -1,0 +1,12 @@
+--- shairport-sync.org/debian/rules	2022-09-23 12:56:35.869681970 +0200
++++ shairport-sync/debian/rules	2022-09-23 12:57:40.828610689 +0200
+@@ -40,7 +40,8 @@
+ 		--with-convolution \
+ 		--with-dbus-interface \
+ 		--with-mpris-interface \
+-		--with-mqtt-client
++		--with-mqtt-client \
++		--with-airplay-2
+
+ override_dh_installchangelogs:
+ 	dh_installchangelogs --keep RELEASENOTES.md

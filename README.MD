@@ -42,10 +42,11 @@ Note: The versions represented in the table are only for example and may not rep
 | [moode-player](https://github.com/moode-player/moode)       | 8.0.2-1moode1 | git+dh_make     |  |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
 | [mpd](https://www.musicpd.org/)        | 0.23.5-1moode3 | backport    | yes |
+| [nqptp](https://github.com/mikebrady/nqptp)        | 1.1.0~git20220930.c71b49a-1moode1 | git+dh_make    |  |
 | [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 1.0.0-1moode1 | stdeb |  |
 | [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 1.0.0-1moode1 | stdeb |  |
 | [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.20.1~-1moode1 | git   |  |
-| [shairport-sync](https://github.com/mikebrady/shairport-sync) | 3.3.8-1moode1| backport | |
+| [shairport-sync](https://github.com/mikebrady/shairport-sync) | 4.1.0~git20220930.97fa75e8-1moode1| git+debsrc | |
 | [squeezelite](https://github.com/ralph-irving/squeezelite)| 1.9+git20210102.78fef68-3moode1 | rebuild |  yes |
 | [trx](http://www.pogo.org.uk/~mark/trx/)        | 0.6-1moode1    |  git+dh_make |  |
 | [udisks](https://www.freedesktop.org/wiki/Software/udisks/) | 1.0.5-1moode1 | ***upport*** | yes |
