@@ -13,20 +13,17 @@
 PKG="camillagui_1.0.0-1moode4"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camillagui.git"
-PKG_SOURCE_GIT_TAG="v1.0.0-rc5"
+PKG_SOURCE_GIT_TAG="v1.0.0-final"
 
 PKG_SOURCE_GIT_BACKEND="https://github.com/HEnquist/camillagui-backend.git"
-PKG_SOURCE_GIT_TAG_BACKEND="v1.0.0-rc6"
+PKG_SOURCE_GIT_TAG_BACKEND="v1.0.0"
 
 # gui is a react app
 rbl_check_build_dep npm
 # For packign fpm is used, which is created with Ruby
 rbl_check_fpm
 
-_rbl_decode_pkg_version
-_rbl_check_curr_is_package_dir
-_rbl_cleanup_previous_build
-_rbl_change_to_build_root
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 
 # ------------------------------------------------------------
 # Custom part of the packing
@@ -35,12 +32,17 @@ echo "build root : $BUILD_ROOT_DIR"
 # ---------------------------------------------------------------
 # A. camillagui
 # ---------------------------------------------------------------
-git clone $PKG_SOURCE_GIT
-cd camillagui
-# git checkout -b $PKG_SOURCE_GIT_TAG origin/$PKG_SOURCE_GIT_TAG
-git checkout -b $PKG_SOURCE_GIT_TAG $PKG_SOURCE_GIT_TAG
+# upgrade npm package will cause a strange layout on the files tab
+# (maybe todo with the old npm/Typescript tooling on the Pi?)
+# git revert  --no-edit a7e09fdb81b25df91b033786a9109ab0514ee05e
+
 # add option to hide files tab on expert mode:
 patch -p1 < $BASE_DIR/camillagui_hide_files.patch
+if [[ ! $? -eq 0 ]]
+then
+    echo "${RED} Error: patch failed .${NORMAL}"
+    exit 1
+fi
 # installing npm deps with npm ci failed, so use npm install instead
 # npm ci
 npm install
@@ -71,9 +73,16 @@ mkdir -p package/opt/camillagui
 mkdir -p package/etc/systemd/system
 
 # copy the required files into the directory structure
-cp -r camillagui/build camillagui-backend/backend camillagui-backend/config camillagui/LICENSE.txt camillagui-backend/main.py camillagui-backend/README.md package/opt/camillagui
+cp -r camillagui-$PKGVERSION/build camillagui-backend/backend camillagui-backend/config camillagui-$PKGVERSION/LICENSE.txt camillagui-backend/main.py camillagui-backend/README.md package/opt/camillagui
+if [[ ! $? -eq 0 ]]
+then
+    echo "${RED} Error: Copy files failed.${NORMAL}"
+    exit 1
+else
+    echo "${GREEN} Copy files is ok.${NORMAL}"
+fi
 cp $BASE_DIR/css-variables.css package/opt/camillagui/build
-cp $BASE_DIR//camillagui.yml package/opt/camillagui/config
+cp $BASE_DIR/camillagui.yml package/opt/camillagui/config
 cp $BASE_DIR/gui-config.yml package/opt/camillagui/config
 cp $BASE_DIR/camillagui.service package/etc/systemd/system
 

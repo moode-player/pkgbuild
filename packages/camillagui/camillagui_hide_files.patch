@@ -23,17 +23,17 @@ diff --git a/src/index.tsx b/src/index.tsx
 index 45f51e0..0a43b29 100644
 --- a/src/index.tsx
 +++ b/src/index.tsx
-@@ -202,7 +202,8 @@ class CamillaConfig extends React.Component<
+@@ -259,7 +259,8 @@ class CamillaConfig extends React.Component<
            <Tab>Filters {errors({path: ['filters'], includeChildren: true}) && <ErrorIcon/>}</Tab>
            <Tab>Mixers {errors({path: ['mixers'], includeChildren: true}) && <ErrorIcon/>}</Tab>
            <Tab>Pipeline {errors({path: ['pipeline'], includeChildren: true}) && <ErrorIcon/>}</Tab>
 -          <Tab>Files</Tab>
 +          {this.state.guiConfig.hide_file_manager===false &&
 +          <Tab>Files</Tab>}
+           <Tab>Shortcuts</Tab>
          </TabList>
          <TabPanel/>
-         <TabPanel>
-@@ -238,11 +238,12 @@ class CamillaConfig extends React.Component<
+@@ -296,14 +296,15 @@ class CamillaConfig extends React.Component<
            />
          </TabPanel>
          <TabPanel>
@@ -42,6 +42,9 @@ index 45f51e0..0a43b29 100644
                currentConfigFile={this.state.currentConfigFile}
                config={config}
                setCurrentConfig={this.setCurrentConfig}
+               setCurrentConfigFileName={this.setCurrentConfigFileName}
+               saveNotify={this.saveNotify}
+               guiConfig={this.state.guiConfig}
 -          />
 +          />}
          </TabPanel>
