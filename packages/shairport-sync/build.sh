@@ -10,8 +10,8 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-GIT_BASH=97fa75e8
-PKG="shairport-sync_4.1.0~git20220930.$GIT_BASH-1moode1"
+GIT_HASH=97fa75e8
+PKG="shairport-sync_4.1.0~git20220930.$GIT_HASH-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync.git"
 PKG_SOURCE_GIT_TAG="development"
@@ -20,7 +20,7 @@ PKG_DEBIAN="http://deb.debian.org/debian/pool/main/s/shairport-sync/shairport-sy
 
 
 rbl_prepare_from_git_with_deb_repo
-git checkout $GIT_BASH
+git checkout $GIT_HASH
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------

@@ -10,14 +10,14 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-GIT_BASH=c71b49a
-PKG="nqptp_1.1.0~git20220930.$GIT_BASH-1moode1"
+GIT_HASH=c71b49a
+PKG="nqptp_1.1.0~git20220930.$GIT_HASH-1moode1"
 PKG_SOURCE_GIT="https://github.com/mikebrady/nqptp.git"
 PKG_SOURCE_GIT_TAG="main"
 
 # rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT
-git checkout $GIT_BASH
+git checkout $GIT_HASH
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------
