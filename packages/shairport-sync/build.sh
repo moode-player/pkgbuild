@@ -10,8 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-GIT_HASH=97fa75e8
-PKG="shairport-sync_4.1.0~git20220930.$GIT_HASH-1moode1"
+#GIT_HASH=97fa75e8
+#PKG="shairport-sync_4.1.0~git20220930.$GIT_HASH-1moode1"
+GIT_HASH=489041d2
+PKG="shairport-sync_4.1.0~git20221008.$GIT_HASH-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync.git"
 PKG_SOURCE_GIT_TAG="development"
