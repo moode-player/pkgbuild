@@ -226,8 +226,8 @@ function on_install() {
              /etc/php/$PHP_VER/cli/php.ini
 
       # /etc/php/$PHP_VER/fpm/pool.d/www.conf
-	  # pm.max_children = 80
-      sed -i "s/^pm[.]max_children.*/pm.max_children = 80/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+	  # pm.max_children = 64
+      sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 
       # /etc/php/$PHP_VER/fpm/php.ini
       # max_execution_time = 300
@@ -483,7 +483,7 @@ function on_upgrade() {
       # Introduced in r822
 	  # Bump pm.max_children. It should be +5 over the limit in watchdog.sh
       PHP_VER="7.4"
-      sed -i "s/^pm[.]max_children.*/pm.max_children = 80/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+      sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 
       # General
       # Any release may contain station updates
