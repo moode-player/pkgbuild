@@ -84,6 +84,7 @@ function on_install() {
           mpd.socket \
           nfs-server \
           nmbd.service \
+          nqptp \
           phpsessionclean.service \
           phpsessionclean.timer \
           shellinabox \
