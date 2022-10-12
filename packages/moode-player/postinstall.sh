@@ -485,6 +485,8 @@ function on_upgrade() {
 	  # Bump pm.max_children. It should be +5 over the limit in watchdog.sh
       PHP_VER="7.4"
       sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+      # Start/stop nqptp on-demand
+      systemctl disable nqptp
 
       # General
       # Any release may contain station updates
