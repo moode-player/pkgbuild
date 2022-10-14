@@ -17,8 +17,8 @@ PKG_SOURCE_GIT_TAG="main"
 
 # rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT
-git checkout $GIT_HASH
-rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
+git checkout -b dev $GIT_HASH
+rbl_create_git_archive $GIT_HASH ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------
 # Custom part of the packing
