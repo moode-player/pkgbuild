@@ -10,10 +10,9 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-#GIT_HASH=97fa75e8
-#PKG="shairport-sync_4.1.0~git20220930.$GIT_HASH-1moode1"
-GIT_HASH=489041d2
-PKG="shairport-sync_4.1.0~git20221008.$GIT_HASH-1moode1"
+# set hash to match 4.1-rc2
+GIT_HASH=e7c6c4b
+PKG="shairport-sync_4.1.0~git20221009.$GIT_HASH-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync.git"
 PKG_SOURCE_GIT_TAG="development"
@@ -22,8 +21,10 @@ PKG_DEBIAN="http://deb.debian.org/debian/pool/main/s/shairport-sync/shairport-sy
 
 
 rbl_prepare_from_git_with_deb_repo
-git checkout $GIT_HASH
-rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
+rm ../*.orig.tar.gz
+git checkout -b dev-4.1rc2 $GIT_HASH
+rbl_create_git_archive $GIT_HASH ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
+
 
 #------------------------------------------------------------
 # Custom part of the packing
