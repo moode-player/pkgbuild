@@ -482,7 +482,7 @@ function on_upgrade() {
       cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_xmeta"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
 
       # Introduced in r822
-	  # Bump pm.max_children. It should be +5 over the limit in watchdog.sh
+	  # Bump pm.max_children. Refer to watchdog.sh for use of pm_max_children value in monitoring/reducing fpm pool
       PHP_VER="7.4"
       sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
       # Start/stop nqptp on-demand
