@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camilladsp_1.0.0-1moode1"
+PKG="camilladsp_1.0.2-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camilladsp.git"
-PKG_SOURCE_GIT_TAG="v1.0.0"
+PKG_SOURCE_GIT_TAG="v1.0.2"
 
 rbl_check_cargo
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
