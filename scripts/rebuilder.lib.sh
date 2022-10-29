@@ -278,10 +278,13 @@ function rbl_check_cargo {
     export PATH=$PATH:/home/pi/.cargo/bin
 
     RUSTC_MIN_VERSION="1.61"
+    # RUST_CHAIN="nightly"
+    # until 1.61 is available on stable switch to nightly
+    RUST_CHAIN="stable"
     # Install cargo + rust tools
-    CARGO_VER=`cargo --version`
-    # RUST_CHAIN="stable" until 1.61 is available on stable switch to nightly
-    RUST_CHAIN="nightly"
+    CARGO_VER=`cargo --version > /dev/null 2>&1`
+
+
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}cargo: not installed, installing it${NORMAL}"
@@ -301,7 +304,7 @@ function rbl_check_cargo {
     then
         echo "${YELLOW}rust version = $RUSTC_VER , needs update ${NORMAL}"
         # as long as 1.61 isn't stable switch to nightly build
-        echo "${YELLOW}rustup: Using nightly build!${NORMAL}"
+        echo "${YELLOW}rustup: updating ... ${NORMAL}"
         rustup default $RUST_CHAIN
         #rustup default stable
         rustup update
@@ -310,7 +313,7 @@ function rbl_check_cargo {
     fi
     rustup default $RUST_CHAIN
 
-    CARGO_DEB_VER=`cargo-deb --version`
+    CARGO_DEB_VER=`cargo-deb --version > /dev/null 2>&1`
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}cargo-deb: not installed, installing it.${NORMAL}"
