@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camilladsp_1.0.2-1moode1"
+PKG="camilladsp_1.0.3-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camilladsp.git"
-PKG_SOURCE_GIT_TAG="v1.0.2"
+PKG_SOURCE_GIT_TAG="v1.0.3"
 
 rbl_check_cargo
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
@@ -42,10 +42,10 @@ echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
 # else
 #     rustup default stable-armv7-unknown-linux-gnueabihf
 # fi
-
+echo "starting build:"
 RUSTFLAGS='-C target-feature=+neon -C target-cpu=native' cargo-deb -- --no-default-features --features websocket
 
-if [[ $? -gt 0 ]]
+if [ $? -gt 0 ]
 then
     echo "${RED}Error: cargo-deb failed during build"
     exit
