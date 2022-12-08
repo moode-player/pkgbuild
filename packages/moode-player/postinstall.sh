@@ -488,6 +488,12 @@ function on_upgrade() {
       # Start/stop nqptp on-demand
       systemctl disable nqptp
 
+      # Introduced in r823
+      # Update Default Playlist with new URL for BBC Radio 1
+      sed -i "s|http://stream.live.vc.bbcmedia.co.uk/bbc_radio_one|http://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/hls/nonuk/sbr_low/ak/bbc_radio_one.m3u8|" /var/lib/mpd/playlists/Default\ Playlist.m3u
+      # HTTPS-Only feature (initially not enabled)
+      sqlite3 $SQLDB "UPDATE cfg_system SET value='97206' WHERE param='feat_bitmask'"
+
       # General
       # Any release may contain station updates
       # Import_stations update
