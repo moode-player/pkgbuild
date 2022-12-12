@@ -627,6 +627,15 @@ function rbl_fix_control_patch_maintainer () {
     cat $src | sed "s/Maintainer: .*/Maintainer: ${DEBFULLNAME} <${DEBEMAIL}>/" > $dest
 }
 
+# patch which abort in case of problems
+function rbl_patch() {
+    patch -p1 < $1
+    if [[ $? -gt 0 ]]
+    then
+        echo "${RED}Error: failure during rbl_patch!${NORMAL}"
+        exit 1
+    fi
+}
 # -------------------------------------------------------------------------
 # dkms helper funcions
 # -------------------------------------------------------------------------
@@ -735,3 +744,4 @@ function rbl_dkms_prepare {
         rbl_check_kernel_headers
     fi
 }
+
