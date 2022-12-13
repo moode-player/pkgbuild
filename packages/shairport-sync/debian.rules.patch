@@ -1,12 +1,25 @@
---- shairport-sync.org/debian/rules	2022-09-23 12:56:35.869681970 +0200
-+++ shairport-sync/debian/rules	2022-09-23 12:57:40.828610689 +0200
-@@ -40,7 +40,8 @@
+--- shairport-sync.org/debian/rules	2022-12-13 20:25:42.438700086 +0100
++++ shairport-sync/debian/rules	2022-12-13 20:29:26.340683130 +0100
+@@ -20,9 +20,10 @@
+
+ override_dh_auto_clean:
+ 	dh_auto_clean
+-	rm -f man/shairport-sync.7 man/shairport-sync.html
++#	rm -f man/shairport-sync.7 man/shairport-sync.html
+
+ override_dh_auto_configure:
++	autoreconf -fi
+ 	dh_auto_configure -- \
+ 		--with-dummy \
+ 		--with-stdout \
+@@ -40,7 +41,9 @@
  		--with-convolution \
  		--with-dbus-interface \
  		--with-mpris-interface \
 -		--with-mqtt-client
 +		--with-mqtt-client \
-+		--with-airplay-2
++		--with-airplay-2 \
++		--with-ssl=openssl
 
  override_dh_installchangelogs:
  	dh_installchangelogs --keep RELEASENOTES.md

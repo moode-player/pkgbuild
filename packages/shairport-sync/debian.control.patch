@@ -1,6 +1,6 @@
 --- shairport-sync.org/debian/control	2022-09-28 18:06:03.497312500 +0200
 +++ shairport-sync/debian/control	2022-09-28 18:06:42.307663997 +0200
-@@ -15,6 +15,12 @@
+@@ -15,6 +15,13 @@
   libsndfile1-dev,
   libsoxr-dev,
   libssl-dev,
@@ -9,11 +9,12 @@
 + libavutil-dev,
 + libavcodec-dev,
 + libavformat-dev,
++ uuid-dev,
 + libgcrypt-dev,
   xmltoman,
  Standards-Version: 4.6.0
  Homepage: https://github.com/mikebrady/shairport-sync
-@@ -30,7 +30,7 @@
+@@ -25,7 +25,7 @@
  Package: shairport-sync
  Architecture: linux-any
  Pre-Depends: ${misc:Pre-Depends}
