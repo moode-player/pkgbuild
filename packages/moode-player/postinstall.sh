@@ -295,7 +295,7 @@ function on_install() {
       # disable_standby_mode = "auto";
       sed -i -e 's/\/\/.*interpolation[ ]=[ ]\"auto\"[;]\(.*\)/interpolation = "soxr";\1/' \
              -e 's/\/\/[[:space:]]\+\(audio_backend_latency_offset_in_seconds\)/\1/' \
-             -e 's/\/\/.*\(audio_backend_buffer_desired_length_in_seconds\)/\1/' \
+             -e 's/\/\/.*\(audio_backend_buffer_desired_length_in_seconds =\)/\1/' \
              -e 's/\/\/.*\(run_this_before_entering_active_state\)[ ]=[ ]\".*\"\(.*\)/\1 = "\/var\/local\/www\/commandw\/spspre.sh"\2/' \
              -e 's/\/\/.*\(run_this_after_exiting_active_state\)[ ]=[ ]\".*\"\(.*\)/\1 = "\/var\/local\/www\/commandw\/spspost.sh"\2/' \
              -e 's/\/\/[[:space:]]\+\(active_state_timeout\)/\1/' \
@@ -495,6 +495,9 @@ function on_upgrade() {
       sqlite3 $SQLDB "UPDATE cfg_system SET value='97206' WHERE param='feat_bitmask'"
       # Remove Blustooth speaker sharing param 'btmulti' (obsolete)
       sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_80', value='' WHERE id='80'"
+
+      # Introduced in r824
+      # No items for this release
 
       # General
       # Any release may contain station updates
