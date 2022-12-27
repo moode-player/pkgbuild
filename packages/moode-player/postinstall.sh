@@ -497,7 +497,8 @@ function on_upgrade() {
       sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_80', value='' WHERE id='80'"
 
       # Introduced in r824
-      # No items for this release
+      # Remove unneeded conf that was part of obsolete Bluetooth speaker sharing option
+      rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
 
       # General
       # Any release may contain station updates
