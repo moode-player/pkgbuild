@@ -497,6 +497,8 @@ function on_upgrade() {
       sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_80', value='' WHERE id='80'"
 
       # Introduced in r824
+      # Remove broken line in shairport-sync.conf
+      sed -i "/audio_backend_buffer_desired_length_in_seconds'/d" /etc/shairport-sync.conf
       # Remove unneeded conf that was part of obsolete Bluetooth speaker sharing option
       rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
 
