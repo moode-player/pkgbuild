@@ -348,6 +348,8 @@ function on_install() {
              /etc/systemd/journald.conf
 
       cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+      rm -f /etc/nginx/sites-enabled/*
+      sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
 
       # mpd
       touch /etc/mpd.conf
@@ -501,6 +503,13 @@ function on_upgrade() {
       sed -i "/audio_backend_buffer_desired_length_in_seconds'/d" /etc/shairport-sync.conf
       # Remove unneeded conf that was part of obsolete Bluetooth speaker sharing option
       rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
+
+      # Introduced in r8xx
+      if [ -f /etc/nginx/sites-enabled/default ]
+      then
+        rm -f /etc/nginx/sites-enabled/default
+        sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
+      fi
 
       # General
       # Any release may contain station updates
