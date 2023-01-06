@@ -26,6 +26,8 @@ rbl_patch $BASE_DIR/moode_build_options.patch
 # update the packageversion + debian version part
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch -v $FULL_VERSION "Support for selective resample mode"
 
+# prevent using the pkgbuild repo for VCS_TAG
+export GIT_DIR=`pwd`
 #------------------------------------------------------------
 rbl_build
 echo "done"
