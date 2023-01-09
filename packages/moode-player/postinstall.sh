@@ -172,12 +172,10 @@ function on_install() {
         mv /etc/motd /etc/motd.default
       fi
 
-      echo "** Update sudoers file"
-      #TODO: this could be added a config file instead
-      if [ ! -e /etc/sudoers.d/010_www-data-nopasswd ]; then
-        echo -e "www-data\tALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/010_www-data-nopasswd
-        chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
-      fi
+      echo "** Set permissions for pam and sudoers drop files"
+      chmod 0644 /etc/pam.d/sudo
+      chmod 0440 /etc/sudoers.d/010_moode
+      chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
 
       echo "** Setup config files"
       # ------------------------------------------------------------------------------------------
@@ -504,12 +502,18 @@ function on_upgrade() {
       # Remove unneeded conf that was part of obsolete Bluetooth speaker sharing option
       rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
 
-      # Introduced in r8xx
+      # Introduced in r830
+      # For restructured NGINX config
       if [ -f /etc/nginx/sites-enabled/default ]
       then
         rm -f /etc/nginx/sites-enabled/default
         sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
       fi
+      # Update permissions for pam and sudoers drop files
+      # TODO: Confirm whether new conf files from the moode-player package will overwrite existing
+      chmod 0644 /etc/pam.d/sudo
+      chmod 0440 /etc/sudoers.d/010_moode
+      chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
 
       # General
       # Any release may contain station updates
