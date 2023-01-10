@@ -510,7 +510,6 @@ function on_upgrade() {
         sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
       fi
       # Update permissions for pam and sudoers drop files
-      # TODO: Confirm whether new conf files from the moode-player package will overwrite existing
       chmod 0644 /etc/pam.d/sudo
       chmod 0440 /etc/sudoers.d/010_moode
       chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
