@@ -502,7 +502,7 @@ function on_upgrade() {
       # Remove unneeded conf that was part of obsolete Bluetooth speaker sharing option
       rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
 
-      # Introduced in r830
+      # Introduced in r825
       # For restructured NGINX config
       if [ -f /etc/nginx/sites-enabled/default ]
       then
