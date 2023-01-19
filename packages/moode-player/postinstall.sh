@@ -510,6 +510,13 @@ function on_upgrade() {
         rm -f /etc/nginx/sites-enabled/default
         sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
       fi
+      # Pam sudo (part of preventing spam in auth.log)
+      dpkg --compare-versions $VERSION lt "8.2.5-1moode1"
+      if [ $? -eq 0 ]
+      then
+        cp -f /usr/share/moode-player/etc/pam.d/sudo /etc/pam.d/sudo
+      fi
+
       # Update permissions for pam and sudoers drop files
       chmod 0644 /etc/pam.d/sudo
       chmod 0440 /etc/sudoers.d/010_moode
