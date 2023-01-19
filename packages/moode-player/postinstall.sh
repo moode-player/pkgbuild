@@ -345,11 +345,12 @@ function on_install() {
              -e "s/^#RuntimeMaxUse.*/RuntimeMaxUse=20M/" \
              /etc/systemd/journald.conf
 
+      # NGINX
       cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
       rm -f /etc/nginx/sites-enabled/*
       sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
 
-      # mpd
+      # MPD
       touch /etc/mpd.conf
       chown mpd:audio /etc/mpd.conf
       chmod 0666 /etc/mpd.conf
@@ -493,7 +494,7 @@ function on_upgrade() {
       sed -i "s|http://stream.live.vc.bbcmedia.co.uk/bbc_radio_one|http://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/hls/nonuk/sbr_low/ak/bbc_radio_one.m3u8|" /var/lib/mpd/playlists/Default\ Playlist.m3u
       # HTTPS-Only feature (initially not enabled)
       sqlite3 $SQLDB "UPDATE cfg_system SET value='97206' WHERE param='feat_bitmask'"
-      # Remove Blustooth speaker sharing param 'btmulti' (obsolete)
+      # Remove Bluetooth speaker sharing param 'btmulti' (obsolete)
       sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_80', value='' WHERE id='80'"
 
       # Introduced in r824
@@ -513,6 +514,8 @@ function on_upgrade() {
       chmod 0644 /etc/pam.d/sudo
       chmod 0440 /etc/sudoers.d/010_moode
       chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
+      # Change toggle_coverview to auto_coiverview to reflect actual usage
+      sqlite3 $SQLDB "UPDATE cfg_system SET param='auto_coverview'WHERE id='163'"
 
       # General
       # Any release may contain station updates
