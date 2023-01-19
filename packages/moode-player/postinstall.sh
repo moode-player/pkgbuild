@@ -523,6 +523,10 @@ function on_upgrade() {
       chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
       # Change toggle_coverview to auto_coiverview to reflect actual usage
       sqlite3 $SQLDB "UPDATE cfg_system SET param='auto_coverview'WHERE id='163'"
+      # Multiroom new buffer defaults
+      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='tx_bfr'"
+      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='rx_bfr'"
+      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='64' where param='rx_jitter_bfr'"
 
       # General
       # Any release may contain station updates
