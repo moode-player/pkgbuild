@@ -504,29 +504,28 @@ function on_upgrade() {
       rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
 
       # Introduced in r825
-      # For restructured NGINX config
-      if [ -f /etc/nginx/sites-enabled/default ]
-      then
-        rm -f /etc/nginx/sites-enabled/default
-        sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
-      fi
-      # Pam sudo (part of preventing spam in auth.log)
       dpkg --compare-versions $VERSION lt "8.2.5-1moode1"
       if [ $? -eq 0 ]
       then
+        # Pam sudo (part of preventing spam in auth.log)
         cp -f /usr/share/moode-player/etc/pam.d/sudo /etc/pam.d/sudo
+        # Multiroom new buffer defaults
+        sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='tx_bfr'"
+        sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='rx_bfr'"
+        sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='64' where param='rx_jitter_bfr'"
+        # For restructured NGINX config
+        if [ -f /etc/nginx/sites-enabled/default ]
+        then
+          rm -f /etc/nginx/sites-enabled/default
+          sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
+        fi
+        # Update permissions for pam and sudoers drop files
+        chmod 0644 /etc/pam.d/sudo
+        chmod 0440 /etc/sudoers.d/010_moode
+        chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
+        # Change toggle_coverview to auto_coverview to reflect actual usage
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='auto_coverview'WHERE id='163'"
       fi
-
-      # Update permissions for pam and sudoers drop files
-      chmod 0644 /etc/pam.d/sudo
-      chmod 0440 /etc/sudoers.d/010_moode
-      chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
-      # Change toggle_coverview to auto_coiverview to reflect actual usage
-      sqlite3 $SQLDB "UPDATE cfg_system SET param='auto_coverview'WHERE id='163'"
-      # Multiroom new buffer defaults
-      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='tx_bfr'"
-      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='rx_bfr'"
-      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='64' where param='rx_jitter_bfr'"
 
       # General
       # Any release may contain station updates
