@@ -508,17 +508,19 @@ function on_upgrade() {
       if [ $? -eq 0 ]
       then
         # Pam sudo (part of preventing spam in auth.log)
-        cp -f /usr/share/moode-player/etc/pam.d/sudo /etc/pam.d/sudo
+        cp -f $SRC/etc/pam.d/sudo /etc/pam.d/sudo
         # Multiroom new buffer defaults
         sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='tx_bfr'"
         sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='128' where param='rx_bfr'"
         sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='64' where param='rx_jitter_bfr'"
         # For restructured NGINX config
+        cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
         if [ -f /etc/nginx/sites-enabled/default ]
         then
           rm -f /etc/nginx/sites-enabled/default
           sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
         fi
+
         # Update permissions for pam and sudoers drop files
         chmod 0644 /etc/pam.d/sudo
         chmod 0440 /etc/sudoers.d/010_moode
