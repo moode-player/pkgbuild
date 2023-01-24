@@ -405,6 +405,8 @@ function on_upgrade() {
       # - Make the upgrade patches as fault tolerant as needed
       #--------------------------------------------------------------------------------------------------------
 
+      SRC=/usr/share/moode-player
+
       # Introduced in r801
       # Fix missing radio station seperator record with id 499, use "insert or ignore" instead of "insert"
       cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
