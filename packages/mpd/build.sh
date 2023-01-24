@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG_DSC_URL="http://deb.debian.org/debian/pool/main/m/mpd/mpd_0.23.11-1.dsc"
+PKG_DSC_URL="http://deb.debian.org/debian/pool/main/m/mpd/mpd_0.23.12-1.dsc"
 DEBSUFFIXVERSION=1
 
 rbl_prepare_from_dsc_url $PKG_DSC_URL
