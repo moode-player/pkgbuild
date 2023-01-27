@@ -30,23 +30,24 @@ Note: The versions represented in the table are only for example and may not rep
 | [ashuffle](https://github.com/joshkunz/ashuffle)   | 3.12.5-1moode1 | git+dh_make |  |
 | [*bluez*](https://github.com/bluez/bluez)      | *5.55-3.1+rpt1* | ***stock*** |
 | [bluez-alsa](https://github.com/Arkq/bluez-alsa) | 3.0.0-2moode1  | backport    |  |
-| [camilladsp](https://github.com/HEnquist/camilladsp) | 1.0.0-1moode1  | cargo-deb   |  |
-| [camillagui](https://github.com/HEnquist/camillagui) | 1.0.0-1moode3  | fpm   | yes |
-| [*camillagui-backend*](https://github.com/HEnquist/camillagui-backend) | *0.8.0-1moode1*  | *-*  | *yes* |
+| [camilladsp](https://github.com/HEnquist/camilladsp) | 1.0.3-1moode1  | cargo-deb   |  |
+| [camillagui](https://github.com/HEnquist/camillagui) | 1.0.1-1moode3  | fpm   | yes |
+| [*camillagui-backend*](https://github.com/HEnquist/camillagui-backend) | *1.0.1-1moode1*  | *-*  | *yes* |
 | [caps](http://quitte.de/dsp/caps.html)       | 0.9.26-1moode1 | rebuild     | yes |
 | [libnpupnp1](https://www.lesbonscomptes.com/upmpdcli/index.html) | 4.0.14-1moode1 | git         |  |
 | [librespot](https://github.com/librespot-org/librespot)  | 0.4.2-1moode1  | cargo-deb   |  |
 | [libupnpp6](https://www.lesbonscomptes.com/upmpdcli/index.html)  | 0.21.0-1moode1 | git         |  |
 | [*mediainfo*](https://mediaarea.net/nl/MediaInfo)  | *20.09-1* | ***stock*** |
 | [*minidlna*](https://sourceforge.net/projects/minidlna/)   | *1.3.0+dfsg-2* | ***stock*** |
-| [moode-player](https://github.com/moode-player/moode)       | 8.0.2-1moode1 | git+dh_make     |  |
+| [moode-player](https://github.com/moode-player/moode)       | 8.2.5-1moode1 | git+dh_make     |  |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
-| [mpd](https://www.musicpd.org/)        | 0.23.5-1moode3 | backport    | yes |
+| [mpd](https://www.musicpd.org/)        | 0.23.12-1moode1 | backport    | yes |
+| [mpd2cdspvolume](https://github.com/bitkeeper/mpd2cdspvolume/)        | 0.1.0-1moode1 | fpm    | no |
 | [nqptp](https://github.com/mikebrady/nqptp)        | 1.1.0~git20220930.c71b49a-1moode1 | git+dh_make    |  |
 | [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 1.0.0-1moode1 | stdeb |  |
 | [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 1.0.0-1moode1 | stdeb |  |
 | [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.20.1~-1moode1 | git   |  |
-| [shairport-sync](https://github.com/mikebrady/shairport-sync) | 4.1.0~git20220930.97fa75e8-1moode1| git+debsrc | |
+| [shairport-sync](https://github.com/mikebrady/shairport-sync) | 4.1.1-1moode1| git+debsrc | |
 | [squeezelite](https://github.com/ralph-irving/squeezelite)| 1.9+git20210102.78fef68-3moode1 | rebuild |  yes |
 | [trx](http://www.pogo.org.uk/~mark/trx/)        | 0.6-1moode1    |  git+dh_make |  |
 | [udisks](https://www.freedesktop.org/wiki/Software/udisks/) | 1.0.5-1moode1 | ***upport*** | yes |
@@ -61,11 +62,11 @@ Note: The camillagui-backend is bundled with the camillagui package.
 
 | Package    |      Version    | How  | Patches* | Descriptions |
 |----------  |-----------------|:----|---------------|----------|
-| [aloop](https://github.com/moode-player/pkgbuild )    | 5.15.32-1moode1  | fpm | yes | 384kHz patch for in tree module
+| [aloop](https://github.com/moode-player/pkgbuild )    | 5.15.84-1moode1  | fpm | yes | 384kHz patch for in tree module
 | [ax88179](https://github.com/allocom/USBridgeSig-AX2v0.git)    | 5.6.4.2-1moode1  | git |  | Patched  ax88179_178a driver with Allo SIG suppport.
 | [boss2-oled-p3](https://github.com/allocom/allo_boss2_oled_p3)  | 1.0.0-1moode1  | fpm |  | Allo Boss2 OLED display service
 | [motu-avb](https://github.com/Drumfix/motu-avb-usb) | 1.0-1moode1 | fpm  | motu usb driver for the avb (default not installed)
-| [pcm1794a](https://github.com/moode-player/pkgbuild)  | 5.15.32-1moode1  | fpm | yes | 384kHz patch for in tree module
+| [pcm1794a](https://github.com/moode-player/pkgbuild)  | 5.15.84-1moode1  | fpm | yes | 384kHz patch for in tree module
 | [rpi-source](https://github.com/RPi-Distro/rpi-source)    | 0.1-1moode1  | git | yes | Fixes to let it work with Python 3. Only needed with development.
 | [rtl88xxau](https://github.com/aircrack-ng/rtl8812au)    | 5.6.4.2-1moode1  | git |  | Required for SIG Wifi.
 | [runonce](https://github.com/moode-player/pkgbuild ) | 0.1.0-1moode1 | fpm | | service for running scripts once during boot
