@@ -175,6 +175,10 @@ mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 chmod 0777 $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 
+# /var/lib/cdsp/
+mkdir -p $PKG_ROOT_DIR/var/lib/cdsp
+chmod 0777 $PKG_ROOT_DIR/var/lib/cdsp
+
 # /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
 cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
@@ -275,6 +279,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends minidlna \
 --depends mpc \
 --depends mpd \
+--depends mpd2cdspvolume \
 --depends nfs-kernel-server \
 --depends nginx \
 --depends nmap \

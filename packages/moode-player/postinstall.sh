@@ -82,6 +82,7 @@ function on_install() {
           mpd \
           mpd.service \
           mpd.socket \
+          mpd2cdspvolume \
           nfs-server \
           nmbd.service \
           nqptp \
@@ -355,6 +356,10 @@ function on_install() {
       chown mpd:audio /etc/mpd.conf
       chmod 0666 /etc/mpd.conf
 
+      # MPD 2 camilladsp volume sync state file
+      echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
+      chmod a+w /var/lib/cdsp/camilladsp_volume_state
+
       # in case any changes are made to systemd file reload config
       systemctl daemon-reload
 
@@ -530,6 +535,23 @@ function on_upgrade() {
         # Change toggle_coverview to auto_coverview to reflect actual usage
         sqlite3 $SQLDB "UPDATE cfg_system SET param='auto_coverview'WHERE id='163'"
       fi
+
+      # Introduced in r830
+      dpkg --compare-versions $VERSION lt "8.3.0-1moode1"
+      if [ $? -eq 0 ]
+      then
+         # mpd 2 camilladsp volume sync
+         echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
+         chmod a+w /var/lib/cdsp/camilladsp_volume_state
+
+         systemctl stop mpd2cdspvolume
+         systemctl disable mpd2cdspvolume
+
+         sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' where id=80"
+
+         cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
+      fi
+
 
       # General
       # Any release may contain station updates
