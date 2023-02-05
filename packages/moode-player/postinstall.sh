@@ -540,18 +540,20 @@ function on_upgrade() {
       dpkg --compare-versions $VERSION lt "8.3.0-1moode1"
       if [ $? -eq 0 ]
       then
-         # mpd 2 camilladsp volume sync
+         # MPD 2 CamillaDSP volume sync
+         mkdir -p /var/lib/cdsp/
          echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
          chmod a+w /var/lib/cdsp/camilladsp_volume_state
-
          systemctl stop mpd2cdspvolume
          systemctl disable mpd2cdspvolume
-
          sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' where id=80"
-
          cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
-      fi
+         cp -f $SRC/usr/share/camilladsp/configs/loudness.yml /usr/share/camilladsp/configs/
+         cp -f $SRC/usr/share/camilladsp/configs/volumecontrol.yml /usr/share/camilladsp/configs/
 
+         # Piano 2.1 status command
+         cp -f $SRC/home/piano.sh /home/pi/
+      fi
 
       # General
       # Any release may contain station updates
