@@ -11,10 +11,10 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="mpd2cdspvolume_0.1.0-1moode1"
+PKG="mpd2cdspvolume_0.1.2-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/mpd2cdspvolume.git"
-PKG_SOURCE_GIT_TAG="v0.1.0"
+PKG_SOURCE_GIT_TAG="v0.1.2"
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 

@@ -413,102 +413,139 @@ function on_upgrade() {
       SRC=/usr/share/moode-player
 
       # Introduced in r801
-      # Fix missing radio station seperator record with id 499, use "insert or ignore" instead of "insert"
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      dpkg --compare-versions $VERSION lt "8.0.1-1moode1"
+      if [ $? -eq 0 ]
+      then
+        # Fix missing radio station seperator record with id 499, use "insert or ignore" instead of "insert"
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      fi
 
       # Introduced in r802
-      # Increase trust timeout for scanned, un-paired devices
-      # If it's already been set the command won't have any effect which is what we want
-      sed -i -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' /etc/bluetooth/main.conf
+      dpkg --compare-versions $VERSION lt "8.0.2-1moode1"
+      if [ $? -eq 0 ]
+      then
+        # Increase trust timeout for scanned, un-paired devices
+        # If it's already been set the command won't have any effect which is what we want
+        sed -i -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' /etc/bluetooth/main.conf
+      fi
 
       # Introduced in r810
-      # Add new cfg_system rows
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "playlist_pos"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "plview_sort_group"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      # Create new cfg_ssid table and insert configured ssid if any
-      sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))"
-      RESULT=$(sqlite3 $SQLDB "SELECT wlan_psk FROM cfg_network WHERE id='2'")
-      if [ -n "$RESULT" ]; then
-          sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_ssid VALUES ('1', '', '', '')"
-          sqlite3 $SQLDB "UPDATE cfg_ssid SET ssid = net.wlanssid, sec = net.wlansec, psk = net.wlan_psk FROM (SELECT id, wlanssid, wlansec, wlan_psk FROM cfg_network) AS net WHERE net.id = 2"
+      dpkg --compare-versions $VERSION lt "8.1.0-1moode1"
+      if [ $? -eq 0 ]
+      then
+        # Add new cfg_system rows
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_track_play"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "playlist_pos"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "plview_sort_group"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        # Create new cfg_ssid table and insert configured ssid if any
+        sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_ssid (id INTEGER PRIMARY KEY, ssid CHAR (32), sec CHAR (32), psk CHAR (32))"
+        RESULT=$(sqlite3 $SQLDB "SELECT wlan_psk FROM cfg_network WHERE id='2'")
+        if [ -n "$RESULT" ]; then
+            sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_ssid VALUES ('1', '', '', '')"
+            sqlite3 $SQLDB "UPDATE cfg_ssid SET ssid = net.wlanssid, sec = net.wlansec, psk = net.wlan_psk FROM (SELECT id, wlanssid, wlansec, wlan_psk FROM cfg_network) AS net WHERE net.id = 2"
+        fi
+        # Use new subdirs from refactoring
+        sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/rc.local
+        sed -i -e 's/^\/var\/www\/command\/worker.php/\/var\/www\/daemon\/worker.php/' /etc/rc.local
+        sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/udisks-glue.conf
+        # Remove UPnP browser (djmount)
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_47', value='' WHERE param='upnp_browser'"
+        # - TODO: apt purge djmount? There will be a dependency between djmount and moode-player package.
+        # - TODO: rmdir /mnt/UPNP? What if user has an existing UPnP mount?
       fi
-      # Use new subdirs from refactoring
-      sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/rc.local
-      sed -i -e 's/^\/var\/www\/command\/worker.php/\/var\/www\/daemon\/worker.php/' /etc/rc.local
-      sed -i -e 's/\/command\/util/\/util\/sysutil/g' /etc/udisks-glue.conf
-      # Remove UPnP browser (djmount)
-      sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_47', value='' WHERE param='upnp_browser'"
-      # - TODO: apt purge djmount? There will be a dependency between djmount and moode-player package.
-      # - TODO: rmdir /mnt/UPNP? What if user has an existing UPnP mount?
 
       # Introduced in r812
-      sed -i -e "s/^;max_input_vars.*/max_input_vars = 32768/" /etc/php/7.4/fpm/php.ini
+      dpkg --compare-versions $VERSION lt "8.1.2-1moode1"
+      if [ $? -eq 0 ]
+      then
+        sed -i -e "s/^;max_input_vars.*/max_input_vars = 32768/" /etc/php/7.4/fpm/php.ini
+      fi
 
       # Introduced in r820
-      # Maintenance interval: Change from 7200 (2 hours) to 21600 (6 hours)
-      sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
-      # Change to GitHub from AWS for hosting software update downloads
-      sqlite3 $SQLDB "UPDATE cfg_system SET value='https://raw.githubusercontent.com/moode-player/updates/main/moode-player' WHERE param='res_software_upd_url'"
-      # File sharing feature: Add / update cfg_system rows
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_smb"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs_access"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      sqlite3 $SQLDB "UPDATE cfg_system SET param='fs_nfs_options', value='rw,sync,no_subtree_check,no_root_squash' WHERE id='47'"
-      # Native lazyload option: Add cfg_system row
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "native_lazyload"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      # Playlist one-touch option: Add cfg_system row
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_onetouch_pl"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      # Screen saver mode and layout
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_mode"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_layout"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-      # NFS server feature:
-      # - Create symlink
-      [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
-      # - Update name of automount script
-      sed -i -e "s/sysutil.sh smbadd/automount.sh add_mount_udisks/" /etc/udisks-glue.conf
-      sed -i -e "s/sysutil.sh smbrem/automount.sh remove_mount_udisks/" /etc/udisks-glue.conf
-      sed -i -e "s/sysutil.sh smb_add/automount.sh add_mount_devmon/" /etc/rc.local
-      sed -i -e "s/sysutil.sh smb_remove/automount.sh remove_mount_devmon/" /etc/rc.local
-      # - Disable service
-      systemctl disable nfs-server.service
-      # SMB server feature
-      systemctl disable smbd.service
-      systemctl disable nmbd.service
-      # AP Router mode: Add column wlan_router to cfg_network
-      RESULT=$(sqlite3 $SQLDB "SELECT wlan_router FROM cfg_network")
-      if [ -z "$RESULT" ]; then
-          sqlite3 $SQLDB "ALTER TABLE cfg_network ADD COLUMN wlan_router CHAR(32) default 'Off'"
+      dpkg --compare-versions $VERSION lt "8.2.0-1moode1"
+      if [ $? -eq 0 ]
+      then
+        # Maintenance interval: Change from 7200 (2 hours) to 21600 (6 hours)
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
+        # Change to GitHub from AWS for hosting software update downloads
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='https://raw.githubusercontent.com/moode-player/updates/main/moode-player' WHERE param='res_software_upd_url'"
+        # File sharing feature: Add / update cfg_system rows
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_smb"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "fs_nfs_access"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='fs_nfs_options', value='rw,sync,no_subtree_check,no_root_squash' WHERE id='47'"
+        # Native lazyload option: Add cfg_system row
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "native_lazyload"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        # Playlist one-touch option: Add cfg_system row
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "library_onetouch_pl"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        # Screen saver mode and layout
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_mode"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_layout"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        # NFS server feature:
+        # - Create symlink
+        [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
+        # - Update name of automount script
+        sed -i -e "s/sysutil.sh smbadd/automount.sh add_mount_udisks/" /etc/udisks-glue.conf
+        sed -i -e "s/sysutil.sh smbrem/automount.sh remove_mount_udisks/" /etc/udisks-glue.conf
+        sed -i -e "s/sysutil.sh smb_add/automount.sh add_mount_devmon/" /etc/rc.local
+        sed -i -e "s/sysutil.sh smb_remove/automount.sh remove_mount_devmon/" /etc/rc.local
+        # - Disable service
+        systemctl disable nfs-server.service
+        # SMB server feature
+        systemctl disable smbd.service
+        systemctl disable nmbd.service
+        # AP Router mode: Add column wlan_router to cfg_network
+        RESULT=$(sqlite3 $SQLDB "SELECT wlan_router FROM cfg_network")
+        if [ -z "$RESULT" ]; then
+            sqlite3 $SQLDB "ALTER TABLE cfg_network ADD COLUMN wlan_router CHAR(32) default 'Off'"
+        fi
       fi
 
       # Introduced in r821
-      # Receiver Master volume opt-in change default to 1 (Yes)
-      sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='1' WHERE param='rx_mastervol_opt_in'"
-      # Maintenance interval
-      sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
-      # CoverView extra metadata for wide mode
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_xmeta"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+       dpkg --compare-versions $VERSION lt "8.2.1-1moode1"
+      if [ $? -eq 0 ]
+      then
+
+        # Receiver Master volume opt-in change default to 1 (Yes)
+        sqlite3 $SQLDB "UPDATE cfg_multiroom SET value='1' WHERE param='rx_mastervol_opt_in'"
+        # Maintenance interval
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='21600' WHERE param='maint_interval'"
+        # CoverView extra metadata for wide mode
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_system" | grep "scnsaver_xmeta"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+      fi
 
       # Introduced in r822
-	  # Bump pm.max_children. Refer to watchdog.sh for use of pm_max_children value in monitoring/reducing fpm pool
-      PHP_VER="7.4"
-      sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
-      # Start/stop nqptp on-demand
-      systemctl disable nqptp
+      dpkg --compare-versions $VERSION lt "8.2.2-1moode1"
+      if [ $? -eq 0 ]
+      then
+        # Bump pm.max_children. Refer to watchdog.sh for use of pm_max_children value in monitoring/reducing fpm pool
+        PHP_VER="7.4"
+        sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+        # Start/stop nqptp on-demand
+        systemctl disable nqptp
+      fi
 
       # Introduced in r823
-      # Update Default Playlist with new URL for BBC Radio 1
-      sed -i "s|http://stream.live.vc.bbcmedia.co.uk/bbc_radio_one|http://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/hls/nonuk/sbr_low/ak/bbc_radio_one.m3u8|" /var/lib/mpd/playlists/Default\ Playlist.m3u
-      # HTTPS-Only feature (initially not enabled)
-      sqlite3 $SQLDB "UPDATE cfg_system SET value='97206' WHERE param='feat_bitmask'"
-      # Remove Bluetooth speaker sharing param 'btmulti' (obsolete)
-      sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_80', value='' WHERE id='80'"
+      dpkg --compare-versions $VERSION lt "8.2.3-1moode1"
+      if [ $? -eq 0 ]
+      then
+        # Update Default Playlist with new URL for BBC Radio 1
+        sed -i "s|http://stream.live.vc.bbcmedia.co.uk/bbc_radio_one|http://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/hls/nonuk/sbr_low/ak/bbc_radio_one.m3u8|" /var/lib/mpd/playlists/Default\ Playlist.m3u
+        # HTTPS-Only feature (initially not enabled)
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='97206' WHERE param='feat_bitmask'"
+        # Remove Bluetooth speaker sharing param 'btmulti' (obsolete)
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_80', value='' WHERE id='80'"
+      fi
 
       # Introduced in r824
-      # Remove broken line in shairport-sync.conf
-      sed -i "/audio_backend_buffer_desired_length_in_seconds'/d" /etc/shairport-sync.conf
-      # Remove unneeded conf that was part of obsolete Bluetooth speaker sharing option
-      rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
+       dpkg --compare-versions $VERSION lt "8.2.4-1moode1"
+      if [ $? -eq 0 ]
+      then
+        # Remove broken line in shairport-sync.conf
+        sed -i "/audio_backend_buffer_desired_length_in_seconds'/d" /etc/shairport-sync.conf
+        # Remove unneeded conf that was part of obsolete Bluetooth speaker sharing option
+        rm /etc/alsa/conf.d/20-bluealsa-dmix.conf
+      fi
 
       # Introduced in r825
       dpkg --compare-versions $VERSION lt "8.2.5-1moode1"
