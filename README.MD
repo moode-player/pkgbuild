@@ -29,7 +29,7 @@ Note: The versions represented in the table are only for example and may not rep
 | [alsacap](https://github.com/bubbapizza/alsacap)    | 1.0.1-1moode1  | git+dh_make |  |
 | [ashuffle](https://github.com/joshkunz/ashuffle)   | 3.12.5-1moode1 | git+dh_make |  |
 | [*bluez*](https://github.com/bluez/bluez)      | *5.55-3.1+rpt1* | ***stock*** |
-| [bluez-alsa](https://github.com/Arkq/bluez-alsa) | 3.0.0-2moode1  | backport    |  |
+| [bluez-alsa](https://github.com/Arkq/bluez-alsa) | 4.0.0-1moode1  | git+debscr  |  |
 | [camilladsp](https://github.com/HEnquist/camilladsp) | 1.0.3-1moode1  | cargo-deb   |  |
 | [camillagui](https://github.com/HEnquist/camillagui) | 1.0.1-1moode3  | fpm   | yes |
 | [*camillagui-backend*](https://github.com/HEnquist/camillagui-backend) | *1.0.1-1moode1*  | *-*  | *yes* |
@@ -42,7 +42,7 @@ Note: The versions represented in the table are only for example and may not rep
 | [moode-player](https://github.com/moode-player/moode)       | 8.2.5-1moode1 | git+dh_make     |  |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
 | [mpd](https://www.musicpd.org/)        | 0.23.12-1moode1 | backport    | yes |
-| [mpd2cdspvolume](https://github.com/bitkeeper/mpd2cdspvolume/)        | 0.1.0-1moode1 | fpm    | no |
+| [mpd2cdspvolume](https://github.com/bitkeeper/mpd2cdspvolume/)        | 0.1.2-1moode1 | fpm    | no |
 | [nqptp](https://github.com/mikebrady/nqptp)        | 1.1.0~git20220930.c71b49a-1moode1 | git+dh_make    |  |
 | [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 1.0.0-1moode1 | stdeb |  |
 | [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 1.0.0-1moode1 | stdeb |  |
