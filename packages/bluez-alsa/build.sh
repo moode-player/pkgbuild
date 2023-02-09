@@ -15,7 +15,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="bluez-alsa_4.0.0-1moode1"
+PKG="bluez-alsa_4.0.0-2moode1"
 
 PKG_SOURCE_GIT="https://github.com/arkq/bluez-alsa.git"
 PKG_SOURCE_GIT_TAG="v4.0.0"
@@ -31,7 +31,11 @@ rbl_prepare_from_git_with_deb_repo
 # grab debian dir of older version
 rbl_grab_debian_archive $PKG_DEBIAN
 
+# enable cli
+rbl_patch $BASE_DIR/build_cli.debian.rules.patch
+
 echo "usr/share/man/man7/bluealsa-plugins.7" >> debian/bluez-alsa-utils.manpages
+
 
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Build for moOde."
 
