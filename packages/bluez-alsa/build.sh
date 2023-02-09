@@ -35,6 +35,7 @@ rbl_grab_debian_archive $PKG_DEBIAN
 rbl_patch $BASE_DIR/build_cli.debian.rules.patch
 
 echo "usr/share/man/man7/bluealsa-plugins.7" >> debian/bluez-alsa-utils.manpages
+echo "usr/share/man/man1/bluealsa-cli.1" >> debian/bluez-alsa-utils.manpages
 
 
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Build for moOde."
