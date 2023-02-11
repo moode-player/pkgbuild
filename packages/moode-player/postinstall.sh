@@ -564,7 +564,6 @@ function on_upgrade() {
           rm -f /etc/nginx/sites-enabled/default
           sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
         fi
-
         # Update permissions for pam and sudoers drop files
         chmod 0644 /etc/pam.d/sudo
         chmod 0440 /etc/sudoers.d/010_moode
@@ -587,7 +586,12 @@ function on_upgrade() {
          cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
          cp -f $SRC/usr/share/camilladsp/configs/loudness.yml /usr/share/camilladsp/configs/
          cp -f $SRC/usr/share/camilladsp/configs/volumecontrol.yml /usr/share/camilladsp/configs/
-
+         # Support CamillaDSP volume for Airplay and Spotify Connect renderers
+         cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
+         cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
+         cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
+         # Improved SQL syntax
+         cp -f $SRC/var/local/www/commandw/slpower.sh /var/local/www/commandw/
          # Piano 2.1 status command
          cp -f $SRC/home/piano.sh /home/pi/
       fi
