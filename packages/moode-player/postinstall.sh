@@ -582,7 +582,7 @@ function on_upgrade() {
          chmod a+w /var/lib/cdsp/camilladsp_volume_state
          systemctl stop mpd2cdspvolume
          systemctl disable mpd2cdspvolume
-         sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' where id=80"
+         sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' WHERE id=80"
          cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
          cp -f $SRC/usr/share/camilladsp/configs/loudness.yml /usr/share/camilladsp/configs/
          cp -f $SRC/usr/share/camilladsp/configs/volumecontrol.yml /usr/share/camilladsp/configs/
@@ -594,6 +594,8 @@ function on_upgrade() {
          cp -f $SRC/var/local/www/commandw/slpower.sh /var/local/www/commandw/
          # Piano 2.1 status command
          cp -f $SRC/home/piano.sh /home/pi/
+         # MPD cfg_mpd default period_time (not used but just for the sake of accuracy)
+         sqlite3 $SQLDB "UPDATE cfg_mpd SET value='125000' WHERE param='period_time'"
       fi
 
       # General
