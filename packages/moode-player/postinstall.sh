@@ -577,8 +577,12 @@ function on_upgrade() {
          systemctl disable mpd2cdspvolume
          sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' WHERE id=80"
          cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
-         cp -f $SRC/usr/share/camilladsp/configs/loudness.yml /usr/share/camilladsp/configs/
-         cp -f $SRC/usr/share/camilladsp/configs/volumecontrol.yml /usr/share/camilladsp/configs/
+         # New configs
+         cp -f "$SRC/usr/share/camilladsp/configs/readme.txt" /usr/share/camilladsp/configs/
+         cp -f "$SRC/usr/share/camilladsp/configs/Loudness.yml" /usr/share/camilladsp/configs/
+         cp -f "$SRC/usr/share/camilladsp/configs/Volume Control.yml" /usr/share/camilladsp/configs/
+         cp -f "$SRC/usr/share/camilladsp/configs/Polarity Inversion.yml" /usr/share/camilladsp/configs/
+         cp -f "$SRC/usr/share/camilladsp/configs/Polarity Inversion with VC.yml" /usr/share/camilladsp/configs/
          # Support CamillaDSP volume for Airplay and Spotify Connect renderers
          cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
          cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
@@ -594,7 +598,6 @@ function on_upgrade() {
          # Free up a few cfg_system params
          sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_16', value='Was mpdver' WHERE id='16'"
          sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_127', value='Was kernel_architecture' WHERE id='127'"
-
       fi
 
       # General
