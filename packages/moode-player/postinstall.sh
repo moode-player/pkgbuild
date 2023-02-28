@@ -356,10 +356,6 @@ function on_install() {
       chown mpd:audio /etc/mpd.conf
       chmod 0666 /etc/mpd.conf
 
-      # MPD 2 camilladsp volume sync state file
-      echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
-      chmod a+w /var/lib/cdsp/camilladsp_volume_state
-
       # in case any changes are made to systemd file reload config
       systemctl daemon-reload
 
@@ -577,9 +573,6 @@ function on_upgrade() {
       if [ $? -eq 0 ]
       then
          # MPD 2 CamillaDSP volume sync
-         mkdir -p /var/lib/cdsp/
-         echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
-         chmod a+w /var/lib/cdsp/camilladsp_volume_state
          systemctl stop mpd2cdspvolume
          systemctl disable mpd2cdspvolume
          sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' WHERE id=80"
