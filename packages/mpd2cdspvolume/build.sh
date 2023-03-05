@@ -11,10 +11,10 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="mpd2cdspvolume_0.2.1-1moode1"
+PKG="mpd2cdspvolume_0.2.2-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/mpd2cdspvolume.git"
-PKG_SOURCE_GIT_TAG="v0.2.1"
+PKG_SOURCE_GIT_TAG="v0.2.2"
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 
@@ -25,7 +25,7 @@ mkdir -p root/usr/local/bin
 cp mpd2cdspvolume.py root/usr/local/bin/mpd2cdspvolume
 cp cdspstorevolume.sh root/usr/local/bin/cdspstorevolume
 mkdir -p root/usr/lib/tmpfiles.d
-cp mpd2cdspvolume.conf root/usr/lib/tmpfiles.d/
+cp etc/mpd2cdspvolume.conf root/usr/lib/tmpfiles.d/
 
 chmod a+x root/usr/local/bin/mpd2cdspvolume
 chmod a+x root/usr/local/bin/cdspstorevolume
@@ -38,14 +38,14 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --iteration $DEBVER$DEBLOC \
 -a all \
 --deb-priority optional \
---url https://github.com/moode-player/pkgbuild \
+--url https://github.com/bitkeeper/mpd2cdspvolume \
 -m $DEBEMAIL \
 --license LICENSE \
 --description "Service for synchronizing MPD volume to CamillaDSP." \
---deb-systemd mpd2cdspvolume.service \
+--deb-systemd etc/mpd2cdspvolume.service \
 --depends python3-mpd2 \
 --depends python3-camilladsp \
---after-install postinstall.sh \
+--after-install etc/postinstall.sh \
 root/usr/=/usr/.
 
 if [[ $? -gt 0 ]]
