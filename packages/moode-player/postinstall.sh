@@ -595,8 +595,9 @@ function on_upgrade() {
          sqlite3 $SQLDB "UPDATE cfg_mpd SET value='125000' WHERE param='period_time'"
          # ProtoDAC TDA1387 X8
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "ProtoDAC TDA1387 X8" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
-         # Free up a few cfg_system params
-         sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_16', value='Was mpdver' WHERE id='16'"
+         # URL for downloadable plugins
+         sqlite3 $SQLDB "UPDATE cfg_system SET param='res_plugins_url', value='https://raw.githubusercontent.com/moode-player/plugins/main' WHERE id='16'"
+         # Free up cfg_system param
          sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_127', value='Was kernel_architecture' WHERE id='127'"
       fi
 
