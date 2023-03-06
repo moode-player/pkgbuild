@@ -123,13 +123,15 @@ function on_install() {
 
       chmod 0755 /home/pi/*.sh
 
-      echo "** Reset permissions"
+      echo "** Set permissions"
       chmod -R 0755 /var/www
       chmod -R 0755 /var/local/www
       chmod -R 0777 /var/local/www/db
       chmod -R ug-s /var/local/www
-
+      # CamillaDSP
       chmod -R a+rw /usr/share/camilladsp
+      chown -R mpd /var/lib/cdsp
+      echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
 
       echo "** Create database"
       if [ -f $SQLDB ]
@@ -577,6 +579,8 @@ function on_upgrade() {
          systemctl disable mpd2cdspvolume
          sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' WHERE id=80"
          cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
+         chown -R mpd /var/lib/cdsp
+         echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
          # New configs
          cp -f "$SRC/usr/share/camilladsp/configs/readme.txt" /usr/share/camilladsp/configs/
          cp -f "$SRC/usr/share/camilladsp/configs/Loudness.yml" /usr/share/camilladsp/configs/
