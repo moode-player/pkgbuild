@@ -132,6 +132,7 @@ function on_install() {
       chmod -R a+rw /usr/share/camilladsp
       chown -R mpd /var/lib/cdsp
       echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
+      chown -R mpd /var/lib/cdsp/camilladsp_volume_state
 
       echo "** Create database"
       if [ -f $SQLDB ]
@@ -581,6 +582,7 @@ function on_upgrade() {
          cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
          chown -R mpd /var/lib/cdsp
          echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
+         chown -R mpd /var/lib/cdsp/camilladsp_volume_state
          # New configs
          cp -f "$SRC/usr/share/camilladsp/configs/readme.txt" /usr/share/camilladsp/configs/
          cp -f "$SRC/usr/share/camilladsp/configs/Loudness.yml" /usr/share/camilladsp/configs/
