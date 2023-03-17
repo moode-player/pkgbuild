@@ -607,6 +607,23 @@ function on_upgrade() {
          sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_127', value='Was kernel_architecture' WHERE id='127'"
       fi
 
+      # Introduced in r831
+      dpkg --compare-versions $VERSION lt "8.3.1-1moode1"
+      if [ $? -eq 0 ]
+      then
+         # Update overlay name rpi-dac to i2s-dac
+         sqlite3 $SQLDB "UPDATE cfg_audiodev SET driver='i2s-dac' WHERE driver='rpi-dac'"
+         # Update Generic-1 and 2 I2S DAC entries
+         sqlite3 $SQLDB "UPDATE cfg_audiodev SET name='Generic-2 I2S (i2s-dac)', dacchip='Passive I2S DAC' WHERE name='Generic-2 I2S (rpi-dac)'"
+         sqlite3 $SQLDB "UPDATE cfg_audiodev SET dacchip='Passive I2S DAC' WHERE name='Generic-1 I2S (hifiberry-dac)'"
+
+         # Add Raspberry Pi branded I2S overlays
+         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi Codec Zero" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC Pro" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DigiAMP+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+      fi
+
       # General
       # Any release may contain station updates
       # Import_stations update
