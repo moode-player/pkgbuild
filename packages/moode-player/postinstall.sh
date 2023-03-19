@@ -616,7 +616,6 @@ function on_upgrade() {
          # Update Generic-1 and 2 I2S DAC entries
          sqlite3 $SQLDB "UPDATE cfg_audiodev SET name='Generic-2 I2S (i2s-dac)', dacchip='Passive I2S DAC' WHERE name='Generic-2 I2S (rpi-dac)'"
          sqlite3 $SQLDB "UPDATE cfg_audiodev SET dacchip='Passive I2S DAC' WHERE name='Generic-1 I2S (hifiberry-dac)'"
-
          # Add Raspberry Pi branded I2S overlays
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi Codec Zero" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
