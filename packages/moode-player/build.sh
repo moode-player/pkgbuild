@@ -179,7 +179,7 @@ chmod 0777 $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 mkdir -p $PKG_ROOT_DIR/var/lib/cdsp
 chmod 0777 $PKG_ROOT_DIR/var/lib/cdsp
 
-# /var/wwww
+# /var/www
 mkdir -p $PKG_ROOT_DIR/var/www
 cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
 
