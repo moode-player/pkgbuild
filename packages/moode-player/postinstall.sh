@@ -264,7 +264,7 @@ function on_install() {
              /etc/dnsmasq.conf
 
       # /etc/minidlna.conf
-  		# media_dir=A,/var/lib/mpd/music
+  	  # media_dir=A,/var/lib/mpd/music
       # log_level=off
       # friendly_name=Moode DLNA
       # model_name=MiniDLNA
@@ -621,6 +621,9 @@ function on_upgrade() {
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC Pro" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DigiAMP+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+         # GPIO pinout image
+         cp -f "$SRC/var/www/images/gpio-pinout.jpg /var/www/images/"
+         rm -f /var/www/images/gpio-pins.png
       fi
 
       # General
