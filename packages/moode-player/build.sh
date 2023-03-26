@@ -168,8 +168,12 @@ cp $BASE_DIR/moode-apt-mark $PKG_ROOT_DIR/usr/local/bin
 
 # /var
 # ignore includes of radio stations logos, those will be part of the stations backup
-rsync -av --exclude='moode-sqlite3.db' --exclude='radio-logos' $MOODE_DIR/var/ $PKG_ROOT_DIR/var
+rsync -av --exclude='moode-sqlite3.db' --exclude='radio-logos' --exclude *.overwrite* $MOODE_DIR/var/ $PKG_ROOT_DIR/var
+rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/var/ $NOT_OWNED_TEMP/var
 mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
+# Create curated always overwrite playlist for the radio stations
+mkdir -p $NOT_OWNED_TEMP/var/lib/mpd/playlists
+cp "$MOODE_DIR/var/lib/mpd/playlists/Default Playlist.m3u" "$NOT_OWNED_TEMP/var/lib/mpd/playlists/Curated Radio Stations.m3u"
 
 # /var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
@@ -179,10 +183,9 @@ chmod 0777 $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
 mkdir -p $PKG_ROOT_DIR/var/lib/cdsp
 chmod 0777 $PKG_ROOT_DIR/var/lib/cdsp
 
-# /var/www
+# /var/wwww
 mkdir -p $PKG_ROOT_DIR/var/www
 cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
-
 
 # In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
 function rename_files() {
@@ -202,9 +205,8 @@ chmod -R 0777  $PKG_ROOT_DIR/var/local/www/commandw/*
 chmod -R 0766  $PKG_ROOT_DIR/var/local/www/db
 chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
 
-# # chmod -R ug-s /var/local/www
+# chmod -R ug-s /var/local/www
 chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
-
 
 # ------------------------------------------------------------
 # 5. Create the package
@@ -317,6 +319,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends xinit \
 --depends xorg \
 --depends zip \
+--config-files /var/lib/mpd/playlists \
 root/boot/.=/boot \
 root/var/.=/var \
 root/home/.=/home \

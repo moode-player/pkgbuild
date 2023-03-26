@@ -190,6 +190,7 @@ function on_install() {
       cp -rf $SRC/lib/* /lib/ > /dev/null 2>&1
       cp -rf $SRC/usr/* /usr/ > /dev/null 2>&1
       cp -rf $SRC/boot/* /boot/ > /dev/null 2>&1
+      cp -rf $SRC/var/lib /var/lib/ > /dev/null 2>&1
 
 
       # ------------------------------------------------------------------------------------------
@@ -624,7 +625,11 @@ function on_upgrade() {
          # GPIO pinout image
          cp -f "$SRC/var/www/images/gpio-pinout.jpg /var/www/images/"
          rm -f /var/www/images/gpio-pins.png
+
       fi
+
+      # Always enforce copy of up2date curated station list
+      cp -f "$SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/"
 
       # General
       # Any release may contain station updates
