@@ -41,25 +41,25 @@ Note: The versions represented in the table are only for example and may not rep
 | [camillagui](https://github.com/HEnquist/camillagui) | 1.0.1-1moode3  | fpm   | yes |
 | [*camillagui-backend*](https://github.com/HEnquist/camillagui-backend) | *1.0.1-1moode1*  | *-*  | *yes* |
 | [caps](http://quitte.de/dsp/caps.html)       | 0.9.26-1moode1 | rebuild     | yes |
-| [libnpupnp1](https://www.lesbonscomptes.com/upmpdcli/index.html) | 4.0.14-1moode1 | git         |  |
+| [libnpupnp2](https://www.lesbonscomptes.com/upmpdcli/index.html) | 5.0.1-1moode1 | git         |  |
 | [librespot](https://github.com/librespot-org/librespot)  | 0.4.2-1moode1  | cargo-deb   |  |
-| [libupnpp6](https://www.lesbonscomptes.com/upmpdcli/index.html)  | 0.21.0-1moode1 | git         |  |
+| [libupnpp7](https://www.lesbonscomptes.com/upmpdcli/index.html)  | 0.22.4-1moode1 | git         |  |
 | [*mediainfo*](https://mediaarea.net/nl/MediaInfo)  | *20.09-1* | ***stock*** |
 | [*minidlna*](https://sourceforge.net/projects/minidlna/)   | *1.3.0+dfsg-2* | ***stock*** |
 | [moode-player](https://github.com/moode-player/moode)       | 8.2.5-1moode1 | git+dh_make     |  |
 | [*mpc*](https://www.musicpd.org/)        | *0.33.1* | ***stock*** |
 | [mpd](https://www.musicpd.org/)        | 0.23.12-1moode1 | backport    | yes |
-| [mpd2cdspvolume](https://github.com/bitkeeper/mpd2cdspvolume/)        | 0.1.2-1moode1 | fpm    | no |
+| [mpd2cdspvolume](https://github.com/bitkeeper/mpd2cdspvolume/)        | 0.3.0-1moode1 | fpm    | no |
 | [nqptp](https://github.com/mikebrady/nqptp)        | 1.1.0~git20220930.c71b49a-1moode1 | git+dh_make    |  |
 | [python3-camilladsp](https://github.com/HEnquist/pycamilladsp) | 1.0.0-1moode1 | stdeb |  |
 | [python3-camilladsp-plot](https://github.com/HEnquist/pycamilladsp-plot) | 1.0.0-1moode1 | stdeb |  |
-| [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.20.1~-1moode1 | git   |  |
+| [python3-libupnpp](https://www.lesbonscomptes.com/upmpdcli/index.html) | 0.21.0-1moode1 | git   |  |
 | [shairport-sync](https://github.com/mikebrady/shairport-sync) | 4.1.1-1moode1| git+debsrc | |
 | [squeezelite](https://github.com/ralph-irving/squeezelite)| 1.9+git20210102.78fef68-3moode1 | rebuild |  yes |
 | [trx](http://www.pogo.org.uk/~mark/trx/)        | 0.6-1moode1    |  git+dh_make |  |
 | [udisks](https://www.freedesktop.org/wiki/Software/udisks/) | 1.0.5-1moode1 | ***upport*** | yes |
 | [udisks-glue](https://github.com/fernandotcl/udisks-glue) | 1.3.5-1moode3 | git+debsrc |  |
-| [upmpdcli](https://www.lesbonscomptes.com/upmpdcli/index.html)   | 1.5.12-1moode1 | git |  |
+| [upmpdcli](https://www.lesbonscomptes.com/upmpdcli/index.html)   | 1.7.7-1moode1 | git |  |
 
 Patches* means patches required for the source code and excludes patches for the packing itself. Stock pacakges can be directly used, no need to rebuild.
 
