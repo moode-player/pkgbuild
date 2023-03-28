@@ -257,6 +257,7 @@ function rbl_move_to_dist {
     mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC*.dsc $BASE_DIR/dist/source > /dev/null 2>&1
     mv -f $BUILD_ROOT_DIR/*$PKGVERSION*$DEBLOC.debian.* $BASE_DIR/dist/source > /dev/null 2>&1
     mv $BUILD_ROOT_DIR/*$PKGVERSION-$DEBVER$DEBLOC* $BASE_DIR/dist/binary > /dev/null 2>&1
+    mv $BUILD_ROOT_DIR/$PKGNAME-$PKGVERSION/*$PKGVERSION-$DEBVER$DEBLOC* $BASE_DIR/dist/binary > /dev/null 2>&1
 }
 
 function _rebuild {
