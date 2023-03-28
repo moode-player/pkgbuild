@@ -11,10 +11,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="libupnpp-bindings_0.20.1-1moode1"
+PKG="libupnpp-bindings_0.21.0-1moode1"
 
 PKG_SOURCE_GIT="https://framagit.org/medoc92/libupnpp-bindings.git "
-PKG_SOURCE_GIT_TAG="libupnpp-bindings-v0.20.1"
+PKG_SOURCE_GIT_TAG="libupnpp-bindings-v0.21.0"
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
@@ -22,7 +22,7 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.
 #------------------------------------------------------------
 # Custom part of the packing
 
-patch -p1 < $BASE_DIR/debian.control.patch
+rbl_patch $BASE_DIR/debian.control.patch
 echo "10" > debian/compat
 _rbl_check_build_deps
 ./autogen.sh
