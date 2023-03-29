@@ -192,7 +192,6 @@ function on_install() {
       cp -rf $SRC/boot/* /boot/ > /dev/null 2>&1
       cp -rf $SRC/var/lib /var/lib/ > /dev/null 2>&1
 
-
       # ------------------------------------------------------------------------------------------
       # Patch files with sed
       # ------------------------------------------------------------------------------------------
@@ -625,7 +624,10 @@ function on_upgrade() {
          # GPIO pinout image
          cp -f "$SRC/var/www/images/gpio-pinout.jpg /var/www/images/"
          rm -f /var/www/images/gpio-pins.png
-
+         # Renderer event scripts
+         cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
+         cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
+         cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
       fi
 
       # Always enforce copy of up2date curated station list
