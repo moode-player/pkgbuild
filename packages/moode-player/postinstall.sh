@@ -624,10 +624,12 @@ function on_upgrade() {
          # GPIO pinout image
          cp -f "$SRC/var/www/images/gpio-pinout.jpg /var/www/images/"
          rm -f /var/www/images/gpio-pins.png
-         # Renderer event scripts
+         # Renderer event scripts (updated for Airplay/Spotify CamillaDSP volume handling)
          cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
          cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
          cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
+         # Update logfile path from /home/pi to /var/log
+        sed -i 's|/home/pi/katana.log|/var/log/moode_katana.log|' /etc/rc.local
       fi
 
       # Always enforce copy of up2date curated station list
