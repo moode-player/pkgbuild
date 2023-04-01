@@ -411,6 +411,10 @@ function on_upgrade() {
 
       SRC=/usr/share/moode-player
 
+      #--------------------------------------------------------------------------------------------------------
+      # Specific releases
+      #--------------------------------------------------------------------------------------------------------
+
       # Introduced in r801
       dpkg --compare-versions $VERSION lt "8.0.1-1moode1"
       if [ $? -eq 0 ]
@@ -624,16 +628,27 @@ function on_upgrade() {
          # GPIO pinout image
          cp -f "$SRC/var/www/images/gpio-pinout.jpg /var/www/images/"
          rm -f /var/www/images/gpio-pins.png
-         # Renderer event scripts
+         # Renderer event scripts (updated for Airplay/Spotify CamillaDSP volume handling)
          cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
          cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
          cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
+         # Update logfile path from /home/pi to /var/log
+         sed -i 's|/home/pi/katana.log|/var/log/moode_katana.log|' /etc/rc.local
+         # Move log files to new location
+         mv /home/pi/katana.log /var/log/moode_katana.log
+         mv /home/pi/autocfg.log /var/log/moode_autocfg.log
+         mv /var/log/mountmon.log /var/log/moode_mountmon.log
+         mv /var/local/www/playhistory.log /var/log/moode_playhistory.log
+         mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp
       fi
+
+      #--------------------------------------------------------------------------------------------------------
+      # Any release
+      #--------------------------------------------------------------------------------------------------------
 
       # Always enforce copy of up2date curated station list
       cp -f "$SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/"
 
-      # General
       # Any release may contain station updates
       # Import_stations update
       import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
