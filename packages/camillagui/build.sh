@@ -37,12 +37,7 @@ echo "build root : $BUILD_ROOT_DIR"
 # git revert  --no-edit a7e09fdb81b25df91b033786a9109ab0514ee05e
 
 # add option to hide files tab on expert mode:
-patch -p1 < $BASE_DIR/camillagui_hide_files.patch
-if [[ ! $? -eq 0 ]]
-then
-    echo "${RED} Error: patch failed .${NORMAL}"
-    exit 1
-fi
+rbl_patch $BASE_DIR/camillagui_hide_files.patch
 # installing npm deps with npm ci failed, so use npm install instead
 # npm ci
 npm install
@@ -59,7 +54,7 @@ cd camillagui-backend
 # git checkout -b $PKG_SOURCE_GIT_TAG_BACKEND origin/$PKG_SOURCE_GIT_TAG_BACKEND
 git checkout -b $PKG_SOURCE_GIT_TAG_BACKEND $PKG_SOURCE_GIT_TAG_BACKEND
 # add option to hide files tab on expert mode:
-patch -p1 < $BASE_DIR/camillagui_backend_hide_files.patch
+rbl_patch $BASE_DIR/camillagui_backend_hide_files.patch
 cd ..
 
 # ---------------------------------------------------------------

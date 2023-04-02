@@ -28,9 +28,9 @@ dh_make -l -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyr
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #TODO: replace it with a better solution: include submodules in the archive
-patch -p1 < $BASE_DIR/debian.rules.initsubmodule.patch
+rbl_patch $BASE_DIR/debian.rules.initsubmodule.patch
 rbl_fix_control_patch_maintainer $BASE_DIR/debian.control.patch $BUILD_ROOT_DIR/debian.control.patch
-patch -p1 < $BUILD_ROOT_DIR/debian.control.patch
+rbl_patch $BUILD_ROOT_DIR/debian.control.patch
 rm debian/manpage.*.ex
 rm debian/README.*
 

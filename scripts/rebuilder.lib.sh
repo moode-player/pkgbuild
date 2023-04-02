@@ -113,6 +113,22 @@ function rbl_check_build_dep {
         if [[ $? -gt 0 ]]
         then
             echo "${RED} Error: problems installing package $1.${NORMAL}"
+            exit 1
+        fi
+    fi
+}
+
+function rbl_check_build_dep_with_version {
+    dpkg-query --showformat='${Version}' --show raspberrypi-kernel-headers 2>&1 | grep "$KERNEL_PKG_VERSION" > /dev/null 2>&1
+    if [[ ! $? -eq 0 ]]
+    then
+        echo "${YELLOW} Package $1=$2 : missing, installing it.${NORMAL}"
+        apt_update
+        sudo apt install -y $1=$2
+        if [[ $? -gt 0 ]]
+        then
+            echo "${RED} Error: problems installing package $1=$2.${NORMAL}"
+            exit 1
         fi
     fi
 }
@@ -552,7 +568,16 @@ function rbl_get_kernel_source {
 # check if kernel headers are present, else unpack the kernel source if needed and set the flag MODULE_BUILD_USE_SOURCE
 function rbl_check_kernel_headers {
     local  _KERNEL_VER=$(rbl_get_current_kernel_version)
-    local _KERNEL_VER_FULL=`uname -r`
+
+    KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show raspberrypi-kernel`
+    rbl_check_build_dep_with_version raspberrypi-kernel-headers $KERNEL_PKG_VERSION
+
+    if [ $ARCH64 -eq 1 ]
+    then
+        local _KERNEL_VER_FULL=`uname -r`
+    else
+        local _KERNEL_VER_FULL=$_KERNEL_VER
+    fi
     # if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -lt 1 ]
     ls -d /usr/src/linux-headers-$_KERNEL_VER_FULL* 2>&1 | grep "No such file or directory" > /dev/null
     if [ $? -eq 0 ]
@@ -576,14 +601,14 @@ function rbl_check_kernel_headers {
 
         # Required by some modules build processes if headers doesn't exists,
         # normally when headers exits build points to the same location.
-        for i in "${ARCHS[@]}"
-        do
-            if [ ! -e "/lib/modules/5.15.21-${i}/build" ]
-            then
-                echo "Creating symlink /lib/modules/${_KERNEL_VER}-${i}/build -> $KERNEL_DIR"
-                sudo ln -s $KERNEL_DIR /lib/modules/${_KERNEL_VER}-${i}/build
-            fi
-        done
+        # for i in "${ARCHS[@]}"
+        # do
+        #     if [ ! -e "/lib/modules/5.15.21-${i}/build" ]
+        #     then
+        #         echo "Creating symlink /lib/modules/${_KERNEL_VER}-${i}/build -> $KERNEL_DIR"
+        #         sudo ln -s $KERNEL_DIR /lib/modules/${_KERNEL_VER}-${i}/build
+        #     fi
+        # done
 
         cd $prev_path
         export KERNEL_SOURCE_DIR=$KERNEL_DIR

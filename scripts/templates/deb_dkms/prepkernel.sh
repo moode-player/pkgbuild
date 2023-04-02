@@ -28,7 +28,7 @@ fi
 SYMBOLS=( 7 7l 8)
 DEFCONFIGS=(bcm2709_defconfig bcm2711_defconfig bcm2711_defconfig)
 
-KERNEL_HASH=`rpi-source --dry-run --skip-update --download-only --dest /tmp | grep -i 'firmware' | sed -r 's/.*revision[:][ ]//'`
+KERNEL_HASH=`rpi-source --dry-run --skip-update --download-only --dest /tmp | grep 'Firmware' | sed -r 's/.*revision[:][ ]//'`
 SYMBOL="${SYMBOLS[$INDEX]}"
 DEFCONFIG="${DEFCONFIGS[INDEX]}"
 echo "Prepping kernel source for module build."

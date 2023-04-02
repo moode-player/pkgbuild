@@ -15,7 +15,7 @@
 
 KERNEL_VER=$(rbl_get_current_kernel_version)
 
-PKG="motu-avb-usb_1.0-1"
+PKG="motu-avb-usb_1.0-2"
 
 PKG_SOURCE_GIT="https://github.com/Drumfix/motu-avb-usb.git"
 PKG_SOURCE_GIT_TAG="1f0e0a0ec19b25baaf2d83808047067e7cd947ae"
@@ -48,6 +48,8 @@ DKMS_MODULE="$PKGNAME/$PKGVERSION"
 
 #------------------------------------------------------------
 # Custom part of the packing
+
+rbl_patch $BUILD_ROOT_DIR/motu_remove_tasklet.patch
 
 # 1. build the modules with dkms:
 

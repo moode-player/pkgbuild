@@ -28,16 +28,16 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 dh_make -l -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../LICENSE -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 
-patch -p1 < $BASE_DIR/fix_make_clean.patch
+rbl_patch $BASE_DIR/fix_make_clean.patch
 EDITOR=/bin/true dpkg-source --commit . fix_make_clean.patch
 
-patch -p1 < $BASE_DIR/fix_libdir_for_deb_build.patch
+rbl_patch $BASE_DIR/fix_libdir_for_deb_build.patch
 EDITOR=/bin/true dpkg-source --commit . fix_deb_build.patch
 
 rbl_fix_control_patch_maintainer $BASE_DIR/debian.control.patch $BUILD_ROOT_DIR/debian.control.patch
-patch -p1 < $BUILD_ROOT_DIR/debian.control.patch
+rbl_patch $BUILD_ROOT_DIR/debian.control.patch
 
-patch -p1 < $BASE_DIR/debian.rules.patch
+rbl_patch $BASE_DIR/debian.rules.patch
 
 pandoc -r markdown -w man ./README.md -o ./debian/manpage.1
 rm debian/manpage.*.ex
