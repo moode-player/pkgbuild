@@ -26,7 +26,7 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG $BUILD_ROOT_DIR/${PKGNAME}_${PKGVERSI
 rbl_check_build_dep libasound2-dev
 
 # Set install location to /usr/local/bin
-patch -p1 < $BASE_DIR/camilladsp_cargo-deb.patch
+rbl_patch $BASE_DIR/camilladsp_cargo-deb.patch
 mkdir debian
 cp $BASE_DIR/camilladsp.service debian/service
 
