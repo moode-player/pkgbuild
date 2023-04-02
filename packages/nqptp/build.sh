@@ -28,7 +28,7 @@ rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 cp $BASE_DIR/nqptp.service debian/
 
 rbl_fix_control_patch_maintainer $BASE_DIR/debian.control.patch $BUILD_ROOT_DIR/debian.control.patch
-patch -p1 < $BASE_DIR/debian.control.patch
+rbl_patch $BASE_DIR/debian.control.patch
 
 rbl_set_initial_version_changelog $PKGNAME $FULL_VERSION
 

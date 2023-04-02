@@ -21,9 +21,9 @@ rbl_prepare_from_dsc_url $PKG_DSC_URL
 # patch and add patch to debian
 if [ $ARCH64 -eq 1 ]
 then
-    patch -p1 < $BASE_DIR/debian.rules.64.patch
+    rbl_patch $BASE_DIR/debian.rules.64.patch
 else
-    patch -p1 < $BASE_DIR/debian.rules.patch
+    rbl_patch $BASE_DIR/debian.rules.patch
 fi
 
 # set debian local suffix flag

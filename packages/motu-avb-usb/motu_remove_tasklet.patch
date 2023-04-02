@@ -1,0 +1,93 @@
+diff --git a/motu.c b/motu.c
+index 4b68f8a..b060aa3 100644
+--- a/motu.c
++++ b/motu.c
+@@ -126,7 +126,7 @@ struct motu_avb {
+ 	u8 rate_feedback[MAX_QUEUE_LENGTH];
+ 
+ 	struct list_head ready_playback_urbs;
+-	struct tasklet_struct playback_tasklet;
++	struct work_struct playback_work;
+ 	wait_queue_head_t alsa_capture_wait;
+ 	wait_queue_head_t rate_feedback_wait;
+ 	wait_queue_head_t alsa_playback_wait;
+@@ -175,7 +175,7 @@ static void set_samplerate(struct motu_avb *ua)
+ 
+         data_buf = kmemdup(&data, sizeof(data), GFP_KERNEL);
+ 	if (!data_buf)
+-		return;      
++		return;
+ 
+ 	err = usb_control_msg(ua->dev, usb_sndctrlpipe(ua->dev, 0), UAC2_CS_CUR,
+ 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
+@@ -274,7 +274,7 @@ static void playback_urb_complete(struct urb *usb_urb)
+ 		spin_lock_irqsave(&ua->lock, flags);
+ 		list_add_tail(&urb->ready_list, &ua->ready_playback_urbs);
+ 		if (ua->rate_feedback_count > 0)
+-			tasklet_schedule(&ua->playback_tasklet);
++			queue_work(system_highpri_wq, &ua->playback_work);
+ 		ua->playback.substream->runtime->delay -=
+ 				urb->urb.iso_frame_desc[0].length /
+ 						ua->playback.frame_bytes;
+@@ -333,9 +333,9 @@ static inline void add_with_wraparound(struct motu_avb *ua,
+ 		*value -= ua->playback.queue_length;
+ }
+ 
+-static void playback_tasklet(unsigned long data)
++static void playback_work(struct work_struct *work)
+ {
+-	struct motu_avb *ua = (void *)data;
++	struct motu_avb *ua = container_of(work, struct motu_avb, playback_work);
+ 	unsigned long flags;
+ 	unsigned int frames;
+ 	struct motu_avb_urb *urb;
+@@ -487,7 +487,7 @@ static void capture_urb_complete(struct urb *urb)
+ 		}
+ 		if (test_bit(USB_PLAYBACK_RUNNING, &ua->states) &&
+ 		    !list_empty(&ua->ready_playback_urbs))
+-			tasklet_schedule(&ua->playback_tasklet);
++			queue_work(system_highpri_wq, &ua->playback_work);
+ 	}
+ 
+ 	spin_unlock_irqrestore(&ua->lock, flags);
+@@ -632,7 +632,7 @@ static void stop_usb_playback(struct motu_avb *ua)
+ 
+ 	kill_stream_urbs(&ua->playback);
+ 
+-	tasklet_kill(&ua->playback_tasklet);
++	cancel_work_sync(&ua->playback_work);
+ 
+ 	if (vendor)
+ 	{
+@@ -656,7 +656,7 @@ static int start_usb_playback(struct motu_avb *ua)
+ 	clear_bit(USB_PLAYBACK_RUNNING, &ua->states);
+ 
+ 	kill_stream_urbs(&ua->playback);
+-	tasklet_kill(&ua->playback_tasklet);
++	cancel_work_sync(&ua->playback_work);
+ 
+ 	if (vendor)
+ 	{
+@@ -708,10 +708,10 @@ static int start_usb_playback(struct motu_avb *ua)
+ 		return -EIO;
+ 	}
+ 
+-        // the very first urb must have the maximum number of frames 
++        // the very first urb must have the maximum number of frames
+ 
+         spin_lock_irq(&ua->lock);
+-       
++
+         switch (ua->rate)
+         {
+         case 44100:
+@@ -1338,8 +1338,7 @@ static int motu_avb_probe(struct usb_interface *interface,
+ 	spin_lock_init(&ua->lock);
+ 	mutex_init(&ua->mutex);
+ 	INIT_LIST_HEAD(&ua->ready_playback_urbs);
+-	tasklet_init(&ua->playback_tasklet,
+-		     playback_tasklet, (unsigned long)ua);
++	INIT_WORK(&ua->playback_work, playback_work);
+ 	init_waitqueue_head(&ua->alsa_capture_wait);
+ 	init_waitqueue_head(&ua->rate_feedback_wait);
+ 	init_waitqueue_head(&ua->alsa_playback_wait);
