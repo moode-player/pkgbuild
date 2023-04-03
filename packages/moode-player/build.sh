@@ -24,10 +24,10 @@ NPM_CI=0
 # build web app with gulp, to speed up test build without change to frontend (or manual build) diable this
 BUILD_APP=1
 
-GULP_BIN=$MOODE_DIR/node_modules/.bin/gulp
+GULP_BIN="${MOODE_DIR}/node_modules/.bin/gulp"
 
 # Used as reference for generating station patch files. Should be the first releas of a major
-MAJOR_BASE_STATIONS=../dist/binary/moode-stations-full_8.0.0.zip
+MAJOR_BASE_STATIONS="../dist/binary/moode-stations-full_8.0.0.zip"
 
 # ----------------------------------------------------------------------------
 # 1. Prepare pacakge build dir and build deps
@@ -46,34 +46,35 @@ _rbl_cleanup_previous_build
 _rbl_change_to_build_root
 
 # location where we build a fakeroot system with the moode file to be package into the package
-PKG_ROOT_DIR="$BUILD_ROOT_DIR/root"
+PKG_ROOT_DIR="${BUILD_ROOT_DIR}/root"
 
 
 # init build root
-rm -rf $BUILD_ROOT_DIR/root
-mkdir -p $BUILD_ROOT_DIR/root
+rm -rf "${BUILD_ROOT_DIR}/root"
+mkdir -p "${BUILD_ROOT_DIR}/root"
 
-if [ -z "$MOODE_DIR" ]
+if [ -z "${MOODE_DIR}" ]
 then
     echo "${YELLOW}Error: MOODE_DIR is should point to a moode source dir${NORMAL}"
     exit 1
 fi
 
 
-if [ -z "$PKG_ROOT_DIR" ]
+if [ -z "${PKG_ROOT_DIR}" ]
 then
     echo "${YELLOW}Error: PKG_ROOT_DIR is not set?${NORMAL}"
     exit 1
 fi
 
-rm -rf $PKG*.deb
+# DANGER ZONE, Add some prelim checks to ensure $PKG is set and not empty
+rm -rf ${PKG}*.deb
 # ----------------------------------------------------------------------------
 # 2. Buildweb app an deploy to test directory (prepared for copy)
 
-cd $MOODE_DIR
+cd "$MOODE_DIR" || exit
 
 #TODO: detect if node_modules is missing and if so do both steps
-if [ $NPM_CI -gt 0 ]  || [ ! -d $MOODE_DIR/node_modules ]
+if [ $NPM_CI -gt 0 ]  || [ ! -d "$MOODE_DIR/node_modules" ]
 then
     npm ci
 fi
@@ -86,7 +87,7 @@ fi
 
 $GULP_BIN deploy --test
 
-cd $BUILD_ROOT_DIR
+cd "$BUILD_ROOT_DIR" || exit
 
 # ----------------------------------------------------------------------------
 # 3. Collect installable files
@@ -101,38 +102,39 @@ cd $BUILD_ROOT_DIR
 # ----------------------------------------------------------------------------
 
 # generate moode radio stations backup file (used for populating the station from the installer)
-cat $MOODE_DIR/var/local/www/db/moode-sqlite3.db.sql | sqlite3 $BUILD_ROOT_DIR/moode-sqlite3.db
-if [[ $? -gt 0 ]]
+
+if ! sqlite3 "$BUILD_ROOT_DIR/moode-sqlite3.db" < "$MOODE_DIR/var/local/www/db/moode-sqlite3.db.sql"
 then
     echo "${RED}Error: couldn't create temporary database!${NORMAL}"
     cd ..
     exit 1
 fi
 
-$MOODE_DIR/www/util/station_manager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --scope moode --export $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip
-if [ ! -f $MAJOR_BASE_STATIONS ]
+"$MOODE_DIR/www/util/station_manager.py" --db "$BUILD_ROOT_DIR/moode-sqlite3.db" --logopath "$MOODE_DIR/var/local/www/imagesw/radio-logos" --scope moode --export "$BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip"
+if [ ! -f "$MAJOR_BASE_STATIONS" ]
 then
     echo "${RED}Error: radio station base backup $MAJOR_BASE_STATIONS not found!${NORMAL}"
     cd ..
     exit 1
 fi
-$MOODE_DIR/www/util/station_manager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --diff $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip --scope moode $MAJOR_BASE_STATIONS
 
-if [ ! -f $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip ]
+"$MOODE_DIR/www/util/station_manager.py" --db "$BUILD_ROOT_DIR/moode-sqlite3.db" --logopath "$MOODE_DIR/var/local/www/imagesw/radio-logos" --diff "$BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip" --scope moode "$MAJOR_BASE_STATIONS"
+if [ ! -f "$BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip" ]
 then
     echo "${RED}Error: radio station full file not generated!${NORMAL}"
     cd ..
     exit 1
 fi
-if [ ! -f $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip ]
+if [ ! -f "$BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip" ]
 then
     echo "${RED}Error: radio station update file not generated!${NORMAL}"
     cd ..
     exit 1
 fi
-rm -f $BUILD_ROOT_DIR/moode-sqlite3.db || true
+
+rm -f "$BUILD_ROOT_DIR/moode-sqlite3.db" || true
 # move it to the dist location
-mv -f $BUILD_ROOT_DIR/moode-stations-*_$PKGVERSION.zip  $BASE_DIR/dist/binary/
+mv -f "$BUILD_ROOT_DIR/moode-stations-*_$PKGVERSION.zip"  "$BASE_DIR/dist/binary/"
 
 # location for files that should overwrite existing files (not owned by moode-player)
 NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
@@ -190,8 +192,8 @@ cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
 # In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
 function rename_files() {
     org_name=$1
-    new_name=`echo "$org_name" | sed -r 's/(.*)[.]overwrite(.*)/\1\2/'`
-    mv $org_name $new_name
+    new_name=$(echo "$org_name" | sed -r 's/(.*)[.]overwrite(.*)/\1\2/')
+    mv "$org_name" "$new_name"
 }
 export -f rename_files;
 find $NOT_OWNED_TEMP -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
