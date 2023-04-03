@@ -55,7 +55,10 @@ UNDERLINE=$(tput smul)
 #  VER=caps_0.9.26
 
 REGEXP='^([A-Za-z].*)[_]([0-9]:?.*)-([0-9]{1,3}[.]?[0-9]?)(.*)?$'
-MAJORMINORMICRO_REGEXP='^([0-9]*)[.]([0-9]*)[.]([0-9]*)$'
+
+# decode the version of a package into major/minor/micro semver style
+# we ignore the epoch for now if existing
+MAJORMINORMICRO_REGEXP=':?([0-9]*)[.]([0-9]*)[.]([0-9]*)$'
 
 # check some use conditions:
 if [ "$0" = "$BASH_SOURCE" ]; then
