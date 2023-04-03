@@ -14,7 +14,7 @@
 # Step 1 - Configure APT for moOde package repo
 curl -1sLf \
 'https://dl.cloudsmith.io/public/moodeaudio/m8y/setup.deb.sh' \
-| sudo -E bash
+| sudo -E distro=raspbian codename=bullseye bash
 
 # Step 2 - Make sure OS is up to date
 sudo apt update
