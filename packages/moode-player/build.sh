@@ -75,9 +75,9 @@ _rbl_change_to_build_root
 rm -rf "${BUILD_ROOT_DIR}/root"
 mkdir -p "${BUILD_ROOT_DIR}/root"
 
-if [ -z "${MOODE_DIR}" ]
+if [ -d "${MOODE_DIR}" ]
 then
-    echo "${YELLOW}Error: MOODE_DIR is should point to a moode source dir${NORMAL}"
+    echo "${YELLOW}Error: MOODE_DIR should point to a moode source dir${NORMAL}"
     exit 1
 fi
 
