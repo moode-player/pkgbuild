@@ -18,6 +18,9 @@ PKG="moode-player_8.3.1-1moode1~pre1"
 # so we can derive it from the PKG string automatically
 MAJOR_BASE_STATIONS="moode-stations-full_8.0.0.zip"
 
+# directory that holds distributable files (for example the last major releases radio-stations zip)
+DIST_DIR="dist/binary/"
+
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
 
@@ -131,14 +134,14 @@ then
 fi
 
 "${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --scope moode --export "${BUILD_ROOT_DIR}/moode-stations-full_$PKGVERSION.zip"
-if [ ! -f "${BASE_DIR}/dist/binary/${MAJOR_BASE_STATIONS}" ]
+if [ ! -f "${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS}" ]
 then
-    echo "${RED}Error: radio station base backup ${BASE_DIR}/dist/binary/${MAJOR_BASE_STATIONS} not found!${NORMAL}"
-    mkdir "${BASE_DIR}/dist/binary" -p
-    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/${MAJOR_BASE_STATIONS} -O "${BASE_DIR}/dist/binary/${MAJOR_BASE_STATIONS}"
+    echo "${RED}Error: radio station base backup ${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS} not found!${NORMAL}"
+    mkdir "${BASE_DIR}/${DIST_DIR}" -p
+    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/${MAJOR_BASE_STATIONS} -O "${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS}"
 fi
 
-"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "${BASE_DIR}/dist/binary/${MAJOR_BASE_STATIONS}"
+"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS}"
 if [ ! -f "${BUILD_ROOT_DIR}/moode-stations-full_${PKGVERSION}.zip" ]
 then
     echo "${RED}Error: radio station full file not generated!${NORMAL}"
@@ -154,7 +157,7 @@ fi
 
 rm -f "${BUILD_ROOT_DIR}/moode-sqlite3.db" || true
 # move it to the dist location
-mv -f "${BUILD_ROOT_DIR}"/moode-stations-*_"${PKGVERSION}.zip"  "${BASE_DIR}/dist/binary/"
+mv -f "${BUILD_ROOT_DIR}"/moode-stations-*_"${PKGVERSION}.zip"  "${BASE_DIR}/${DIST_DIR}"
 
 # Create empty directories needed later
 mkdir -p "${NOT_OWNED_TEMP}"
