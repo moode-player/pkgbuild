@@ -1,6 +1,6 @@
-# moOde audio player - package builder
+# moOde audio player - package builder <!-- omit in toc -->
+by bitlab
 
-This repository contains scripts to build the packages containing the software components used in moOde audio player.
 
 [![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=for-the-badge)](https://cloudsmith.com)
 
@@ -9,7 +9,30 @@ Cloudsmith is the only fully hosted, cloud-native, universal package management 
 enables your organization to create, store and share packages in any format, to any place, with total
 confidence.
 
-## Origin and build type
+### Table of Contents <!-- omit in toc -->
+
+- [1. Introduction](#1-introduction)
+  - [1.1. Origin and build type](#11-origin-and-build-type)
+  - [1.2. Overview of the packages that are used](#12-overview-of-the-packages-that-are-used)
+  - [1.3. Other packages in the repo for example drivers.](#13-other-packages-in-the-repo-for-example-drivers)
+- [2. (Re)building packages](#2-rebuilding-packages)
+  - [2.1. Prepare environment](#21-prepare-environment)
+    - [2.1.1. Update the system](#211-update-the-system)
+    - [2.1.2. Clone the pkgbuild tree](#212-clone-the-pkgbuild-tree)
+    - [2.1.3. Setup environment settings](#213-setup-environment-settings)
+  - [2.2. Build dependencies](#22-build-dependencies)
+  - [2.3. Building a package](#23-building-a-package)
+  - [2.4. Deploy package and source](#24-deploy-package-and-source)
+    - [2.4.1. Install Cloudsmith tooling](#241-install-cloudsmith-tooling)
+    - [2.4.2. Upload the package](#242-upload-the-package)
+
+
+# 1. Introduction
+This repository contains scripts to build the packages containing the software components used in moOde audio player.
+
+
+
+## 1.1. Origin and build type
 There are several ways in which packages are built and sources obtained.
 
 | How   | Description |  Output        |
@@ -26,7 +49,7 @@ There are several ways in which packages are built and sources obtained.
 
 All forms with src as output can be rebuilt from source packages (also present in the repo).
 
-## Overview of the packages that are used
+## 1.2. Overview of the packages that are used
 
 Note: The versions represented in the table are only for example and may not represent the latest versions being used and the table may not contain all the packages in the repo.
 
@@ -65,7 +88,7 @@ Patches* means patches required for the source code and excludes patches for the
 
 Note: The camillagui-backend is bundled with the camillagui package.
 
-## Other packages in the repo for example drivers.
+## 1.3. Other packages in the repo for example drivers.
 
 | Package    |      Version    | How  | Patches* | Descriptions |
 |----------  |-----------------|:----|---------------|----------|
@@ -78,34 +101,98 @@ Note: The camillagui-backend is bundled with the camillagui package.
 | [rtl88xxau](https://github.com/aircrack-ng/rtl8812au)    | 5.6.4.2-1moode1  | git |  | Required for SIG Wifi.
 | [runonce](https://github.com/moode-player/pkgbuild ) | 0.1.0-1moode1 | fpm | | service for running scripts once during boot
 
-## Usage
+# 2. (Re)building packages
 
 Requirements:
-* Pi with Raspbian Lite Bullseye installed.
+* Pi with Raspbian Lite Bullseye (or a moOde image) installed.
+* Have at least a 32GB SD card (or have NFS mount to your NAS)
 
-### Setup enviroment settings
-* Copy the setenv.sh.example to `setenv.sh`
-* Change the content to reflect your settings.
+## 2.1. Prepare environment
+
+### 2.1.1. Update the system
+Update the system and install the minimal requirement `git`:
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt -y install git
+sudo apt reboot
+```
+### 2.1.2. Clone the pkgbuild tree
+In this example we use the `moodedev` directory to store al moode related project dirs.
+
+Setup a build tree:
+```bash
+mkdir -p ~/moodedev/
+cd ~.moodedev
+git clone https://github.com/moode-player/pkgbuild.git
+cd pkgbuild/scripts
+```
+
+
+
+### 2.1.3. Setup environment settings
+* Copy the `scripts/setenv.sh.example` to `setenv.sh`
+```bash
+cp setenv.sh.example setenv.sh
+```
+* Change the content to reflect your settings:
 
 ```bash
 # The var MOODE_DIR refers to the location of the cloned moode source repo
 # These commands should be added to ~/.bashrc
 export DEBFULLNAME=John
 export DEBEMAIL=john@noreply.com
-export MOODE_DIR=~/home/pi/moode
+export MOODE_DIR=~/home/pi/mooddev.moode
 ```
-### Building a package
-Go to a package dir in the subdir packages and run the `build.sh` script
+The latest is the location with the [moode player main project](https://github.com/moode-player/moode) it self.
+
+Activate the environment by:
+```bash
+cd ..
+. ./scripts/setenv.sh
+```
+
+
+## 2.2. Build dependencies
+
+And image below give an overview of most packages. Some packages depends on build and install of others (including dev packages):
+![package build dep](moodepkgs.png)
+
+## 2.3. Building a package
+Go to a package dir in the subdir `packages` and run the `build.sh` script
+
+For test try to build `alsacap` and `aloop`.
 
 ```bash
 cd packages/alsacap
 ./build.sh
 ```
-The output will be in the `dist` subdirectory.
+The output will be in the `dist/binary` subdirectory.
 
-### Deploy package and source
+All dependencies are automatically installed. The first time this will take a while. Especially the kernel packages.
+
+The kernel packages are build for the current active running kernel and expect an offical released kernel for Raspberry Pi OS.
+
+The only exception to the build process is the moOde player it self. It expect that the moode source tree is checkout out in separate directory and the location is set in the `setenv.sh` script, before it can be packed by the build script from `packages/moode-player/build.sh`.
+See the build documentation from moode.
+
+
+
+## 2.4. Deploy package and source
 There is a helper script that deploys packages to a Cloudsmith package repository. This requires a Cloudsmith account with access to the moOde repository.
 
+
+### 2.4.1. Install Cloudsmith tooling
+
+```
+sudo apt install python3-pip
+pip install --upgrade cloudsmith-cli
+```
+This will ask your credentials(you need to have permission to upload to the moOde CS repo) to generate an API key.
+
+Logout now and start the ssh session again.
+
+### 2.4.2. Upload the package
 After a package has been built run the deploy command.
 
 ```bash
