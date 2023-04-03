@@ -53,6 +53,25 @@ _rbl_change_to_build_root
 # location where we build a fakeroot system with the moode file to be package into the package
 PKG_ROOT_DIR="${BUILD_ROOT_DIR}/root"
 
+# array listing directories that we need to create in the target rootdir of the build package
+declare PKG_ROOT_DIR_SUBDIRS=(
+    "/home"
+    "/mnt/NAS"
+    "/mnt/SDCARD"
+    "/var/local/www/imagesw/radio-logos/thumbs"
+    "/var/lib/mpd/music/RADIO"
+    "/var/lib/cdsp"
+    "/var/www"
+)
+
+# location for files that should overwrite existing files (not owned by moode-player)
+NOT_OWNED_TEMP=${PKG_ROOT_DIR}/usr/share/moode-player
+
+# similar array listing directories that we need to create in the target rootdir
+# but this time containing system files that we want to override that are not "owned" by moode-player package
+declare NOT_OWNED_TEMP_SUBDIRS=(
+    "/var/lib/mpd/playlists"
+)
 
 # init build root
 rm -rf "${BUILD_ROOT_DIR}/root"
@@ -139,13 +158,21 @@ rm -f "${BUILD_ROOT_DIR}/moode-sqlite3.db" || true
 # move it to the dist location
 mv -f "${BUILD_ROOT_DIR}"/moode-stations-*_"${PKGVERSION}.zip"  "${BASE_DIR}/dist/binary/"
 
-# location for files that should overwrite existing files (not owned by moode-player)
-NOT_OWNED_TEMP=${PKG_ROOT_DIR}/usr/share/moode-player
-
 # Create empty directories needed later
 mkdir -p "${NOT_OWNED_TEMP}"
-mkdir -p "${PKG_ROOT_DIR}/home"
-mkdir -p "${PKG_ROOT_DIR}/mnt/"{NAS,SDCARD}
+
+# Create empty directories from our array on the root dir
+for dir in "${PKG_ROOT_DIR_SUBDIRS[@]}"; do \
+    echo "Creating directory: ${PKG_ROOT_DIR}${dir}"
+    mkdir -p "${PKG_ROOT_DIR}${dir}"
+done
+
+# Create empty directories from our array on the not owned temp dir
+for dir in "${NOT_OWNED_TEMP_SUBDIRS[@]}"; do \
+    echo "Creating directory: ${NOT_OWNED_TEMP}${dir}"
+    mkdir -p "${NOT_OWNED_TEMP}${dir}"
+done
+
 
 # rsync dist stuff from moode source to target build directory for packaging
 rsync \
@@ -203,21 +230,16 @@ rsync \
 
 cp "${BASE_DIR}/moode-apt-mark" "${PKG_ROOT_DIR}/usr/local/bin"
 
-mkdir -p "${PKG_ROOT_DIR}/var/local/www/imagesw/radio-logos/thumbs"
 # Create curated always overwrite playlist for the radio stations
-mkdir -p "${NOT_OWNED_TEMP}/var/lib/mpd/playlists"
 cp "${MOODE_DIR}/var/lib/mpd/playlists/Default Playlist.m3u" "${NOT_OWNED_TEMP}/var/lib/mpd/playlists/Curated Radio Stations.m3u"
 
 # /var/lib/mpd
-mkdir -p "${PKG_ROOT_DIR}/var/lib/mpd/music/RADIO"
 chmod 0777 "${PKG_ROOT_DIR}/var/lib/mpd/music/RADIO"
 
 # /var/lib/cdsp/
-mkdir -p "${PKG_ROOT_DIR}/var/lib/cdsp"
 chmod 0777 "${PKG_ROOT_DIR}/var/lib/cdsp"
 
 # /var/www
-mkdir -p "${PKG_ROOT_DIR}/var/www"
 cp -r "${MOODE_DIR}/build/dist/var/www/"* "${PKG_ROOT_DIR}/var/www/"
 
 # In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
