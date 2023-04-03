@@ -13,7 +13,7 @@
 # Package version to Build
 PKG="moode-player_8.3.1-1moode1~pre1"
 
-# first Major verions radio-stations filename
+# Used as reference for generating station patch files. Should be the first release of a major
 # TODO: come up with some clever regex or something
 # so we can derive it from the PKG string automatically
 MAJOR_BASE_STATIONS="moode-stations-full_8.0.0.zip"
@@ -31,24 +31,6 @@ NPM_CI=0
 BUILD_APP=1
 
 GULP_BIN="${MOODE_DIR}/node_modules/.bin/gulp"
-
-# Used as reference for generating station patch files. Should be the first release of a major
-
-# ----------------------------------------------------------------------------
-# 1. Prepare pacakge build dir and build deps
-
-# the web app is build with gulp
-rbl_check_build_dep npm
-# For packign fpm is used, which is created with Ruby
-rbl_check_fpm
-
-rbl_check_build_dep sqlite3
-
-_rbl_decode_pkg_version
-_rbl_check_curr_is_package_dir
-
-_rbl_cleanup_previous_build
-_rbl_change_to_build_root
 
 # location where we build a fakeroot system with the moode file to be package into the package
 PKG_ROOT_DIR="${BUILD_ROOT_DIR}/root"
@@ -72,6 +54,22 @@ NOT_OWNED_TEMP=${PKG_ROOT_DIR}/usr/share/moode-player
 declare NOT_OWNED_TEMP_SUBDIRS=(
     "/var/lib/mpd/playlists"
 )
+
+# ----------------------------------------------------------------------------
+# 1. Prepare pacakge build dir and build deps
+
+# the web app is build with gulp
+rbl_check_build_dep npm
+# For packign fpm is used, which is created with Ruby
+rbl_check_fpm
+
+rbl_check_build_dep sqlite3
+
+_rbl_decode_pkg_version
+_rbl_check_curr_is_package_dir
+
+_rbl_cleanup_previous_build
+_rbl_change_to_build_root
 
 # init build root
 rm -rf "${BUILD_ROOT_DIR}/root"
