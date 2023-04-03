@@ -156,7 +156,8 @@ cd ..
 ## 2.2. Build dependencies
 
 And image below give an overview of most packages. Some packages depends on build and install of others (including dev packages):
-![package build dep](moodepkgs.png)
+
+![package build dep](docs/moodepkgs.png)
 
 ## 2.3. Building a package
 Go to a package dir in the subdir `packages` and run the `build.sh` script
