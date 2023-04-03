@@ -13,13 +13,8 @@
 # Package version to Build
 PKG="moode-player_8.3.1-1moode1~pre1"
 
-# Used as reference for generating station patch files. Should be the first release of a major
-# TODO: come up with some clever regex or something
-# so we can derive it from the PKG string automatically
-MAJOR_BASE_STATIONS="moode-stations-full_8.0.0.zip"
-
 # directory that holds distributable files (for example the last major releases radio-stations zip)
-DIST_DIR="dist/binary/"
+DIST_DIR="dist/binary"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -30,6 +25,7 @@ DIST_DIR="dist/binary/"
 
 # sync required npm modules for gulp build if if already exists
 NPM_CI=0
+
 # build web app with gulp, to speed up test build without change to frontend (or manual build) diable this
 BUILD_APP=1
 
@@ -59,14 +55,15 @@ declare NOT_OWNED_TEMP_SUBDIRS=(
 )
 
 # ----------------------------------------------------------------------------
-# 1. Prepare pacakge build dir and build deps
+# 1. Prepare package build dir and build deps
 
+# Check build dependencies
 # the web app is build with gulp
 rbl_check_build_dep npm
-# For packign fpm is used, which is created with Ruby
-rbl_check_fpm
-
+# we need sqlite to create potential radio station patches
 rbl_check_build_dep sqlite3
+# For packaging, fpm is used, which is created with Ruby
+rbl_check_fpm
 
 _rbl_decode_pkg_version
 _rbl_check_curr_is_package_dir
@@ -134,14 +131,14 @@ then
 fi
 
 "${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --scope moode --export "${BUILD_ROOT_DIR}/moode-stations-full_$PKGVERSION.zip"
-if [ ! -f "${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS}" ]
+if [ ! -f "${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip" ]
 then
-    echo "${RED}Error: radio station base backup ${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS} not found!${NORMAL}"
-    mkdir "${BASE_DIR}/${DIST_DIR}" -p
-    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/${MAJOR_BASE_STATIONS} -O "${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS}"
+    echo "${RED}Error: radio station base backup ${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip not found!${NORMAL}"
+    mkdir "${BASE_DIR}/${DIST_DIR}/" -p
+    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_${PKGMAJORVERSION}.0.0.zip -O "${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip"
 fi
 
-"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "${BASE_DIR}/${DIST_DIR}${MAJOR_BASE_STATIONS}"
+"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip"
 if [ ! -f "${BUILD_ROOT_DIR}/moode-stations-full_${PKGVERSION}.zip" ]
 then
     echo "${RED}Error: radio station full file not generated!${NORMAL}"
@@ -157,7 +154,7 @@ fi
 
 rm -f "${BUILD_ROOT_DIR}/moode-sqlite3.db" || true
 # move it to the dist location
-mv -f "${BUILD_ROOT_DIR}"/moode-stations-*_"${PKGVERSION}.zip"  "${BASE_DIR}/${DIST_DIR}"
+mv -f "${BUILD_ROOT_DIR}"/moode-stations-*_"${PKGVERSION}.zip"  "${BASE_DIR}/${DIST_DIR}/"
 
 # Create empty directories needed later
 mkdir -p "${NOT_OWNED_TEMP}"

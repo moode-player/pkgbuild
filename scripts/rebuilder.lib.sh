@@ -55,7 +55,7 @@ UNDERLINE=$(tput smul)
 #  VER=caps_0.9.26
 
 REGEXP='^([A-Za-z].*)[_]([0-9]:?.*)-([0-9]{1,3}[.]?[0-9]?)(.*)?$'
-
+MAJORMINORMICRO_REGEXP='^([0-9]*)[.]([0-9]*)[.]([0-9]*)$'
 
 # check some use conditions:
 if [ "$0" = "$BASH_SOURCE" ]; then
@@ -148,11 +148,13 @@ function _rbl_decode_pkg_version {
 
     PKGNAME=$(echo $PKG | sed -r "s|$REGEXP|\1|")
     PKGVERSION=$(echo $PKG | sed -r "s|$REGEXP|\2|")
+    PKGMAJORVERSION=$(echo $PKGVERSION | sed -r "s|$MAJORMINORMICRO_REGEXP|\1|")
     DEBVER=$(echo $PKG| sed -r "s|$REGEXP|\3|")
     DEBLOC=$(echo $PKG | sed -r "s|$REGEXP|\4|")
 
     # echo $PKGNAME
     # echo $PKGVERSION
+    # echo $PKGMAJORVERSION
     # echo $DEBVER
     # echo $DEBLOC
 
