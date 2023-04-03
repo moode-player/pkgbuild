@@ -115,7 +115,7 @@ if [ ! -f "../dist/binary/${MAJOR_BASE_STATIONS}" ]
 then
     echo "${RED}Error: radio station base backup ../dist/binary/${MAJOR_BASE_STATIONS} not found!${NORMAL}"
     mkdir "../dist/binary" -p
-    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/${MAJOR_BASE_STATIONS} -O "../dist/binary"
+    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/${MAJOR_BASE_STATIONS} -O "../dist/binary/${MAJOR_BASE_STATIONS}"
 fi
 
 "${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "../dist/binary/${MAJOR_BASE_STATIONS}"
