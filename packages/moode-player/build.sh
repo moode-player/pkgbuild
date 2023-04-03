@@ -27,7 +27,7 @@ BUILD_APP=1
 GULP_BIN="${MOODE_DIR}/node_modules/.bin/gulp"
 
 # Used as reference for generating station patch files. Should be the first releas of a major
-MAJOR_BASE_STATIONS="../dist/binary/moode-stations-full_8.0.0.zip"
+MAJOR_BASE_STATIONS="moode-stations-full_8.0.0.zip"
 
 # ----------------------------------------------------------------------------
 # 1. Prepare pacakge build dir and build deps
@@ -111,14 +111,14 @@ then
 fi
 
 "${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --scope moode --export "${BUILD_ROOT_DIR}/moode-stations-full_$PKGVERSION.zip"
-if [ ! -f "${MAJOR_BASE_STATIONS}" ]
+if [ ! -f "../dist/binary/${MAJOR_BASE_STATIONS}" ]
 then
-    echo "${RED}Error: radio station base backup ${MAJOR_BASE_STATIONS} not found!${NORMAL}"
-    mkdir "../dist/binary" -P
-    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_8.0.0.zip -O "../dist/binary"
+    echo "${RED}Error: radio station base backup ../dist/binary/${MAJOR_BASE_STATIONS} not found!${NORMAL}"
+    mkdir "../dist/binary" -p
+    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/${MAJOR_BASE_STATIONS} -O "../dist/binary"
 fi
 
-"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "${MAJOR_BASE_STATIONS}"
+"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "../dist/binary/${MAJOR_BASE_STATIONS}"
 if [ ! -f "${BUILD_ROOT_DIR}/moode-stations-full_${PKGVERSION}.zip" ]
 then
     echo "${RED}Error: radio station full file not generated!${NORMAL}"
