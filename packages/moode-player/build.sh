@@ -71,23 +71,23 @@ rm -rf ${PKG}*.deb
 # ----------------------------------------------------------------------------
 # 2. Buildweb app an deploy to test directory (prepared for copy)
 
-cd "$MOODE_DIR" || exit
+cd "${MOODE_DIR}" || exit
 
 #TODO: detect if node_modules is missing and if so do both steps
-if [ $NPM_CI -gt 0 ]  || [ ! -d "$MOODE_DIR/node_modules" ]
+if [ ${NPM_CI} -gt 0 ]  || [ ! -d "${MOODE_DIR}/node_modules" ]
 then
     npm ci
 fi
 
-if [[ $BUILD_APP -gt 0 ]]
+if [[ ${BUILD_APP} -gt 0 ]]
 then
-    $GULP_BIN clean --all
-    $GULP_BIN build
+    ${GULP_BIN} clean --all
+    ${GULP_BIN} build
 fi
 
-$GULP_BIN deploy --test
+${GULP_BIN} deploy --test
 
-cd "$BUILD_ROOT_DIR" || exit
+cd "${BUILD_ROOT_DIR}" || exit
 
 # ----------------------------------------------------------------------------
 # 3. Collect installable files
@@ -103,42 +103,42 @@ cd "$BUILD_ROOT_DIR" || exit
 
 # generate moode radio stations backup file (used for populating the station from the installer)
 
-if ! sqlite3 "$BUILD_ROOT_DIR/moode-sqlite3.db" < "$MOODE_DIR/var/local/www/db/moode-sqlite3.db.sql"
+if ! sqlite3 "${BUILD_ROOT_DIR}/moode-sqlite3.db" < "${MOODE_DIR}/var/local/www/db/moode-sqlite3.db.sql"
 then
     echo "${RED}Error: couldn't create temporary database!${NORMAL}"
     cd ..
     exit 1
 fi
 
-"$MOODE_DIR/www/util/station_manager.py" --db "$BUILD_ROOT_DIR/moode-sqlite3.db" --logopath "$MOODE_DIR/var/local/www/imagesw/radio-logos" --scope moode --export "$BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip"
-if [ ! -f "$MAJOR_BASE_STATIONS" ]
+"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --scope moode --export "${BUILD_ROOT_DIR}/moode-stations-full_$PKGVERSION.zip"
+if [ ! -f "${MAJOR_BASE_STATIONS}" ]
 then
-    echo "${RED}Error: radio station base backup $MAJOR_BASE_STATIONS not found!${NORMAL}"
-    cd ..
-    exit 1
+    echo "${RED}Error: radio station base backup ${MAJOR_BASE_STATIONS} not found!${NORMAL}"
+    mkdir "../dist/binary"
+    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_8.0.0.zip -O "../dist/binary"
 fi
 
-"$MOODE_DIR/www/util/station_manager.py" --db "$BUILD_ROOT_DIR/moode-sqlite3.db" --logopath "$MOODE_DIR/var/local/www/imagesw/radio-logos" --diff "$BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip" --scope moode "$MAJOR_BASE_STATIONS"
-if [ ! -f "$BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip" ]
+"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "${MAJOR_BASE_STATIONS}"
+if [ ! -f "${BUILD_ROOT_DIR}/moode-stations-full_${PKGVERSION}.zip" ]
 then
     echo "${RED}Error: radio station full file not generated!${NORMAL}"
     cd ..
     exit 1
 fi
-if [ ! -f "$BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip" ]
+if [ ! -f "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" ]
 then
     echo "${RED}Error: radio station update file not generated!${NORMAL}"
     cd ..
     exit 1
 fi
 
-rm -f "$BUILD_ROOT_DIR/moode-sqlite3.db" || true
+rm -f "${BUILD_ROOT_DIR}/moode-sqlite3.db" || true
 # move it to the dist location
-mv -f "$BUILD_ROOT_DIR/moode-stations-*_$PKGVERSION.zip"  "$BASE_DIR/dist/binary/"
+mv -f ${BUILD_ROOT_DIR}/moode-stations-*_${PKGVERSION}.zip  "${BASE_DIR}/dist/binary/"
 
 # location for files that should overwrite existing files (not owned by moode-player)
-NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
-mkdir -p $NOT_OWNED_TEMP
+NOT_OWNED_TEMP=${PKG_ROOT_DIR}/usr/share/moode-player
+mkdir -p "${NOT_OWNED_TEMP}"
 
 # /boot
 rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* --exclude *.ignore* $MOODE_DIR/boot/ $PKG_ROOT_DIR/boot/
