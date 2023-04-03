@@ -114,7 +114,7 @@ fi
 if [ ! -f "${MAJOR_BASE_STATIONS}" ]
 then
     echo "${RED}Error: radio station base backup ${MAJOR_BASE_STATIONS} not found!${NORMAL}"
-    mkdir "../dist/binary"
+    mkdir "../dist/binary" -P
     wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_8.0.0.zip -O "../dist/binary"
 fi
 
