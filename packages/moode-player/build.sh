@@ -10,7 +10,13 @@
 
 . ../../scripts/rebuilder.lib.sh
 
+# Package version to Build
 PKG="moode-player_8.3.1-1moode1~pre1"
+
+# first Major verions radio-stations filename
+# TODO: come up with some clever regex or something
+# so we can derive it from the PKG string automatically
+MAJOR_BASE_STATIONS="moode-stations-full_8.0.0.zip"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -27,7 +33,6 @@ BUILD_APP=1
 GULP_BIN="${MOODE_DIR}/node_modules/.bin/gulp"
 
 # Used as reference for generating station patch files. Should be the first release of a major
-MAJOR_BASE_STATIONS="moode-stations-full_8.0.0.zip"
 
 # ----------------------------------------------------------------------------
 # 1. Prepare pacakge build dir and build deps
@@ -143,8 +148,31 @@ mkdir -p "${PKG_ROOT_DIR}/home"
 mkdir -p "${PKG_ROOT_DIR}/mnt/"{NAS,SDCARD}
 
 # rsync dist stuff from moode source to target build directory for packaging
-rsync -avR --prune-empty-dirs --exclude={'*.sed*','*.overwrite**','*.ignore*','moode-sqlite3.db','radio-logos'} {boot/,etc/,lib/,var/} "${PKG_ROOT_DIR}"
-rsync -avR --prune-empty-dirs --include={'*/','*.overwrite*'} --exclude="*" {boot/,etc/,lib/,var/} "${NOT_OWNED_TEMP}"
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --exclude={'*.sed*','*.overwrite*','*.ignore*','moode-sqlite3.db','radio-logos'} \
+    boot/ \
+    etc/ \
+    lib/ \
+    var/ \
+    "${PKG_ROOT_DIR}" # target to sync to
+
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --include={'*/','*.overwrite*'} \
+    --exclude="*" \
+    boot/ \
+    etc/ \
+    lib/ \
+    var/ \
+    "${NOT_OWNED_TEMP}"
+
 rsync -av --exclude={'xinitrc.default','dircolors'} "home/" "${PKG_ROOT_DIR}/home/pi"
 
 # copy over important single files
@@ -154,52 +182,69 @@ cp "${MOODE_DIR}/home/dircolors" "${PKG_ROOT_DIR}/home/pi/.dircolors"
 cp -r "${MOODE_DIR}/sdcard/Stereo Test/" "${PKG_ROOT_DIR}/mnt/SDCARD"
 
 # /usr
-rsync -av --prune-empty-dirs --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $NOT_OWNED_TEMP/usr/
-cp $BASE_DIR/moode-apt-mark $PKG_ROOT_DIR/usr/local/bin
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --exclude={'mpd.conf','mpdasrc.default','install-wifi','html/index.html'} \
+    usr/ \
+    "${PKG_ROOT_DIR}"
+    
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --include={'*/','*.overwrite*'} \
+    --exclude={'*','mpd.conf','mpdasrc.default','install-wifi','html/index.html'} \
+    usr/ \
+    "${NOT_OWNED_TEMP}"
 
-mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
+cp "${BASE_DIR}/moode-apt-mark" "${PKG_ROOT_DIR}/usr/local/bin"
+
+mkdir -p "${PKG_ROOT_DIR}/var/local/www/imagesw/radio-logos/thumbs"
 # Create curated always overwrite playlist for the radio stations
-mkdir -p $NOT_OWNED_TEMP/var/lib/mpd/playlists
-cp "$MOODE_DIR/var/lib/mpd/playlists/Default Playlist.m3u" "$NOT_OWNED_TEMP/var/lib/mpd/playlists/Curated Radio Stations.m3u"
+mkdir -p "${NOT_OWNED_TEMP}/var/lib/mpd/playlists"
+cp "${MOODE_DIR}/var/lib/mpd/playlists/Default Playlist.m3u" "${NOT_OWNED_TEMP}/var/lib/mpd/playlists/Curated Radio Stations.m3u"
 
 # /var/lib/mpd
-mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
-chmod 0777 $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
+mkdir -p "${PKG_ROOT_DIR}/var/lib/mpd/music/RADIO"
+chmod 0777 "${PKG_ROOT_DIR}/var/lib/mpd/music/RADIO"
 
 # /var/lib/cdsp/
-mkdir -p $PKG_ROOT_DIR/var/lib/cdsp
-chmod 0777 $PKG_ROOT_DIR/var/lib/cdsp
+mkdir -p "${PKG_ROOT_DIR}/var/lib/cdsp"
+chmod 0777 "${PKG_ROOT_DIR}/var/lib/cdsp"
 
 # /var/www
-mkdir -p $PKG_ROOT_DIR/var/www
-cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
+mkdir -p "${PKG_ROOT_DIR}/var/www"
+cp -r "${MOODE_DIR}/build/dist/var/www/"* "${PKG_ROOT_DIR}/var/www/"
 
 # In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
 function rename_files() {
-    org_name=$1
-    new_name=$(echo "$org_name" | sed -r 's/(.*)[.]overwrite(.*)/\1\2/')
-    mv "$org_name" "$new_name"
+    org_name=${1}
+    new_name=$(echo "${org_name}" | sed -r 's/(.*)[.]overwrite(.*)/\1\2/')
+    mv "${org_name}" "${new_name}"
 }
 export -f rename_files;
-find $NOT_OWNED_TEMP -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
+find "${NOT_OWNED_TEMP}" -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
 
 # echo "** Reset permissions"
-chmod -R 0755  $PKG_ROOT_DIR/var/www
-chmod 0755  $PKG_ROOT_DIR/var/www/command/*
-chmod 0755  $PKG_ROOT_DIR/var/www/util/*
-chmod -R 0755  $PKG_ROOT_DIR/var/local/www
-chmod -R 0777  $PKG_ROOT_DIR/var/local/www/commandw/*
-chmod -R 0766  $PKG_ROOT_DIR/var/local/www/db
-chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
+chmod -R 0755  "${PKG_ROOT_DIR}/var/www"
+chmod 0755  "${PKG_ROOT_DIR}/var/www/command/"*
+chmod 0755  "${PKG_ROOT_DIR}/var/www/util/"*
+chmod -R 0755  "${PKG_ROOT_DIR}/var/local/www"
+chmod -R 0777  "${PKG_ROOT_DIR}/var/local/www/commandw/"*
+chmod -R 0766  "${PKG_ROOT_DIR}/var/local/www/db"
+chmod -R 0755  "${PKG_ROOT_DIR}/usr/local/bin"
 
 # chmod -R ug-s /var/local/www
-chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
+chmod -R 0755  "${PKG_ROOT_DIR}/usr/local/bin"
 
 # ------------------------------------------------------------
 # 5. Create the package
 # Copy and fix version number is postinstall script
-cat $BASE_DIR/postinstall.sh | sed -e "s/^PKG_VERSION=.*/PKG_VERSION=\"$PKGVERSION\"/" > $BUILD_ROOT_DIR/postinstall.sh
+sed -e "s/^PKG_VERSION=.*/PKG_VERSION=\"${PKGVERSION}\"/" < "${BASE_DIR}/postinstall.sh" > "${BUILD_ROOT_DIR}/postinstall.sh"
 #TODO: Critical look at the deps, remove unneeded.
 #TODO: Add license and readme, improve description
 
@@ -208,18 +253,18 @@ cd "${BUILD_ROOT_DIR}" || exit
 
 # Don't include packages as dependency, if those package depends on the used kernel (like drivers).
 # Install those separate.
-fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
+fpm -s dir -t deb -n "${PKGNAME}" -v "${PKGVERSION}" \
 --license GPLv3 \
 --category sound \
 -S moode \
---iteration $DEBVER$DEBLOC \
+--iteration "${DEBVER}${DEBLOC}" \
 -a all \
 --deb-priority optional \
 --url https://www.moode.org \
 -m moodeaudio.org \
 --description 'moOde audio player' \
---after-install $BUILD_ROOT_DIR/postinstall.sh \
---before-remove $BASE_DIR/preremove.sh \
+--after-install "${BUILD_ROOT_DIR}/postinstall.sh" \
+--before-remove "${BASE_DIR}/preremove.sh" \
 --config-files usr/share/camilladsp/configs \
 --config-files usr/share/camilladsp/coeffs \
 --depends alsa-cdsp \
