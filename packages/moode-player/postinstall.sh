@@ -640,6 +640,8 @@ function on_upgrade() {
          mv /var/log/mountmon.log /var/log/moode_mountmon.log
          mv /var/local/www/playhistory.log /var/log/moode_playhistory.log
          mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp
+         # Updated Loudness.yml
+         cp -f "$SRC/usr/share/camilladsp/configs/Loudness.yml" /usr/share/camilladsp/configs/         
       fi
 
       #--------------------------------------------------------------------------------------------------------
