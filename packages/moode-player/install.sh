@@ -33,12 +33,12 @@ sudo apt install moode-player
 KERNEL_VER=$(uname -r | sed -r "s/([0-9.]*)[-].*/\1/")
 echo "Checking for drivers built for kernel version: ${KERNEL_VER}"
 # NOTE: Be sure to update this array
-SUPPORTED_KERNELS=(5.10.63 5.10.92 5.15.23 5.15.32)
+SUPPORTED_KERNELS=(6.1.19)
 inarray=$(echo ${SUPPORTED_KERNELS[@]} | grep -o "$KERNEL_VER" | wc -w)
 if [ $inarray -eq 1 ]
 then
     echo "Installing kernel drivers"
-    sudo apt install aloop-$KERNEL_VER pcm1794a-$KERNEL_VER ax88179-$KERNEL_VER rtl88xxau-$KERNEL_VER
+    sudo apt install aloop-$KERNEL_VER pcm1794a-$KERNEL_VER rtl88xxau-$KERNEL_VER
 else
     echo "Warning: drivers have not yet been built for this kernel version"
     echo "Skipping driver install"

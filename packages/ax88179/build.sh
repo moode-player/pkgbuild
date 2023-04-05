@@ -8,6 +8,10 @@
 #
 # https://github.com/allocom/USBridgeSig-AX2v0
 #
+# NOTE: Starting with kernel 6.1.y the custom Allo ASIX ax88179 driver is no longer installed
+# due to build breakage in the driver which has been unmaintained since mid-2022. Instead the
+# stock ASIX ax88179 driver is used.
+#
 #########################################################################
 
 
