@@ -10,7 +10,11 @@
 
 . ../../scripts/rebuilder.lib.sh
 
+# Package version to Build
 PKG="moode-player_8.3.1-1moode1~pre1"
+
+# directory that holds distributable files (for example the last major releases radio-stations zip)
+DIST_DIR="dist/binary"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -21,23 +25,45 @@ PKG="moode-player_8.3.1-1moode1~pre1"
 
 # sync required npm modules for gulp build if if already exists
 NPM_CI=0
+
 # build web app with gulp, to speed up test build without change to frontend (or manual build) diable this
 BUILD_APP=1
 
-GULP_BIN=$MOODE_DIR/node_modules/.bin/gulp
+GULP_BIN="${MOODE_DIR}/node_modules/.bin/gulp"
 
-# Used as reference for generating station patch files. Should be the first releas of a major
-MAJOR_BASE_STATIONS=../dist/binary/moode-stations-full_8.0.0.zip
+# location where we build a fakeroot system with the moode file to be package into the package
+PKG_ROOT_DIR="${BUILD_ROOT_DIR}/root"
+
+# array listing directories that we need to create in the target rootdir of the build package
+declare PKG_ROOT_DIR_SUBDIRS=(
+    "/home"
+    "/mnt/NAS"
+    "/mnt/SDCARD"
+    "/var/local/www/imagesw/radio-logos/thumbs"
+    "/var/lib/mpd/music/RADIO"
+    "/var/lib/cdsp"
+    "/var/www"
+)
+
+# location for files that should overwrite existing files (not owned by moode-player)
+NOT_OWNED_TEMP=${PKG_ROOT_DIR}/usr/share/moode-player
+
+# similar array listing directories that we need to create in the target rootdir
+# but this time containing system files that we want to override that are not "owned" by moode-player package
+declare NOT_OWNED_TEMP_SUBDIRS=(
+    "/var/lib/mpd/playlists"
+)
 
 # ----------------------------------------------------------------------------
-# 1. Prepare pacakge build dir and build deps
+# 1. Prepare package build dir and build deps
 
+# Check build dependencies
 # the web app is build with gulp
 rbl_check_build_dep npm
-# For packign fpm is used, which is created with Ruby
-rbl_check_fpm
-
+# we need sqlite to create potential radio station patches
 rbl_check_build_dep sqlite3
+# For packaging, fpm is used, which is created with Ruby
+rbl_check_fpm
 
 _rbl_decode_pkg_version
 _rbl_check_curr_is_package_dir
@@ -45,48 +71,43 @@ _rbl_check_curr_is_package_dir
 _rbl_cleanup_previous_build
 _rbl_change_to_build_root
 
-# location where we build a fakeroot system with the moode file to be package into the package
-PKG_ROOT_DIR="$BUILD_ROOT_DIR/root"
-
-
 # init build root
-rm -rf $BUILD_ROOT_DIR/root
-mkdir -p $BUILD_ROOT_DIR/root
+rm -rf "${BUILD_ROOT_DIR}/root"
+mkdir -p "${BUILD_ROOT_DIR}/root"
 
-if [ -z "$MOODE_DIR" ]
+if [ -d "${MOODE_DIR}" ]
 then
-    echo "${YELLOW}Error: MOODE_DIR is should point to a moode source dir${NORMAL}"
+    echo "${YELLOW}Error: MOODE_DIR should point to a moode source dir${NORMAL}"
     exit 1
 fi
 
 
-if [ -z "$PKG_ROOT_DIR" ]
+if [ -z "${PKG_ROOT_DIR}" ]
 then
     echo "${YELLOW}Error: PKG_ROOT_DIR is not set?${NORMAL}"
     exit 1
 fi
 
-rm -rf $PKG*.deb
+# TODO: DANGER ZONE, Add some prelim checks to ensure $PKG is set and not empty
+rm -rf ${PKG}*.deb
 # ----------------------------------------------------------------------------
 # 2. Buildweb app an deploy to test directory (prepared for copy)
 
-cd $MOODE_DIR
+cd "${MOODE_DIR}" || exit
 
 #TODO: detect if node_modules is missing and if so do both steps
-if [ $NPM_CI -gt 0 ]  || [ ! -d $MOODE_DIR/node_modules ]
+if [ ${NPM_CI} -gt 0 ]  || [ ! -d "${MOODE_DIR}/node_modules" ]
 then
     npm ci
 fi
 
-if [[ $BUILD_APP -gt 0 ]]
+if [[ ${BUILD_APP} -gt 0 ]]
 then
-    $GULP_BIN clean --all
-    $GULP_BIN build
+    ${GULP_BIN} clean --all
+    ${GULP_BIN} build
 fi
 
-$GULP_BIN deploy --test
-
-cd $BUILD_ROOT_DIR
+${GULP_BIN} deploy --test
 
 # ----------------------------------------------------------------------------
 # 3. Collect installable files
@@ -101,134 +122,169 @@ cd $BUILD_ROOT_DIR
 # ----------------------------------------------------------------------------
 
 # generate moode radio stations backup file (used for populating the station from the installer)
-cat $MOODE_DIR/var/local/www/db/moode-sqlite3.db.sql | sqlite3 $BUILD_ROOT_DIR/moode-sqlite3.db
-if [[ $? -gt 0 ]]
+
+if ! sqlite3 "${BUILD_ROOT_DIR}/moode-sqlite3.db" < "${MOODE_DIR}/var/local/www/db/moode-sqlite3.db.sql"
 then
     echo "${RED}Error: couldn't create temporary database!${NORMAL}"
     cd ..
     exit 1
 fi
 
-$MOODE_DIR/www/util/station_manager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --scope moode --export $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip
-if [ ! -f $MAJOR_BASE_STATIONS ]
+"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --scope moode --export "${BUILD_ROOT_DIR}/moode-stations-full_$PKGVERSION.zip"
+if [ ! -f "${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip" ]
 then
-    echo "${RED}Error: radio station base backup $MAJOR_BASE_STATIONS not found!${NORMAL}"
-    cd ..
-    exit 1
+    echo "${RED}Error: radio station base backup ${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip not found!${NORMAL}"
+    mkdir "${BASE_DIR}/${DIST_DIR}/" -p
+    wget --no-verbose https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_${PKGMAJORVERSION}.0.0.zip -O "${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip"
 fi
-$MOODE_DIR/www/util/station_manager.py --db $BUILD_ROOT_DIR/moode-sqlite3.db --logopath $MOODE_DIR/var/local/www/imagesw/radio-logos --diff $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip --scope moode $MAJOR_BASE_STATIONS
 
-if [ ! -f $BUILD_ROOT_DIR/moode-stations-full_$PKGVERSION.zip ]
+"${MOODE_DIR}/www/util/station_manager.py" --db "${BUILD_ROOT_DIR}/moode-sqlite3.db" --logopath "${MOODE_DIR}/var/local/www/imagesw/radio-logos" --diff "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" --scope moode "${BASE_DIR}/${DIST_DIR}/moode-stations-full_${PKGMAJORVERSION}.0.0.zip"
+if [ ! -f "${BUILD_ROOT_DIR}/moode-stations-full_${PKGVERSION}.zip" ]
 then
     echo "${RED}Error: radio station full file not generated!${NORMAL}"
     cd ..
     exit 1
 fi
-if [ ! -f $BUILD_ROOT_DIR/moode-stations-update_$PKGVERSION.zip ]
+if [ ! -f "${BUILD_ROOT_DIR}/moode-stations-update_${PKGVERSION}.zip" ]
 then
     echo "${RED}Error: radio station update file not generated!${NORMAL}"
     cd ..
     exit 1
 fi
-rm -f $BUILD_ROOT_DIR/moode-sqlite3.db || true
+
+rm -f "${BUILD_ROOT_DIR}/moode-sqlite3.db" || true
 # move it to the dist location
-mv -f $BUILD_ROOT_DIR/moode-stations-*_$PKGVERSION.zip  $BASE_DIR/dist/binary/
+mv -f "${BUILD_ROOT_DIR}"/moode-stations-*_"${PKGVERSION}.zip"  "${BASE_DIR}/${DIST_DIR}/"
 
-# location for files that should overwrite existing files (not owned by moode-player)
-NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
-mkdir -p $NOT_OWNED_TEMP
+# Create empty directories needed later
+mkdir -p "${NOT_OWNED_TEMP}"
 
-# /boot
-rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* --exclude *.ignore* $MOODE_DIR/boot/ $PKG_ROOT_DIR/boot/
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/boot/ $NOT_OWNED_TEMP/boot/
+# Create empty directories from our array on the root dir
+for dir in "${PKG_ROOT_DIR_SUBDIRS[@]}"; do \
+    echo "Creating directory: ${PKG_ROOT_DIR}${dir}"
+    mkdir -p "${PKG_ROOT_DIR}${dir}"
+done
 
-# /etc
-rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/etc/ $PKG_ROOT_DIR/etc/
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/etc/ $NOT_OWNED_TEMP/etc/
-cp $BASE_DIR/moode-apt-mark.conf  $PKG_ROOT_DIR/etc/
+# Create empty directories from our array on the not owned temp dir
+for dir in "${NOT_OWNED_TEMP_SUBDIRS[@]}"; do \
+    echo "Creating directory: ${NOT_OWNED_TEMP}${dir}"
+    mkdir -p "${NOT_OWNED_TEMP}${dir}"
+done
 
-# /home
-mkdir -p $PKG_ROOT_DIR/home
-rsync -av --exclude xinitrc.default --exclude dircolors $MOODE_DIR/home/ $PKG_ROOT_DIR/home/pi
-cp $MOODE_DIR/home/xinitrc.default $PKG_ROOT_DIR/home/pi/.xinitrc
-cp $MOODE_DIR/home/dircolors $PKG_ROOT_DIR/home/pi/.dircolors
 
-# /lib
-rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/lib/ $PKG_ROOT_DIR/lib/
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/lib/ $NOT_OWNED_TEMP/lib/
+# rsync dist stuff from moode source to target build directory for packaging
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --exclude={'*.sed*','*.overwrite*','*.ignore*','moode-sqlite3.db','radio-logos'} \
+    boot/ \
+    etc/ \
+    lib/ \
+    var/ \
+    "${PKG_ROOT_DIR}" # target to sync to
 
-# /mnt (mount points)
-mkdir -p $PKG_ROOT_DIR/mnt/{NAS,SDCARD}
-cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --include={'*/','*.overwrite*'} \
+    --exclude="*" \
+    boot/ \
+    etc/ \
+    lib/ \
+    var/ \
+    "${NOT_OWNED_TEMP}"
+
+rsync -av --exclude={'xinitrc.default','dircolors'} "home/" "${PKG_ROOT_DIR}/home/pi"
+
+# copy over important single files
+cp "${BASE_DIR}/moode-apt-mark.conf" "${PKG_ROOT_DIR}/etc/"
+cp "${MOODE_DIR}/home/xinitrc.default" "${PKG_ROOT_DIR}/home/pi/.xinitrc"
+cp "${MOODE_DIR}/home/dircolors" "${PKG_ROOT_DIR}/home/pi/.dircolors"
+cp -r "${MOODE_DIR}/sdcard/Stereo Test/" "${PKG_ROOT_DIR}/mnt/SDCARD"
 
 # /usr
-rsync -av --prune-empty-dirs --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $NOT_OWNED_TEMP/usr/
-cp $BASE_DIR/moode-apt-mark $PKG_ROOT_DIR/usr/local/bin
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --exclude={'mpd.conf','mpdasrc.default','install-wifi','html/index.html'} \
+    usr/ \
+    "${PKG_ROOT_DIR}"
+    
+rsync \
+    --archive \
+    --verbose \
+    --relative \
+    --prune-empty-dirs \
+    --include={'*/','*.overwrite*'} \
+    --exclude={'*','mpd.conf','mpdasrc.default','install-wifi','html/index.html'} \
+    usr/ \
+    "${NOT_OWNED_TEMP}"
 
-# /var
-# ignore includes of radio stations logos, those will be part of the stations backup
-rsync -av --exclude='moode-sqlite3.db' --exclude='radio-logos' --exclude *.overwrite* $MOODE_DIR/var/ $PKG_ROOT_DIR/var
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/var/ $NOT_OWNED_TEMP/var
-mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
+cp "${BASE_DIR}/moode-apt-mark" "${PKG_ROOT_DIR}/usr/local/bin"
+
 # Create curated always overwrite playlist for the radio stations
-mkdir -p $NOT_OWNED_TEMP/var/lib/mpd/playlists
-cp "$MOODE_DIR/var/lib/mpd/playlists/Default Playlist.m3u" "$NOT_OWNED_TEMP/var/lib/mpd/playlists/Curated Radio Stations.m3u"
+cp "${MOODE_DIR}/var/lib/mpd/playlists/Default Playlist.m3u" "${NOT_OWNED_TEMP}/var/lib/mpd/playlists/Curated Radio Stations.m3u"
 
 # /var/lib/mpd
-mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
-chmod 0777 $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
+chmod 0777 "${PKG_ROOT_DIR}/var/lib/mpd/music/RADIO"
 
 # /var/lib/cdsp/
-mkdir -p $PKG_ROOT_DIR/var/lib/cdsp
-chmod 0777 $PKG_ROOT_DIR/var/lib/cdsp
+chmod 0777 "${PKG_ROOT_DIR}/var/lib/cdsp"
 
 # /var/www
-mkdir -p $PKG_ROOT_DIR/var/www
-cp -r $MOODE_DIR/build/dist/var/www/* $PKG_ROOT_DIR/var/www/
+cp -r "${MOODE_DIR}/build/dist/var/www/"* "${PKG_ROOT_DIR}/var/www/"
 
 # In $NOT_OWNED_TEMP remove the ".overwrite" part from the files
 function rename_files() {
-    org_name=$1
-    new_name=`echo "$org_name" | sed -r 's/(.*)[.]overwrite(.*)/\1\2/'`
-    mv $org_name $new_name
+    org_name=${1}
+    new_name=$(echo "${org_name}" | sed -r 's/(.*)[.]overwrite(.*)/\1\2/')
+    mv "${org_name}" "${new_name}"
 }
 export -f rename_files;
-find $NOT_OWNED_TEMP -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
+find "${NOT_OWNED_TEMP}" -name "*.overwrite*" -exec bash -c 'rename_files "{}"' \;
 
 # echo "** Reset permissions"
-chmod -R 0755  $PKG_ROOT_DIR/var/www
-chmod 0755  $PKG_ROOT_DIR/var/www/command/*
-chmod 0755  $PKG_ROOT_DIR/var/www/util/*
-chmod -R 0755  $PKG_ROOT_DIR/var/local/www
-chmod -R 0777  $PKG_ROOT_DIR/var/local/www/commandw/*
-chmod -R 0766  $PKG_ROOT_DIR/var/local/www/db
-chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
+chmod -R 0755  "${PKG_ROOT_DIR}/var/www"
+chmod 0755  "${PKG_ROOT_DIR}/var/www/command/"*
+chmod 0755  "${PKG_ROOT_DIR}/var/www/util/"*
+chmod -R 0755  "${PKG_ROOT_DIR}/var/local/www"
+chmod -R 0777  "${PKG_ROOT_DIR}/var/local/www/commandw/"*
+chmod -R 0766  "${PKG_ROOT_DIR}/var/local/www/db"
+chmod -R 0755  "${PKG_ROOT_DIR}/usr/local/bin"
 
 # chmod -R ug-s /var/local/www
-chmod -R 0755  $PKG_ROOT_DIR/usr/local/bin
+chmod -R 0755  "${PKG_ROOT_DIR}/usr/local/bin"
 
 # ------------------------------------------------------------
 # 5. Create the package
 # Copy and fix version number is postinstall script
-cat $BASE_DIR/postinstall.sh | sed -e "s/^PKG_VERSION=.*/PKG_VERSION=\"$PKGVERSION\"/" > $BUILD_ROOT_DIR/postinstall.sh
+sed -e "s/^PKG_VERSION=.*/PKG_VERSION=\"${PKGVERSION}\"/" < "${BASE_DIR}/postinstall.sh" > "${BUILD_ROOT_DIR}/postinstall.sh"
 #TODO: Critical look at the deps, remove unneeded.
 #TODO: Add license and readme, improve description
 
+# change back to our build dir for the actual package generation
+cd "${BUILD_ROOT_DIR}" || exit
+
 # Don't include packages as dependency, if those package depends on the used kernel (like drivers).
 # Install those separate.
-fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
+fpm -s dir -t deb -n "${PKGNAME}" -v "${PKGVERSION}" \
 --license GPLv3 \
 --category sound \
 -S moode \
---iteration $DEBVER$DEBLOC \
+--iteration "${DEBVER}${DEBLOC}" \
 -a all \
 --deb-priority optional \
 --url https://www.moode.org \
 -m moodeaudio.org \
 --description 'moOde audio player' \
---after-install $BUILD_ROOT_DIR/postinstall.sh \
---before-remove $BASE_DIR/preremove.sh \
+--after-install "${BUILD_ROOT_DIR}/postinstall.sh" \
+--before-remove "${BASE_DIR}/preremove.sh" \
 --config-files usr/share/camilladsp/configs \
 --config-files usr/share/camilladsp/coeffs \
 --depends alsa-cdsp \

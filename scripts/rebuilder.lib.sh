@@ -56,6 +56,9 @@ UNDERLINE=$(tput smul)
 
 REGEXP='^([A-Za-z].*)[_]([0-9]:?.*)-([0-9]{1,3}[.]?[0-9]?)(.*)?$'
 
+# decode the version of a package into major/minor/micro semver style
+# we ignore the epoch for now if existing
+MAJORMINORMICRO_REGEXP=':?([0-9]*)[.]([0-9]*)[.]([0-9]*)$'
 
 # check some use conditions:
 if [ "$0" = "$BASH_SOURCE" ]; then
@@ -82,10 +85,10 @@ then
 else
     ARCH64=0
 fi
-PKGBUILD_ROOT=`realpath $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/..`
+PKGBUILD_ROOT=$(realpath $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/..)
 
 
-BASE_DIR=`pwd`
+BASE_DIR=$(pwd)
 BUILD_ROOT_DIR="$BASE_DIR/build"
 
 DO_DEP_UPDATE=1
@@ -146,13 +149,15 @@ function _rbl_decode_pkg_version {
     # _rbl_decode_pkg_version is always required, makes it a nice place to check if the debtools are present
     check_deb_tools
 
-    PKGNAME=`echo $PKG | sed -r "s|$REGEXP|\1|"`
-    PKGVERSION=`echo $PKG | sed -r "s|$REGEXP|\2|"`
-    DEBVER=`echo $PKG| sed -r "s|$REGEXP|\3|"`
-    DEBLOC=`echo $PKG | sed -r "s|$REGEXP|\4|"`
+    PKGNAME=$(echo $PKG | sed -r "s|$REGEXP|\1|")
+    PKGVERSION=$(echo $PKG | sed -r "s|$REGEXP|\2|")
+    PKGMAJORVERSION=$(echo $PKGVERSION | sed -r "s|$MAJORMINORMICRO_REGEXP|\1|")
+    DEBVER=$(echo $PKG| sed -r "s|$REGEXP|\3|")
+    DEBLOC=$(echo $PKG | sed -r "s|$REGEXP|\4|")
 
     # echo $PKGNAME
     # echo $PKGVERSION
+    # echo $PKGMAJORVERSION
     # echo $DEBVER
     # echo $DEBLOC
 
@@ -190,7 +195,7 @@ function _rbl_decode_pkg_version {
 }
 
  function _rbl_check_curr_is_package_dir {
-    CURRENTDIR=`basename "$PWD"`
+    CURRENTDIR=$(basename "$PWD")
     if [ "$CURRENTDIR" != "$PKGNAME" ];
     then
         echo "${RED}Error: script should be executed from a valid package dir ($PKGNAME)${NORMAL}"
@@ -299,7 +304,7 @@ function rbl_check_cargo {
     # until 1.61 is available on stable switch to nightly
     RUST_CHAIN="stable"
     # Install cargo + rust tools
-    CARGO_VER=`cargo --version > /dev/null 2>&1`
+    CARGO_VER=$(cargo --version > /dev/null 2>&1)
 
 
     if [[ $? -gt 0 ]]
@@ -314,7 +319,7 @@ function rbl_check_cargo {
         echo "${GREEN}cargo: already installed${NORMAL}"
     fi
 
-    RUSTC_VER=`rustc --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/"`
+    RUSTC_VER=$(rustc --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/")
 
     dpkg --compare-versions $RUSTC_VER ge $RUSTC_MIN_VERSION
     if [ $? -gt 0 ]
@@ -330,7 +335,7 @@ function rbl_check_cargo {
     fi
     rustup default $RUST_CHAIN
 
-    CARGO_DEB_VER=`cargo-deb --version > /dev/null 2>&1`
+    CARGO_DEB_VER=$(cargo-deb --version > /dev/null 2>&1)
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}cargo-deb: not installed, installing it.${NORMAL}"
@@ -361,7 +366,7 @@ function rbl_check_cargo {
 function rbl_check_fpm {
     # fpm is a Ruby application
     rbl_check_build_dep ruby-full
-    FPM_VER=`fpm --version`
+    FPM_VER=$(fpm --version)
     if [[ $? -gt 0 ]]
     then
         sudo gem install --no-document fpm
@@ -389,7 +394,7 @@ function rbl_rebuild_from_source_package {
 function rbl_prepare_from_dsc_url {
     if [ -z "$PKG" ]
     then
-        PKG=`basename $1 .dsc`
+        PKG=$(basename $1 .dsc)
     fi
     echo "building $PKG"
     _rbl_decode_pkg_version
