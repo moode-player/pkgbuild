@@ -587,12 +587,6 @@ function on_upgrade() {
          chown -R mpd /var/lib/cdsp
          echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
          chown -R mpd /var/lib/cdsp/camilladsp_volume_state
-         # New configs
-         cp -f "$SRC/usr/share/camilladsp/configs/readme.txt" /usr/share/camilladsp/configs/
-         cp -f "$SRC/usr/share/camilladsp/configs/Loudness.yml" /usr/share/camilladsp/configs/
-         cp -f "$SRC/usr/share/camilladsp/configs/Volume Control.yml" /usr/share/camilladsp/configs/
-         cp -f "$SRC/usr/share/camilladsp/configs/Polarity Inversion.yml" /usr/share/camilladsp/configs/
-         cp -f "$SRC/usr/share/camilladsp/configs/Polarity Inversion with VC.yml" /usr/share/camilladsp/configs/
          # Support CamillaDSP volume for Airplay and Spotify Connect renderers
          cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
          cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
@@ -640,8 +634,6 @@ function on_upgrade() {
          mv /var/log/mountmon.log /var/log/moode_mountmon.log
          mv /var/local/www/playhistory.log /var/log/moode_playhistory.log
          mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp
-         # Updated loudness.yml
-         cp -f "$SRC/usr/share/camilladsp/configs/loudness.yml" /usr/share/camilladsp/configs/
       fi
 
       #--------------------------------------------------------------------------------------------------------
