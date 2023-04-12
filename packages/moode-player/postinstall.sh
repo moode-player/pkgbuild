@@ -644,7 +644,7 @@ function on_upgrade() {
       #--------------------------------------------------------------------------------------------------------
 
       # Always enforce copy of up2date curated station list
-      cp -f "$SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/"
+      cp -rf $SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/ > /dev/null 2>&1
 
       # Any release may contain station updates
       # Import_stations update
