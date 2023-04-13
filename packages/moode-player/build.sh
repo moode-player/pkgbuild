@@ -171,9 +171,10 @@ cp $BASE_DIR/moode-apt-mark $PKG_ROOT_DIR/usr/local/bin
 rsync -av --exclude='moode-sqlite3.db' --exclude='radio-logos' --exclude *.overwrite* $MOODE_DIR/var/ $PKG_ROOT_DIR/var
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/var/ $NOT_OWNED_TEMP/var
 mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
+# NOTE: Let's hold off on this until we figure out whether to have both Default and Curated playlists or just one
 # Create curated always overwrite playlist for the radio stations
-mkdir -p $NOT_OWNED_TEMP/var/lib/mpd/playlists
-cp "$MOODE_DIR/var/lib/mpd/playlists/Default Playlist.m3u" "$NOT_OWNED_TEMP/var/lib/mpd/playlists/Curated Radio Stations.m3u"
+#mkdir -p $NOT_OWNED_TEMP/var/lib/mpd/playlists
+#cp "$MOODE_DIR/var/lib/mpd/playlists/Default Playlist.m3u" "$NOT_OWNED_TEMP/var/lib/mpd/playlists/Curated Radio Stations.m3u"
 
 # /var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
