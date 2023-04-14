@@ -634,10 +634,12 @@ function on_upgrade() {
          mv /var/log/mountmon.log /var/log/moode_mountmon.log
          mv /var/local/www/playhistory.log /var/log/moode_playhistory.log
          mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp
-         # Update Default Playlist with new URL's: 2BOB, Czech Radio Classic
-         # NOTE: This playlist may not exist or the URL's may not be in the playlist
+         # Update Default Playlist with new URL's for 2BOB and Czech Radio Classic
          sed -i "s|http://eno.emit.com:8000/2bob_live_64.mp3|https://21363.live.streamtheworld.com/2BOB.mp3|" /var/lib/mpd/playlists/Default\ Playlist.m3u
          sed -i "s|http://icecast6.play.cz/croddur-256.mp3|https://rozhlas.stream/ddur_mp3_256.mp3|" /var/lib/mpd/playlists/Default\ Playlist.m3u
+         # Remove volume filter from loudness.yml
+         sed -i '/Volume:/,/type: Volume/d' /usr/share/camilladsp/configs/loudness.yml
+         sed -i '/- Volume/d' /usr/share/camilladsp/configs/loudness.yml
       fi
 
       #--------------------------------------------------------------------------------------------------------
