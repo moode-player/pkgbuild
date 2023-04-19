@@ -642,6 +642,17 @@ function on_upgrade() {
          sed -i '/- Volume/d' /usr/share/camilladsp/configs/loudness.yml
       fi
 
+      # Introduced in r832
+      dpkg --compare-versions $VERSION lt "8.3.2-1moode1"
+      if [ $? -eq 0 ]
+      then
+         # Add drop file to haveged to prevent service fail on arm6
+         mkdir /etc/systemd/system/haveged.service.d/
+         echo -e '[Service]\nSystemCallFilter=uname' | sudo tee /etc/systemd/system/haveged.service.d/syscall.conf > /dev/null
+         # Update SSH header
+         cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
+      fi
+
       #--------------------------------------------------------------------------------------------------------
       # Any release
       #--------------------------------------------------------------------------------------------------------
