@@ -653,6 +653,16 @@ function on_upgrade() {
          cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
       fi
 
+      # Introduced in r833
+      dpkg --compare-versions $VERSION lt "8.3.3-1moode1"
+      if [ $? -eq 0 ]
+      then
+         # Add thumgen scan option
+         sqlite3 $SQLDB "UPDATE cfg_system SET param='library_thmgen_scan', value='Default' WHERE id='127'"
+         # Update SSH header
+         cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
+      fi
+
       #--------------------------------------------------------------------------------------------------------
       # Any release
       #--------------------------------------------------------------------------------------------------------
