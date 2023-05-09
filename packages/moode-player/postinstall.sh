@@ -649,8 +649,6 @@ function on_upgrade() {
          # Add drop file to haveged to prevent service fail on arm6
          mkdir /etc/systemd/system/haveged.service.d/
          echo -e '[Service]\nSystemCallFilter=uname' | sudo tee /etc/systemd/system/haveged.service.d/syscall.conf > /dev/null
-         # Update SSH header
-         cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
       fi
 
       # Introduced in r833
@@ -659,13 +657,17 @@ function on_upgrade() {
       then
          # Add thumgen scan option
          sqlite3 $SQLDB "UPDATE cfg_system SET param='library_thmgen_scan', value='Default' WHERE id='127'"
-         # Update SSH header
-         cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
+         # Remove Allo Katana driver load workaround from rc.local (not working on kernel 6.1.y branch)
+         # Load always fails with DMESG "allo-katana-codec 1-0030: Failed to read Chip or wrong Chip id: 0"
+         cp -f $SRC/etc/rc.local /etc/
       fi
 
       #--------------------------------------------------------------------------------------------------------
       # Any release
       #--------------------------------------------------------------------------------------------------------
+
+      # Update SSH header
+      cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
       # Always enforce copy of up2date curated station list
       cp -rf $SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/ > /dev/null 2>&1
