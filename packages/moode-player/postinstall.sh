@@ -657,7 +657,7 @@ function on_upgrade() {
       then
          # Add thumbgen scan option to control which formats are scanned by list-songfiles.sh
          sqlite3 $SQLDB "UPDATE cfg_system SET param='library_thmgen_scan', value='Default' WHERE id='127'"
-         # Remove Allo Katana driver load workaround from rc.local (not working on kernel 6.1.y branch)
+         # Remove workaround for Allo Katana driver load from rc.local (not working on kernel 6.1.y branch)
          # Load always fails with DMESG "allo-katana-codec 1-0030: Failed to read Chip or wrong Chip id: 0"
          cp -f $SRC/etc/rc.local /etc/
       fi
