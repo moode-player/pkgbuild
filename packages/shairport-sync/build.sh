@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="shairport-sync_4.2-1moode1"
+PKG="shairport-sync_4.2.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync.git"
 PKG_SOURCE_GIT_TAG="4.2"
