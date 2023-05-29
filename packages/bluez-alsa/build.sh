@@ -15,12 +15,12 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="bluez-alsa_4.0.0-2moode1"
+PKG="bluez-alsa_4.1.0-2moode2"
 
 PKG_SOURCE_GIT="https://github.com/arkq/bluez-alsa.git"
-PKG_SOURCE_GIT_TAG="v4.0.0"
+PKG_SOURCE_GIT_TAG="v4.1.0"
 
-PKG_DEBIAN="http://deb.debian.org/debian/pool/main/b/bluez-alsa/bluez-alsa_3.0.0-2.debian.tar.xz"
+PKG_DEBIAN="http://deb.debian.org/debian/pool/main/b/bluez-alsa/bluez-alsa_4.0.0-2.debian.tar.xz"
 
 
 rbl_prepare_from_git_with_deb_repo
@@ -33,8 +33,6 @@ rbl_grab_debian_archive $PKG_DEBIAN
 
 # enable cli
 rbl_patch $BASE_DIR/build_cli.debian.rules.patch
-
-echo "usr/share/man/man7/bluealsa-plugins.7" >> debian/bluez-alsa-utils.manpages
 echo "usr/share/man/man1/bluealsa-cli.1" >> debian/bluez-alsa-utils.manpages
 
 
