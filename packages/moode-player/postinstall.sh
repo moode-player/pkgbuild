@@ -74,6 +74,7 @@ function on_install() {
       # These services are started on-demand or by moOde worker daemon (worker.php)
       disable_services=(
           bluetooth \
+          bluealsa-aplay \
           bluez-alsa \
           dnsmasq \
           hciuart \
@@ -660,6 +661,10 @@ function on_upgrade() {
          # Remove workaround for Allo Katana driver load from rc.local (not working on kernel 6.1.y branch)
          # Load always fails with DMESG "allo-katana-codec 1-0030: Failed to read Chip or wrong Chip id: 0"
          cp -f $SRC/etc/rc.local /etc/
+         # Disable bluealsa-aplay service
+         systemctl disable bluealsa-aplay
+         # Update bluealsa.service with -c aptx -c aptx-hd -c ldac
+         cp -f $SRC/etc/systemd/system/bluealsa.service /etc/systemd/system
       fi
 
       #--------------------------------------------------------------------------------------------------------
