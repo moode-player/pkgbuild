@@ -151,9 +151,9 @@ function on_install() {
 
       LIBCACHE_BASE="/var/local/www/libcache"
       echo "** Initial permissions for certain files. These also get set during moOde Worker startup"
-      touch /var/local/www/playhistory.log
+      touch /var/log/moode_playhistory.log
       touch /var/local/www/currentsong.txt
-      chmod 0777 /var/local/www/playhistory.log
+      chmod 0777 /var/log/moode_playhistory.log
       chmod 0777 /var/local/www/currentsong.txt
 
       echo "** Establish permissions"
@@ -621,8 +621,8 @@ function on_upgrade() {
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC Pro" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DigiAMP+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          # GPIO pinout image
-         cp -f "$SRC/var/www/images/gpio-pinout.jpg /var/www/images/"
-         rm -f /var/www/images/gpio-pins.png
+         cp -f $SRC/var/www/images/gpio-pinout.jpg /var/www/images/
+         rm -f /var/www/images/gpio-pins.png > /dev/null 2>&1
          # Renderer event scripts (updated for Airplay/Spotify CamillaDSP volume handling)
          cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
          cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
@@ -630,11 +630,11 @@ function on_upgrade() {
          # Update logfile path from /home/pi to /var/log
          sed -i 's|/home/pi/katana.log|/var/log/moode_katana.log|' /etc/rc.local
          # Move log files to new location
-         mv /home/pi/katana.log /var/log/moode_katana.log
-         mv /home/pi/autocfg.log /var/log/moode_autocfg.log
-         mv /var/log/mountmon.log /var/log/moode_mountmon.log
-         mv /var/local/www/playhistory.log /var/log/moode_playhistory.log
-         mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp
+         mv /home/pi/katana.log /var/log/moode_katana.log > /dev/null 2>&1
+         mv /home/pi/autocfg.log /var/log/moode_autocfg.log > /dev/null 2>&1
+         mv /var/log/mountmon.log /var/log/moode_mountmon.log > /dev/null 2>&1
+         mv /var/local/www/playhistory.log /var/log/moode_playhistory.log > /dev/null 2>&1
+         mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp > /dev/null 2>&1
          # Update Default Playlist with new URL's for 2BOB and Czech Radio Classic
          sed -i "s|http://eno.emit.com:8000/2bob_live_64.mp3|https://21363.live.streamtheworld.com/2BOB.mp3|" /var/lib/mpd/playlists/Default\ Playlist.m3u
          sed -i "s|http://icecast6.play.cz/croddur-256.mp3|https://rozhlas.stream/ddur_mp3_256.mp3|" /var/lib/mpd/playlists/Default\ Playlist.m3u
@@ -648,7 +648,7 @@ function on_upgrade() {
       if [ $? -eq 0 ]
       then
          # Add drop file to haveged to prevent service fail on arm6
-         mkdir /etc/systemd/system/haveged.service.d/
+         mkdir /etc/systemd/system/haveged.service.d/ > /dev/null 2>&1
          echo -e '[Service]\nSystemCallFilter=uname' | sudo tee /etc/systemd/system/haveged.service.d/syscall.conf > /dev/null
       fi
 
@@ -665,6 +665,14 @@ function on_upgrade() {
          systemctl disable bluealsa-aplay
          # Update bluealsa.service with -c aptx -c aptx-hd -c ldac
          cp -f $SRC/etc/systemd/system/bluealsa.service /etc/systemd/system
+         # FIXUPS: from breakage in 830/831
+         # GPIO pinout image
+         cp -f $SRC/var/www/images/gpio-pinout.jpg /var/www/images/
+         rm -f /var/www/images/gpio-pins.png > /dev/null 2>&1
+         # Renderer event scripts (updated for Airplay/Spotify CamillaDSP volume handling)
+         cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
+         cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
+         cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
       fi
 
       #--------------------------------------------------------------------------------------------------------
