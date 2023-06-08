@@ -588,10 +588,6 @@ function on_upgrade() {
          chown -R mpd /var/lib/cdsp
          echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
          chown -R mpd /var/lib/cdsp/camilladsp_volume_state
-         # Support CamillaDSP volume for Airplay and Spotify Connect renderers
-         cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
-         cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
-         cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
          # Improved SQL syntax
          cp -f $SRC/var/local/www/commandw/slpower.sh /var/local/www/commandw/
          # Piano 2.1 status command
@@ -620,13 +616,8 @@ function on_upgrade() {
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DAC Pro" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DigiAMP+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
-         # GPIO pinout image
-         cp -f $SRC/var/www/images/gpio-pinout.jpg /var/www/images/
+         # Remove old GPIO pinout image
          rm -f /var/www/images/gpio-pins.png > /dev/null 2>&1
-         # Renderer event scripts (updated for Airplay/Spotify CamillaDSP volume handling)
-         cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
-         cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
-         cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
          # Update logfile path from /home/pi to /var/log
          sed -i 's|/home/pi/katana.log|/var/log/moode_katana.log|' /etc/rc.local
          # Move log files to new location
@@ -665,14 +656,6 @@ function on_upgrade() {
          systemctl disable bluealsa-aplay
          # Update bluealsa.service with -c aptx -c aptx-hd -c ldac
          cp -f $SRC/etc/systemd/system/bluealsa.service /etc/systemd/system
-         # FIXUPS: from breakage in 830/831
-         # GPIO pinout image
-         cp -f $SRC/var/www/images/gpio-pinout.jpg /var/www/images/
-         rm -f /var/www/images/gpio-pins.png > /dev/null 2>&1
-         # Renderer event scripts (updated for Airplay/Spotify CamillaDSP volume handling)
-         cp -f $SRC/var/local/www/commandw/spotevent.sh /var/local/www/commandw/
-         cp -f $SRC/var/local/www/commandw/spspost.sh /var/local/www/commandw/
-         cp -f $SRC/var/local/www/commandw/spspre.sh /var/local/www/commandw/
       fi
 
       #--------------------------------------------------------------------------------------------------------
