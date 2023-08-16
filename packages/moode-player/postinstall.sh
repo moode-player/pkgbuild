@@ -109,6 +109,10 @@ function on_install() {
       echo "** Set permissions for D-Bus (for bluez-alsa)"
       usermod -a -G audio mpd
 
+      echo "** Set permissions for triggerhappy (to execute ALSA commands)"
+      usermod -a -G audio nobody
+
+
       echo "** Create symlinks"
       [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
       [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
@@ -656,6 +660,18 @@ function on_upgrade() {
          systemctl disable bluealsa-aplay
          # Update bluealsa.service with -c aptx -c aptx-hd -c ldac
          cp -f $SRC/etc/systemd/system/bluealsa.service /etc/systemd/system
+      fi
+
+      # Introduced in r834
+      dpkg --compare-versions $VERSION lt "8.3.4-1moode1"
+      if [ $? -eq 0 ]
+      then
+          # Update bluealsaaplay.conf to use AUDIODEV=_audioout.conf
+          cp -f $SRC/etc/bluealsaaplay.conf /etc/
+          # Add SBC CODEC quality mode
+          cp -f $SRC/etc/systemd/system/bluealsa.conf /etc/systemd/system/
+          # Add user nobody to the audio group so triggerhappy daemon can execute amixer cmd in vol.sh
+          usermod -a -G audio nobody
       fi
 
       #--------------------------------------------------------------------------------------------------------
