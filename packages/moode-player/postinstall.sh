@@ -667,9 +667,9 @@ function on_upgrade() {
       if [ $? -eq 0 ]
       then
           # Update bluealsaaplay.conf to use AUDIODEV=_audioout.conf
-          cp -f $SRC/etc/bluealsaaplay.conf /etc/
+          sed -i 's/^AUDIODEV=.*/AUDIODEV=_audioout.conf/' /etc/bluealsaaplay.conf
           # Add SBC CODEC quality mode
-          cp -f $SRC/etc/systemd/system/bluealsa.conf /etc/systemd/system/
+          cp -f $SRC/etc/systemd/system/bluealsa.service /etc/systemd/system/
           # Add user nobody to the audio group so triggerhappy daemon can execute amixer cmd in vol.sh
           usermod -a -G audio nobody
       fi
