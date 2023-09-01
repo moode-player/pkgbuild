@@ -592,10 +592,8 @@ function on_upgrade() {
          chown -R mpd /var/lib/cdsp
          echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
          chown -R mpd /var/lib/cdsp/camilladsp_volume_state
-         # Improved SQL syntax
-         cp -f $SRC/var/local/www/commandw/slpower.sh /var/local/www/commandw/
          # Piano 2.1 status command
-         cp -f $SRC/home/piano.sh /home/pi/
+         cp -f $SRC/home/piano.sh $HOME
          # MPD cfg_mpd default period_time (not used but just for the sake of accuracy)
          sqlite3 $SQLDB "UPDATE cfg_mpd SET value='125000' WHERE param='period_time'"
          # ProtoDAC TDA1387 X8
@@ -625,8 +623,8 @@ function on_upgrade() {
          # Update logfile path from /home/pi to /var/log
          sed -i 's|/home/pi/katana.log|/var/log/moode_katana.log|' /etc/rc.local
          # Move log files to new location
-         mv /home/pi/katana.log /var/log/moode_katana.log > /dev/null 2>&1
-         mv /home/pi/autocfg.log /var/log/moode_autocfg.log > /dev/null 2>&1
+         mv $HOME/katana.log /var/log/moode_katana.log > /dev/null 2>&1
+         mv $HOME/autocfg.log /var/log/moode_autocfg.log > /dev/null 2>&1
          mv /var/log/mountmon.log /var/log/moode_mountmon.log > /dev/null 2>&1
          mv /var/local/www/playhistory.log /var/log/moode_playhistory.log > /dev/null 2>&1
          mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp > /dev/null 2>&1
@@ -668,11 +666,17 @@ function on_upgrade() {
       then
           # Update bluealsaaplay.conf to use AUDIODEV=_audioout.conf
           sed -i 's/^AUDIODEV=.*/AUDIODEV=_audioout.conf/' /etc/bluealsaaplay.conf
-          # Add SBC CODEC quality mode
+          # Add SBC CODEC quality mode --sbc-quality=xq+ to bluealsa.service
           cp -f $SRC/etc/systemd/system/bluealsa.service /etc/systemd/system/
           # Add user nobody to the audio group so triggerhappy daemon can execute amixer cmd in vol.sh
           usermod -a -G audio nobody
       fi
+
+      # Introduced in r835
+      # NOTE: r835 does not require any postinstall updates
+
+      # Introduced in r836
+      # NOTE: r836 does not require any postinstall updates
 
       #--------------------------------------------------------------------------------------------------------
       # Any release
@@ -681,11 +685,10 @@ function on_upgrade() {
       # Update SSH header
       cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
-      # Always enforce copy of up2date curated station list
+      # Update Default Playlist.m3u
       cp -rf $SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/ > /dev/null 2>&1
 
-      # Any release may contain station updates
-      # Import_stations update
+      # Update stations and logos
       import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
       #--------------------------------------------------------------------------------------------------------
