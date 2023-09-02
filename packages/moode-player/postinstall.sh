@@ -685,8 +685,9 @@ function on_upgrade() {
       # Update SSH header
       cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
-      # Update Default Playlist.m3u
-      cp -rf $SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/ > /dev/null 2>&1
+      # Update sample playlists
+      # NOTE: Updates will be new image only
+      #cp -rf $SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/ > /dev/null 2>&1
 
       # Update stations and logos
       import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"

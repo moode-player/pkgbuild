@@ -173,10 +173,10 @@ cp $BASE_DIR/moode-apt-mark $PKG_ROOT_DIR/usr/local/bin
 rsync -av --exclude='moode-sqlite3.db' --exclude='radio-logos' --exclude *.overwrite* $MOODE_DIR/var/ $PKG_ROOT_DIR/var
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/var/ $NOT_OWNED_TEMP/var
 mkdir -p $PKG_ROOT_DIR/var/local/www/imagesw/radio-logos/thumbs
-# Overwrite Default Playlist since it's just be a curated sample of stations plus the Stereo Test track
-# The $SRC cp is in postinstall
-mkdir -p $NOT_OWNED_TEMP/var/lib/mpd/playlists
-cp "$MOODE_DIR/var/lib/mpd/playlists/Default Playlist.m3u" "$NOT_OWNED_TEMP/"
+# Setup sample playlist(s) for overwrite (the $SRC cp is in postinstall)\
+# NOTE: Updates will be new image only
+#mkdir -p $NOT_OWNED_TEMP/var/lib/mpd/playlists
+#cp "$MOODE_DIR/var/lib/mpd/playlists/Default Playlist.m3u" "$NOT_OWNED_TEMP/"
 
 # /var/lib/mpd
 mkdir -p $PKG_ROOT_DIR/var/lib/mpd/music/RADIO
