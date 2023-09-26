@@ -620,11 +620,11 @@ function on_upgrade() {
          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "Raspberry Pi DigiAMP+" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
          # Remove old GPIO pinout image
          rm -f /var/www/images/gpio-pins.png > /dev/null 2>&1
-         # Update logfile path from /home/pi to /var/log
-         sed -i 's|/home/pi/katana.log|/var/log/moode_katana.log|' /etc/rc.local
+         # Update logfile path from /home/userid to /var/log
+         sed -i "s|$HOME/katana.log|/var/log/moode_katana.log|" /etc/rc.local
          # Move log files to new location
-         mv $HOME/katana.log /var/log/moode_katana.log > /dev/null 2>&1
-         mv $HOME/autocfg.log /var/log/moode_autocfg.log > /dev/null 2>&1
+         mv "$HOME/katana.log" /var/log/moode_katana.log > /dev/null 2>&1
+         mv "$HOME/autocfg.log" /var/log/moode_autocfg.log > /dev/null 2>&1
          mv /var/log/mountmon.log /var/log/moode_mountmon.log > /dev/null 2>&1
          mv /var/local/www/playhistory.log /var/log/moode_playhistory.log > /dev/null 2>&1
          mv /var/local/www/bootcfg.bkp /boot/bootcfg.bkp > /dev/null 2>&1
@@ -685,12 +685,22 @@ function on_upgrade() {
       # Update SSH header
       cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
+      # Move default /home/pi/* files to $HOME
+      if [ "$HOME" != "/home/pi" ]; then
+            if [ -d /home/pi ]; then
+                mv -f /home/pi/.dircolors "$HOME" > /dev/null 2>&1
+                mv -f /home/pi/.xinitrc "$HOME" > /dev/null 2>&1
+                mv -f /home/pi/piano.sh "$HOME" > /dev/null 2>&1
+                rm -rf /home/pi/ > /dev/null 2>&1
+            fi
+      fi
+
+      # Update radio stations and logos
+      import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
+
       # Update sample playlists
       # NOTE: Updates will be new image only
       #cp -rf $SRC/var/lib/mpd/playlists/* /var/lib/mpd/playlists/ > /dev/null 2>&1
-
-      # Update stations and logos
-      import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
       #--------------------------------------------------------------------------------------------------------
       # bring it alive ;-)
