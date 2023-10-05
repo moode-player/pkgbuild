@@ -678,6 +678,14 @@ function on_upgrade() {
       # Introduced in r836
       # NOTE: r836 does not require any postinstall updates
 
+      # Introduced in r837
+      dpkg --compare-versions $VERSION lt "8.3.7-1moode1"
+      if [ $? -eq 0 ]
+      then
+          # Update now-playing icon
+          sqlite3 $SQLDB "UPDATE cfg_system SET value='Waveform' WHERE param='show_npicon'"
+      fi
+
       #--------------------------------------------------------------------------------------------------------
       # Any release
       #--------------------------------------------------------------------------------------------------------
