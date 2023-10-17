@@ -684,6 +684,8 @@ function on_upgrade() {
       then
           # Update now-playing icon
           sqlite3 $SQLDB "UPDATE cfg_system SET value='Waveform' WHERE param='show_npicon'"
+          # Update hostapd.conf (remove PSK)
+          cp -f $SRC/etc/hostapd/hostapd.conf /etc/hostapd/
       fi
 
       #--------------------------------------------------------------------------------------------------------
