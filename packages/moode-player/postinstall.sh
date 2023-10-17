@@ -682,8 +682,9 @@ function on_upgrade() {
       dpkg --compare-versions $VERSION lt "8.3.7-1moode1"
       if [ $? -eq 0 ]
       then
-          # Update now-playing icon
+          # Reset options to new defaults
           sqlite3 $SQLDB "UPDATE cfg_system SET value='Waveform' WHERE param='show_npicon'"
+          sqlite3 $SQLDB "UPDATE cfg_system SET value='Genre' WHERE param='library_tagview_genre'"
           # Update hostapd.conf (remove PSK)
           cp -f $SRC/etc/hostapd/hostapd.conf /etc/hostapd/
       fi
