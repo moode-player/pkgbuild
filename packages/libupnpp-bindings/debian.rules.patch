@@ -1,0 +1,11 @@
+--- libupnpp-bindings-0.21.0/debian/rules.org	2023-10-20 16:30:08.702562694 +0200
++++ libupnpp-bindings-0.21.0/debian/rules	2023-10-20 16:30:15.139456298 +0200
+@@ -48,7 +48,7 @@
+ 
+ BUILD_DEPS += dh-python, python, python-all-dev (>= 2.6.6-3~)
+ X_PYTHON_VERSION := X-Python-Version: >= 2.3
+-dh_with += --with python2
++# dh_with += --with python2
+ endif
+ 
+ ifneq ($(filter python3, $(LANGUAGES)), )
