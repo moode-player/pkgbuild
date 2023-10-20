@@ -8,7 +8,7 @@
 +#	rm -f man/shairport-sync.7 man/shairport-sync.html
 
  override_dh_auto_configure:
-+	autoreconf -fi
++#	autoreconf -fi
  	dh_auto_configure -- \
  		--with-dummy \
  		--with-stdout \
