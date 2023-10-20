@@ -21,16 +21,9 @@ Last-Update: 2021-11-23
 
 --- alsa-cdsp-1.0.0.orig/Makefile
 +++ alsa-cdsp-1.0.0/Makefile
-@@ -1,5 +1,5 @@
- CC = gcc
--CFLAGS += -Wall -fPIC -DPIC 
-+CFLAGS += -Wall -fPIC -DPIC
- LDFLAGS += -Wall -shared -lasound
- #LIBDIR := lib/$(shell gcc --print-multiarch)
- LIBDIR := $(shell pkg-config --variable=libdir alsa)
 @@ -19,4 +19,4 @@ uninstall:
  	rm $(LIBDIR)/alsa-lib/$(TARGET).so
- 
+
  clean:
 -	rm $(TARGET).so
 +	rm -f $(TARGET).so

@@ -1,46 +1,46 @@
---- alsa-cdsp-1.0.0.org/debian/control	2021-12-06 20:51:22.590409589 +0000
-+++ alsa-cdsp_1.0.0/debian/control	2021-12-06 20:51:00.728789723 +0000
-@@ -1,25 +1,27 @@
- Source: alsa-cdsp
- Priority: optional
--Maintainer: Bitkeeper <bitkeeper@users.noreply.github.com>
--Build-Depends: debhelper-compat (= 13)
-+Maintainer: Bitkeep <bitkeeper@users.noreply.github.com>
-+Build-Depends: debhelper-compat (= 13),
-+               libasound2-dev
- Standards-Version: 4.5.1
- Section: libs
+--- alsa-cdsp-1.2.0/debian/control.org	2023-10-20 15:08:47.321877664 +0200
++++ alsa-cdsp-1.2.0/debian/control	2023-10-20 15:04:59.892655040 +0200
+@@ -6,25 +6,28 @@
+ Build-Depends:
+  debhelper-compat (= 13),
+ Standards-Version: 4.6.2
 -Homepage: <insert the upstream URL, if relevant>
 -#Vcs-Browser: https://salsa.debian.org/debian/alsa-cdsp
 -#Vcs-Git: https://salsa.debian.org/debian/alsa-cdsp.git
 +Homepage: https://github.com/scripple/alsa_cdsp
 +Vcs-Browser: https://github.com/scripple/alsa_cdsp
 +Vcs-Git: https://github.com/scripple/alsa_cdsp.git
- Rules-Requires-Root: no
 
 -Package: alsa-cdsp-dev
 -Section: libdevel
 -Architecture: any
 -Multi-Arch: same
--Depends: alsa-cdspBROKEN (= ${binary:Version}), ${misc:Depends}
+-Depends:
+- alsa-cdspBROKEN (= ${binary:Version}),
+- ${misc:Depends},
 -Description: <insert up to 60 chars description>
-- <insert long description, indented with spaces>
-+# Package: alsa-cdsp-dev
-+# Section: libdevel
-+# Architecture: any
-+# Multi-Arch: same
-+# Depends: alsa-cdspBROKEN (= ${binary:Version}), ${misc:Depends}
-+# Description: <insert up to 60 chars description>
-+#  <insert long description, indented with spaces>
+- <Insert long description, indented with spaces.>
++#Package: alsa-cdsp-dev
++#Section: libdevel
++#Architecture: any
++#Multi-Arch: same
++#Depends:
++# alsa-cdsp (= ${binary:Version}),
++# ${misc:Depends},
++#Description: ALSA CamillaDSP "I/O" plugin
++# This is an ALSA I/O plugin for use with CamillaDSP for audio playback. It starts a CamillaDSP process and streams data to it via a pipe. To playback programs it responds like a normal ALSA device. The actual output device is whatever you configure in the CamillaDSP YAML configuration file.
++# To aid in handling hardware parameter changes such as sample rate, format, or the number of input channels the plugin can automatically replace fields in the YAML files with the appropriate parameters and restart CamillaDSP.
 
 -Package: alsa-cdspBROKEN
 +Package: alsa-cdsp
  Architecture: any
  Multi-Arch: same
--Depends: ${shlibs:Depends}, ${misc:Depends}
+ Depends:
+  ${shlibs:Depends},
+  ${misc:Depends},
 -Description: <insert up to 60 chars description>
-- <insert long description, indented with spaces>
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libasound2
+- <Insert long description, indented with spaces.>
++ libasound2
 +Description: ALSA CamillaDSP "I/O" plugin
 + This is an ALSA I/O plugin for use with CamillaDSP for audio playback. It starts a CamillaDSP process and streams data to it via a pipe. To playback programs it responds like a normal ALSA device. The actual output device is whatever you configure in the CamillaDSP YAML configuration file.
 + To aid in handling hardware parameter changes such as sample rate, format, or the number of input channels the plugin can automatically replace fields in the YAML files with the appropriate parameters and restart CamillaDSP.
