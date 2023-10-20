@@ -20,12 +20,13 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 #------------------------------------------------------------
 # Custom part of the packing
 
-dh_make -l -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../LICENSE -y
+dh_make -s -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
- cp $BASE_DIR/nqptp.service debian/
+cp $BASE_DIR/nqptp.service debian/
 
 rbl_fix_control_patch_maintainer $BASE_DIR/debian.control.patch $BUILD_ROOT_DIR/debian.control.patch
 rbl_patch $BUILD_ROOT_DIR/debian.control.patch
+
 rbl_patch $BASE_DIR/skip_install_exe_hook.patch
 EDITOR=/bin/true dpkg-source --commit . skip_install_exe_hook.patch
 rbl_set_initial_version_changelog $PKGNAME $FULL_VERSION
