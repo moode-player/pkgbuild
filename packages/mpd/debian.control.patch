@@ -1,0 +1,20 @@
+--- mpd-0.23.14/debian/control.org	2023-10-25 19:48:02.781915495 +0200
++++ mpd-0.23.14/debian/control	2023-10-25 19:48:17.193675843 +0200
+@@ -11,7 +11,7 @@
+                libasound2-dev  [linux-any],
+                libavahi-client-dev,
+                libavcodec-dev,
+-               libavfilter-dev,
++#               libavfilter-dev,
+                libavformat-dev,
+                libboost-dev,
+                libbz2-dev,
+@@ -64,7 +64,7 @@
+                libwildmidi-dev,
+                libyajl-dev,
+                libzzip-dev,
+-               systemd-dev [linux-any],
++#               systemd-dev [linux-any],
+ # for docs:
+                python3-sphinx,
+ # for tests:
