@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camilladsp_1.0.3-1moode1"
+PKG="camilladsp_2.0.0-1moode1~a5"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camilladsp.git"
-PKG_SOURCE_GIT_TAG="v1.0.3"
+PKG_SOURCE_GIT_TAG="v2.0.0-alpha5"
 
 rbl_check_cargo
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
@@ -33,7 +33,8 @@ cp $BASE_DIR/camilladsp.service debian/service
 # Add to [package.metadata.deb] section of Cargo.toml:
 echo "" >> Cargo.toml
 echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
-# echo "" >> Cargo.toml
+
+sed -i "s/^version[ ]=[ ]\".*\"/version=\"$PKGVERSION\"/" Cargo.toml
 
 # Build it for arch with neon support
 # if [ $ARCH64 -eq 1 ]
@@ -43,7 +44,7 @@ echo "revision=\"$DEBVER$DEBLOC\"" >> Cargo.toml
 #     rustup default stable-armv7-unknown-linux-gnueabihf
 # fi
 echo "starting build:"
-RUSTFLAGS='-C target-feature=+neon -C target-cpu=native' cargo-deb -- --no-default-features --features websocket
+RUSTFLAGS='-C target-cpu=native' cargo-deb -- --no-default-features --features websocket
 
 if [ $? -gt 0 ]
 then

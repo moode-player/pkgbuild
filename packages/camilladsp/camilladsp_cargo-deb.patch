@@ -9,10 +9,10 @@
 
  [features]
  default = ["websocket"]
-@@ -84,3 +86,13 @@
- [[bench]]
- name = "filters"
- harness = false
+@@ -90,3 +92,13 @@
+
+ [profile.release]
+ codegen-units = 1
 +
 +[package.metadata.deb]
 +maintainer-scripts = "debian/"
