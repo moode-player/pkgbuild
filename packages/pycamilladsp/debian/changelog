@@ -1,0 +1,5 @@
+pycamilladsp (2.0.0-1moode1~a2) UNRELEASED; urgency=medium
+
+  * Initial packing of CamillaDSP 2.x branch.
+
+ -- Bitkeeper <bitkeeper@users.noreply.github.com>  Thu, 26 Oct 2023 18:17:35 +0200
