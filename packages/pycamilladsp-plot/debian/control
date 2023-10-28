@@ -1,0 +1,38 @@
+Source: pycamilladsp-plot
+Maintainer: Bitkeeper <bitkeeper@users.noreply.github.com>
+Section: python
+Priority: optional
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ python3-setuptools,
+ python3-all,
+ debhelper (>= 9)
+Standards-Version: 4.6.2
+Homepage: https://github.com/HEnquist/pycamilladsp-plot
+
+Package: python3-camilladsp-plot
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: A library for validating, evaluating and plotting configs an
+ # pyCamillaDSP_plot
+ Companion Python library for plotting configurations and filters for CamillaDSP. It is also used by the web interface.
+ .
+ Download the library, either by `git clone` or by downloading a zip file of the code. Then unpack the files, go to the folder containing the `setup.py` file and run:
+ ```sh
+ pip install .
+ ```
+ Note that on some systems the command is `pip3` instead of `pip`.
+ .
+ ## Requirements
+ This library requires Python 3.6 or newer. For plotting configurations with the commandline tool `plotcamillaconf`, it also requires `numpy` and `matplotlib`. These are not required for using only with the web interface, but if `numpy` is available it will be used to speed up evaluation of FIR filters.
+ .
+ These are the names of the packages needed:
+ | Distribution    | python    | jsonschema         | numpy (optional) | matplotlib (optional) |
+ |-----------------|-----------|--------------------|------------------|-----------------------|
+ | Fedora          | python3   | python3-jsonschema | python3-numpy    | python3-matplotlib    |
+ | Debian/Raspbian | python3   | python3-jsonschema | python3-numpy    | python3-matplotlib    |
+ | Arch            | python    | python-jsonschema  | python-numpy     | python-matplotlib     |
+ | pip             | -         | jsonschema         | numpy            | matplotlib            |
+ | Anaconda        | -         | jsonschema         | numpy            | matplotlib            |
+
