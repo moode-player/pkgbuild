@@ -687,6 +687,8 @@ function on_upgrade() {
           sqlite3 $SQLDB "UPDATE cfg_system SET value='Genre' WHERE param='library_tagview_genre'"
           # Update hostapd.conf (remove PSK)
           cp -f $SRC/etc/hostapd/hostapd.conf /etc/hostapd/
+          # Add ProtoDAC entry for FifoPiMa reclocker
+          cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "ProtoDAC TDA1387 X8 (FifoPiMa)" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
       fi
 
       #--------------------------------------------------------------------------------------------------------
