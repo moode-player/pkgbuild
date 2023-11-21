@@ -689,6 +689,12 @@ function on_upgrade() {
           cp -f $SRC/etc/hostapd/hostapd.conf /etc/hostapd/
           # Add ProtoDAC entry for FifoPiMa reclocker
           cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | grep "ProtoDAC TDA1387 X8 (FifoPiMa)" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+          # Establish 'monitor' column in cfg_radio
+          RESULT=$(sqlite3 $SQLDB "SELECT monitor FROM cfg_radio")
+          if [ -z "$RESULT" ]; then
+              sqlite3 $SQLDB "ALTER TABLE cfg_radio RENAME COLUMN 'reserved2' TO 'monitor'"
+              sqlite3 $SQLDB "UPDATE cfg_radio SET monitor='No' WHERE id !='499'"
+          fi
       fi
 
       #--------------------------------------------------------------------------------------------------------
