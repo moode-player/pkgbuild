@@ -317,6 +317,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends udevil \
 --depends udisks-glue \
 --depends upmpdcli \
+--depends upmpdcli-qobuz \
 --depends winbind \
 --depends xfsprogs \
 --depends xinit \
