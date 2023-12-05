@@ -695,6 +695,8 @@ function on_upgrade() {
               sqlite3 $SQLDB "ALTER TABLE cfg_radio RENAME COLUMN 'reserved2' TO 'monitor'"
               sqlite3 $SQLDB "UPDATE cfg_radio SET monitor='No' WHERE id !='499'"
           fi
+          # Set default for Qobuz quality param
+          sqlite3 $SQLDB "UPDATE cfg_upnp SET value='6' WHERE param='qobuzformatid'"
       fi
 
       #--------------------------------------------------------------------------------------------------------
