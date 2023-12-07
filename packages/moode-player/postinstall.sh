@@ -706,16 +706,6 @@ function on_upgrade() {
       # Update SSH header
       cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
-      # Move default /home/pi/* files to $HOME
-      if [ "$HOME" != "/home/pi" ]; then
-            if [ -d /home/pi ]; then
-                mv -f /home/pi/.dircolors "$HOME" > /dev/null 2>&1
-                mv -f /home/pi/.xinitrc "$HOME" > /dev/null 2>&1
-                mv -f /home/pi/piano.sh "$HOME" > /dev/null 2>&1
-                rm -rf /home/pi/ > /dev/null 2>&1
-            fi
-      fi
-
       # Update radio stations and logos
       import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
