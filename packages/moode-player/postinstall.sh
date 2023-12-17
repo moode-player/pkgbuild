@@ -699,9 +699,15 @@ function on_upgrade() {
           sqlite3 $SQLDB "UPDATE cfg_upnp SET value='6' WHERE param='qobuzformatid'"
       fi
 
-      # MPD HTTP proxy
-      # proxy, proxy_user, proxy_password
-      cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "proxy" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+      # NOTE: Placeholder in case r840 is released under Bullseye
+      # Introduced in r840
+      #dpkg --compare-versions $VERSION lt "8.4.0-1moode1"
+      #if [ $? -eq 0 ]
+      #then
+          # MPD HTTP proxy
+          # proxy, proxy_user, proxy_password
+          #cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "proxy" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+      #fi
 
       #--------------------------------------------------------------------------------------------------------
       # Any release
