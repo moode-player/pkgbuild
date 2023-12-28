@@ -10,3 +10,4 @@ backup_camilla_path: "/usr/local/bin/camilladsp"
 backup_camilla_port: 1235
 log_file: "/var/log/mpd/log"
 active_config_txt: "/usr/share/camilladsp/active_config.txt"
+statefile_path: "/var/lib/cdsp/statefile.yml"
