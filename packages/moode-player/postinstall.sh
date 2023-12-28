@@ -706,6 +706,8 @@ function on_upgrade() {
           # MPD HTTP proxy
           # proxy, proxy_user, proxy_password
           cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "proxy" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+          # Folder item position
+          sqlite3 $SQLDB "UPDATE cfg_system SET param='folder_pos', value='-1' WHERE id='44'"
       fi
 
       #--------------------------------------------------------------------------------------------------------
