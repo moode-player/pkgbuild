@@ -708,6 +708,14 @@ function on_upgrade() {
           cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "proxy" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
           # Folder item position
           sqlite3 $SQLDB "UPDATE cfg_system SET param='folder_pos', value='-1' WHERE id='44'"
+          # HTTPS-Only mode (Experimental)
+          # - Update NGINX config
+          cp -f $SRC/etc/nginx/ssl.conf /etc/nginx/
+          cp -f $SRC/etc/nginx/dhparams.pem /etc/nginx/
+          # - Update feature bitmask (FEAT_HTTPS = 1)
+          BITMASK=$(sqlite3 $SQLDB "SELECT value FROM cfg_system WHERE param='feat_bitmask'")
+          NEW_BITMASK=$(($BITMASK + 1)) 
+          sqlite3 $SQLDB "UPDATE cfg_system SET value='$NEW_BITMASK' WHERE param='feat_bitmask'"
       fi
 
       #--------------------------------------------------------------------------------------------------------
