@@ -708,14 +708,21 @@ function on_upgrade() {
           cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "proxy" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
           # Folder item position
           sqlite3 $SQLDB "UPDATE cfg_system SET param='folder_pos', value='-1' WHERE id='44'"
-          # HTTPS-Only mode (Experimental)
+          # HTTPS mode (Experimental)
           # - Update NGINX config
           cp -f $SRC/etc/nginx/ssl.conf /etc/nginx/
           cp -f $SRC/etc/nginx/dhparams.pem /etc/nginx/
           # - Update feature bitmask (FEAT_HTTPS = 1)
           BITMASK=$(sqlite3 $SQLDB "SELECT value FROM cfg_system WHERE param='feat_bitmask'")
-          NEW_BITMASK=$(($BITMASK + 1)) 
+          NEW_BITMASK=$(($BITMASK + 1))
           sqlite3 $SQLDB "UPDATE cfg_system SET value='$NEW_BITMASK' WHERE param='feat_bitmask'"
+          # Squeezelite audio device
+          sqlite3 $SQLDB "UPDATE cfg_sl SET value='_audioout' WHERE param='AUDIODEVICE'"
+          # Set volknob_mpd to -1 if 0 (the old initial setting)
+          VOLKNOB_MPD=$(sqlite3 $SQLDB "SELECT value FROM cfg_system WHERE param='volknob_mpd'")
+          if [ $VOLKNOB_MPD = '0' ]; then
+              sqlite3 $SQLDB "UPDATE cfg_system SET value='-1' WHERE param='volknob_mpd'"
+          fi
       fi
 
       #--------------------------------------------------------------------------------------------------------
@@ -741,7 +748,6 @@ function on_upgrade() {
       #timeout 30s bash -c 'until mpc status; do sleep 3; done';
       echo "moode-player upgrade finished, please reboot"
 }
-
 
 if [ "$ACTION" = "configure" ] && [ -z $VERSION ] || [ "$ACTION" = "abort-remove" ]
 then
