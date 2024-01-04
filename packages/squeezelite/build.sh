@@ -10,8 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-
-PKG_DSC_URL="http://deb.debian.org/debian/pool/main/s/squeezelite/squeezelite_1.9+git20210102.78fef68-3.dsc"
+PKG_DSC_URL="http://deb.debian.org/debian/pool/main/s/squeezelite/squeezelite_1.9.9-1449+git20230814.8581aba-1.dsc"
 
 rbl_prepare_from_dsc_url $PKG_DSC_URL
 
