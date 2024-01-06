@@ -723,6 +723,8 @@ function on_upgrade() {
           if [ $VOLKNOB_MPD = '0' ]; then
               sqlite3 $SQLDB "UPDATE cfg_system SET value='-1' WHERE param='volknob_mpd'"
           fi
+          # Update bitrate for San Diego Jazz 88.3
+          sqlite3 $SQLDB "UPDATE cfg_radio SET bitrate='128' WHERE name='San Diego Jazz 88.3'"
       fi
 
       #--------------------------------------------------------------------------------------------------------
