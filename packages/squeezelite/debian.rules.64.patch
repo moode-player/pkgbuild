@@ -2,9 +2,9 @@
 +++ ./squeezelite/debian/rules	2022-01-31 19:19:01.150701900 +0100
 @@ -6,7 +6,7 @@
 
- # Enable ffmpeg, soxr resampling, visualisation export and disable dlopening
- # libraries
--export OPTS := -DDSD -DFFMPEG -DRESAMPLE -DVISEXPORT -DLINKALL -DIR -DUSE_SSL
+ # Enable ffmpeg, sox resampling, visualisation export, opus,
+ # and disable dlopening libraries
+-export OPTS := -DDSD -DFFMPEG -DRESAMPLE -DVISEXPORT -DLINKALL -DIR -DUSE_SSL -DOPUS -I/usr/include/opus
 +export OPTS := -DDSD -DFFMPEG -DRESAMPLE -DVISEXPORT -DLINKALL -DIR -DUSE_SSL -DGPIO -DRPI
 
  # Enable all hardening build flags
