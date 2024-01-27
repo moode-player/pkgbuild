@@ -709,20 +709,17 @@ function on_upgrade() {
           # Folder item position
           sqlite3 $SQLDB "UPDATE cfg_system SET param='folder_pos', value='-1' WHERE id='44'"
           # HTTPS mode (Experimental)
-          # - Update NGINX config
-          cp -f $SRC/etc/nginx/ssl.conf /etc/nginx/
-          cp -f $SRC/etc/nginx/dhparams.pem /etc/nginx/
+          # - Update NGINX config (ssl.conf and dhparams.pem will be updated as part of NGINX package)
+          #cp -f $SRC/etc/nginx/ssl.conf /etc/nginx/
+          #cp -f $SRC/etc/nginx/dhparams.pem /etc/nginx/
           # - Update feature bitmask (FEAT_HTTPS = 1)
           BITMASK=$(sqlite3 $SQLDB "SELECT value FROM cfg_system WHERE param='feat_bitmask'")
           NEW_BITMASK=$(($BITMASK + 1))
           sqlite3 $SQLDB "UPDATE cfg_system SET value='$NEW_BITMASK' WHERE param='feat_bitmask'"
           # Squeezelite audio device
           sqlite3 $SQLDB "UPDATE cfg_sl SET value='_audioout' WHERE param='AUDIODEVICE'"
-          # Set volknob_mpd to -1 if 0 (the old initial setting)
-          VOLKNOB_MPD=$(sqlite3 $SQLDB "SELECT value FROM cfg_system WHERE param='volknob_mpd'")
-          if [ $VOLKNOB_MPD = '0' ]; then
-              sqlite3 $SQLDB "UPDATE cfg_system SET value='-1' WHERE param='volknob_mpd'"
-          fi
+          # Set volknob_mpd to -1 (Default initial value)
+          sqlite3 $SQLDB "UPDATE cfg_system SET value='-1' WHERE param='volknob_mpd'"
           # Update bitrate for San Diego Jazz 88.3
           sqlite3 $SQLDB "UPDATE cfg_radio SET bitrate='128' WHERE name='San Diego Jazz 88.3'"
       fi
