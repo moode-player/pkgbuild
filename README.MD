@@ -9,6 +9,36 @@ Cloudsmith is the only fully hosted, cloud-native, universal package management 
 enables your organization to create, store and share packages in any format, to any place, with total
 confidence.
 
+### Disclaimer ###
+
+The software contained in this repository is distributed under the [GNU GENERAL PUBLIC LICENSE Version 3](https://raw.githubusercontent.com/moode-player/pkgbuild/main/LICENSE) which includes the following disclaimer:
+
+>15. Disclaimer of Warranty.
+>
+>THERE IS NO WARRANTY FOR THE PROGRAM, TO THE >EXTENT PERMITTED BY
+>APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+>HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
+>OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+>THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+>PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
+>IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
+>ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+>
+>16. Limitation of Liability.
+>
+>IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+>WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
+>THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+>GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+>USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+>DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+>PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+>EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+>SUCH DAMAGES.
+
+This means that the user of this software is responsible for any damage resulting from its use.
+It does not matter if the damage is caused by incorrect usage or a bug in the software.
+
 ### Table of Contents <!-- omit in toc -->
 
 - [1. Introduction](#1-introduction)
@@ -29,8 +59,6 @@ confidence.
 
 # 1. Introduction
 This repository contains scripts to build the packages containing the software components used in moOde audio player.
-
-
 
 ## 1.1. Origin and build type
 There are several ways in which packages are built and sources obtained.
@@ -128,8 +156,6 @@ git clone https://github.com/moode-player/pkgbuild.git
 cd pkgbuild/scripts
 ```
 
-
-
 ### 2.1.3. Setup environment settings
 * Copy the `scripts/setenv.sh.example` to `setenv.sh`
 ```bash
@@ -151,7 +177,6 @@ Activate the environment by:
 cd ..
 . ./scripts/setenv.sh
 ```
-
 
 ## 2.2. Build dependencies
 
@@ -177,11 +202,8 @@ The kernel packages are build for the current active running kernel and expect a
 The only exception to the build process is the moOde player it self. It expect that the moode source tree is checkout out in separate directory and the location is set in the `setenv.sh` script, before it can be packed by the build script from `packages/moode-player/build.sh`.
 See the build documentation from moode.
 
-
-
 ## 2.4. Deploy package and source
 There is a helper script that deploys packages to a Cloudsmith package repository. This requires a Cloudsmith account with access to the moOde repository.
-
 
 ### 2.4.1. Install Cloudsmith tooling
 
