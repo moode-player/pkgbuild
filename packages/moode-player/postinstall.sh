@@ -720,6 +720,12 @@ function on_upgrade() {
           sqlite3 $SQLDB "UPDATE cfg_sl SET value='_audioout' WHERE param='AUDIODEVICE'"
           # Set volknob_mpd to -1 (Default initial value)
           sqlite3 $SQLDB "UPDATE cfg_system SET value='-1' WHERE param='volknob_mpd'"
+          # Remove old log files
+          rm -f /var/log/shairport-sync.log
+          rm -f /var/log/librespot.log
+
+          # Reset volume type to software?
+
           # Update bitrate for San Diego Jazz 88.3
           sqlite3 $SQLDB "UPDATE cfg_radio SET bitrate='128' WHERE name='San Diego Jazz 88.3'"
       fi
