@@ -723,8 +723,10 @@ function on_upgrade() {
           # Remove old log files
           rm -f /var/log/shairport-sync.log
           rm -f /var/log/librespot.log
+          # Plugins repo url
+          sqlite3 $SQLDB "UPDATE cfg_system SET param='res_plugin_upd_url', value='https://raw.githubusercontent.com/moode-player/plugins/main' WHERE id='16'"
 
-          # Reset volume type to software?
+          # Reset volume type to software
 
           # Update bitrate for San Diego Jazz 88.3
           sqlite3 $SQLDB "UPDATE cfg_radio SET bitrate='128' WHERE name='San Diego Jazz 88.3'"
