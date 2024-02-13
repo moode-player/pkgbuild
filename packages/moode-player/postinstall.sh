@@ -703,15 +703,10 @@ function on_upgrade() {
       dpkg --compare-versions $VERSION lt "8.3.8-1moode1"
       if [ $? -eq 0 ]
       then
-          # MPD HTTP proxy
-          # proxy, proxy_user, proxy_password
+          # MPD HTTP proxy: proxy, proxy_user, proxy_password
           cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "proxy" | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
           # Folder item position
           sqlite3 $SQLDB "UPDATE cfg_system SET param='folder_pos', value='-1' WHERE id='44'"
-          # HTTPS mode (Experimental)
-          # - Update NGINX config (ssl.conf and dhparams.pem will be updated as part of NGINX package)
-          #cp -f $SRC/etc/nginx/ssl.conf /etc/nginx/
-          #cp -f $SRC/etc/nginx/dhparams.pem /etc/nginx/
           # - Update feature bitmask (FEAT_HTTPS = 1)
           BITMASK=$(sqlite3 $SQLDB "SELECT value FROM cfg_system WHERE param='feat_bitmask'")
           NEW_BITMASK=$(($BITMASK + 1))
@@ -725,9 +720,6 @@ function on_upgrade() {
           rm -f /var/log/librespot.log
           # Plugins repo url
           sqlite3 $SQLDB "UPDATE cfg_system SET param='res_plugin_upd_url', value='https://raw.githubusercontent.com/moode-player/plugins/main' WHERE id='16'"
-
-          # Reset volume type to software?
-
           # Update bitrate for San Diego Jazz 88.3
           sqlite3 $SQLDB "UPDATE cfg_radio SET bitrate='128' WHERE name='San Diego Jazz 88.3'"
       fi
