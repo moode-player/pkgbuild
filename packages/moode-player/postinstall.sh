@@ -588,7 +588,7 @@ function on_upgrade() {
          systemctl stop mpd2cdspvolume
          systemctl disable mpd2cdspvolume
          sqlite3 $SQLDB "UPDATE cfg_system SET param='camilladsp_volume_sync', value='off' WHERE id=80"
-         cp -f $SRC/etc/alsa/conf.d/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/alsa/conf.d/
+         cp -f $SRC/etc/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/
          chown -R mpd /var/lib/cdsp
          echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
          chown -R mpd /var/lib/cdsp/camilladsp_volume_state
@@ -722,6 +722,14 @@ function on_upgrade() {
           sqlite3 $SQLDB "UPDATE cfg_system SET param='res_plugin_upd_url', value='https://raw.githubusercontent.com/moode-player/plugins/main' WHERE id='16'"
           # Update bitrate for San Diego Jazz 88.3
           sqlite3 $SQLDB "UPDATE cfg_radio SET bitrate='128' WHERE name='San Diego Jazz 88.3'"
+      fi
+
+      # Introduced in r839
+      dpkg --compare-versions $VERSION lt "8.3.9-1moode1"
+      if [ $? -eq 0 ]
+      then
+          # Version 2 camilladsp.conf file
+          cp -f $SRC/etc/alsa/conf.d/camilladsp.conf /etc/alsa/conf.d/
       fi
 
       #--------------------------------------------------------------------------------------------------------
