@@ -8,14 +8,14 @@
 #
 #########################################################################
 
-REPO=moodeaudio/m8y/raspbian/bullseye
+REPO=moodeaudio/m8y/raspbian/bookworm
 
 cloudsmith --version > /dev/null 2>&1
 if [[ $? -gt 0 ]]
 then
     sudo apt update
-    sudo apt install python3-pip
-    sudo pip3 install --upgrade cloudsmith-cli
+    sudo apt install python3-click python3-click-didyoumean python3-requests python3-requests-toolbelt python3-semver python3-configparse python3-dateutil
+    sudo pip3 install --upgrade --no-deps --break-system-packages cloudsmith-cli cloudsmith-api  click-spinner configparser click-configfile
     cloudsmith login
 fi
 

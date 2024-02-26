@@ -90,13 +90,14 @@ BUILD_ROOT_DIR="$BASE_DIR/build"
 
 DO_DEP_UPDATE=1
 
+CS_DISTRO="bookworm"
 # make sure apt update is only done once during the build process
 function apt_update {
     if [[ $DO_DEP_UPDATE -gt 0 ]]
     then
         if [[ ! -f "/etc/apt/sources.list.d/moodeaudio-m8y.list" ]]
         then
-            curl -1sLf 'https://dl.cloudsmith.io/public/moodeaudio/m8y/setup.deb.sh' | sudo -E distro=raspbian codename=bullseye bash
+            curl -1sLf 'https://dl.cloudsmith.io/public/moodeaudio/m8y/setup.deb.sh' | sudo -E distro=raspbian codename=$CS_DISTRO bash
         fi
         sudo apt update
         DO_DEP_UPDATE=0
@@ -119,7 +120,7 @@ function rbl_check_build_dep {
 }
 
 function rbl_check_build_dep_with_version {
-    dpkg-query --showformat='${Version}' --show raspberrypi-kernel-headers 2>&1 | grep "$KERNEL_PKG_VERSION" > /dev/null 2>&1
+    dpkg-query --showformat='${Version}' --show $1 2>&1 | grep $2 > /dev/null 2>&1
     if [[ ! $? -eq 0 ]]
     then
         echo "${YELLOW} Package $1=$2 : missing, installing it.${NORMAL}"
@@ -482,10 +483,10 @@ function rbl_build_py_from_git {
     python -c "import stdeb"
     if [[ $? -gt 0 ]]
     then
-        echo "${YELLOW}python stdeb: not installed, installing it${NORMAL}"
-        #sudo pip3 install stdeb
-        apt_update
-        sudo apt install -y python3-stdeb
+    echo "${YELLOW}python stdeb: not installed, installing it${NORMAL}"
+    #sudo pip3 install stdeb
+    apt_update
+    sudo apt install -y python3-stdeb
     fi
 
     _rbl_decode_pkg_version
@@ -612,7 +613,7 @@ function rbl_check_kernel_headers {
 
         cd $prev_path
         export KERNEL_SOURCE_DIR=$KERNEL_DIR
-        MODULE_BUILD_USE_SOURCE=1
+                MODULE_BUILD_USE_SOURCE=1
         MODULE_BUILD_USE_HEADERS=0
         # required to point dkms to the alternative kernel source:
         DKMS_OPTS=(--kernelsourcedir "$KERNEL_DIR")
@@ -693,7 +694,7 @@ function rbl_dkms_apply_template {
 
 # copy the specified moudle from dkms build to fakeroot for fpm
 function rbl_dkms_grab_modules {
-    for i in "${ARCHS[@]}"
+        for i in "${ARCHS[@]}"
     do
         echo "Grab $i"
         mkdir -p $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/

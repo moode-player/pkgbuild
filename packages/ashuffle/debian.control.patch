@@ -1,39 +1,31 @@
---- ashuffle-3.12.5/debian/control	2021-12-07 17:22:17.383244716 +0000
-+++ ../../../build/ashuffle_3.12.5/debian/control	2021-12-07 17:31:08.137883200 +0000
-@@ -1,25 +1,19 @@
+--- ashuffle-3.14.1/debian/control.org	2023-10-22 14:07:41.216179190 +0200
++++ ashuffle-3.14.1/debian/control	2023-10-22 14:09:32.993351641 +0200
+@@ -1,19 +1,22 @@
  Source: ashuffle
+-Section: unknown
 +Section: sound
  Priority: optional
  Maintainer: Bitkeeper <bitkeeper@users.noreply.github.com>
--Build-Depends: debhelper-compat (= 13)
-+Build-Depends: debhelper-compat (= 13),
-+               libmpdclient-dev,
-+               meson,
-+               cmake
- Standards-Version: 4.5.1
--Section: libs
+ Rules-Requires-Root: no
+ Build-Depends:
+  debhelper-compat (= 13),
++ libmpdclient-dev,
++ meson,
++ cmake
+ Standards-Version: 4.6.2
 -Homepage: <insert the upstream URL, if relevant>
 -#Vcs-Browser: https://salsa.debian.org/debian/ashuffle
 -#Vcs-Git: https://salsa.debian.org/debian/ashuffle.git
 +Homepage: https://github.com/joshkunz/ashuffle
 +Vcs-Browser: https://github.com/joshkunz/ashuffle
 +Vcs-Git: https://github.com/joshkunz/ashuffle.git
- Rules-Requires-Root: no
  
--Package: ashuffle-dev
--Section: libdevel
-+Package: ashuffle
+ Package: ashuffle
  Architecture: any
--Multi-Arch: same
--Depends: ashuffleBROKEN (= ${binary:Version}), ${misc:Depends}
+ Depends:
+  ${shlibs:Depends},
+  ${misc:Depends},
 -Description: <insert up to 60 chars description>
-- <insert long description, indented with spaces>
--
--Package: ashuffleBROKEN
--Architecture: any
--Multi-Arch: same
- Depends: ${shlibs:Depends}, ${misc:Depends}
--Description: <insert up to 60 chars description>
-- <insert long description, indented with spaces>
+- <Insert long description, indented with spaces.>
 +Description: ashuffle is an application for automatically shuffling your MPD library in a similar way to a more standard music player's "shuffle library" feature.
 + ashuffle works like any other MPD client, and can be used alongside your other MPD frontends.

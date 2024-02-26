@@ -12,10 +12,10 @@
 
 #TODO: If needed add systemd files
 
-PKG="ashuffle_3.12.8-1moode1"
+PKG="ashuffle_3.14.1-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/joshkunz/ashuffle.git"
-PKG_SOURCE_GIT_TAG="v3.12.8"
+PKG_SOURCE_GIT_TAG="v3.14.1"
 
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
@@ -24,7 +24,7 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 #------------------------------------------------------------
 # Custom part of the packing
 
-dh_make -l -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../LICENSE -y
+dh_make -s -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #TODO: replace it with a better solution: include submodules in the archive
