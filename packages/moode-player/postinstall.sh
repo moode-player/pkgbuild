@@ -69,16 +69,17 @@ function on_install() {
 
       echo "** Systemd enable/disable"
       systemctl daemon-reload > /dev/null 2>&1
-      systemctl enable haveged > /dev/null 2>&1
-      systemctl unmask hostapd > /dev/null 2>&1
+
+      # Not needed in Bookworm
+      # systemctl enable haveged > /dev/null 2>&1
+      # systemctl unmask hostapd > /dev/null 2>&1
+
       # These services are started on-demand or by moOde worker daemon (worker.php)
       disable_services=(
           bluetooth \
           bluealsa-aplay \
           bluez-alsa \
-          dnsmasq \
           hciuart \
-          hostapd \
           minidlna \
           mpd \
           mpd.service \
@@ -96,6 +97,10 @@ function on_install() {
           triggerhappy \
           udisks2 \
           upmpdcli)
+
+      # Not needed in Bookworm
+      # dnsmasq \
+      # hostapd \
 
       for service in "${disable_services[@]}"
       do
@@ -260,13 +265,13 @@ function on_install() {
       # domain-needed        # Don't forward short names
       # bogus-priv           # Never forward addresses in the non-routed address spaces.
       # dhcp-range=172.24.1.50,172.24.1.150,12h # IP address range and lease time
-      sed -i -e 's/^[#]bind-interfaces$/bind-interfaces/' \
-             -e 's/^[#]interface=$/interface=wlan0/' \
-             -e '0,/^#server/s/#server=.*/server=127.0.0.1/' \
-             -e 's/^[#]domain-needed$/domain-needed/' \
-             -e 's/^[#]bogus-priv$/bogus-priv/' \
-             -e '0,/^[#]dhcp-range=.*$/s/^[#]dhcp-range=.*/dhcp-range=172.24.1.50,172.24.1.150,12h/' \
-             /etc/dnsmasq.conf
+      #sed -i -e 's/^[#]bind-interfaces$/bind-interfaces/' \
+        #     -e 's/^[#]interface=$/interface=wlan0/' \
+        #     -e '0,/^#server/s/#server=.*/server=127.0.0.1/' \
+        #     -e 's/^[#]domain-needed$/domain-needed/' \
+        #     -e 's/^[#]bogus-priv$/bogus-priv/' \
+        #     -e '0,/^[#]dhcp-range=.*$/s/^[#]dhcp-range=.*/dhcp-range=172.24.1.50,172.24.1.150,12h/' \
+        #     /etc/dnsmasq.conf
 
       # /etc/minidlna.conf
   	  # media_dir=A,/var/lib/mpd/music

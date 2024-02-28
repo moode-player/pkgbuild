@@ -247,7 +247,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends camillagui \
 --depends caps \
 --depends chromium-browser \
---depends dnsmasq \
 --depends dos2unix \
 --depends exfat-fuse \
 --depends expect \
@@ -259,8 +258,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends fonts-ipafont-mincho \
 --depends fonts-unfonts-core \
 --depends fonts-unfonts-core \
---depends haveged \
---depends hostapd \
 --depends id3v2 \
 --depends inotify-tools \
 --depends libasound2-plugin-bluez \
@@ -331,6 +328,11 @@ root/mnt/.=/mnt \
 root/usr/.=/usr \
 root/lib/.=/lib \
 root/etc/.=/etc
+
+# Not needed in Bookworm
+#--depends dnsmasq \
+#--depends haveged \
+#--depends hostapd \
 
 if [[ $? -gt 0 ]]
 then
