@@ -144,7 +144,7 @@ function on_install() {
       then
         rm $SQLDB
       fi
-      # strip creation of radion stations from the sql, stations are create by the station backup import
+      # strip creation of radio stations from the sql, stations are create by the station backup import
       cat $SQLDB".sql" | grep -v "INSERT INTO cfg_radio" | sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499" | sqlite3 $SQLDB
 
@@ -202,7 +202,7 @@ function on_install() {
       # ------------------------------------------------------------------------------------------
       # From the root moode git repo find files to patch with sed:
       #  find . -name "*.sed*" |sort
-      PHP_VER="7.4"
+      PHP_VER="8.2"
 
       # /etc/bluetooth/main.conf
 		  # Name = Moode Bluetooth
