@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_8.3.9-1moode1"
+PKG="moode-player_9.0.0-1moode1~pre1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -27,7 +27,7 @@ BUILD_APP=1
 GULP_BIN=$MOODE_DIR/node_modules/.bin/gulp
 
 # Used as reference for generating station patch files. Should be the first releas of a major
-MAJOR_BASE_STATIONS=../dist/binary/moode-stations-full_8.0.0.zip
+MAJOR_BASE_STATIONS=../dist/binary/moode-stations-full_9.0.0.zip
 
 # ----------------------------------------------------------------------------
 # 1. Prepare pacakge build dir and build deps
