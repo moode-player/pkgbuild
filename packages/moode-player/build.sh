@@ -276,7 +276,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends libmms0 \
 --depends libnss-winbind \
 --depends librespot \
---depends libsgutils2-2 \
+--depends libsgutils2-1.46-2 \
 --depends libtool-bin \
 --depends libzen0v5 \
 --depends lsb-release \
@@ -292,7 +292,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends php-fpm \
 --depends php-sqlite3 \
 --depends php-yaml \
---depends php7.4-gd \
+--depends php8.2-gd \
 --depends pi-bluetooth \
 --depends python3-dbus \
 --depends python3-libupnpp \
