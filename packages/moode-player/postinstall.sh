@@ -380,7 +380,7 @@ function on_install() {
       #echo "** Starting servers"
       # restart some services to pickup new configuration
       # systemctl stop nginx
-      # systemctl restart php7.4-fpm
+      # systemctl restart php$PHP_VER-fpm
       # systemctl start nginx
       # systemctl restart smbd
       # systemctl restart nmbd
