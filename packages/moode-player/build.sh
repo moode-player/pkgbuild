@@ -138,9 +138,9 @@ mv -f $BUILD_ROOT_DIR/moode-stations-*_$PKGVERSION.zip  $BASE_DIR/dist/binary/
 NOT_OWNED_TEMP=$PKG_ROOT_DIR/usr/share/moode-player
 mkdir -p $NOT_OWNED_TEMP
 
-# /boot/firmware (Bookworm)
-rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* --exclude *.ignore* $MOODE_DIR/boot/firmware/ $PKG_ROOT_DIR/boot/firmware/
-rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/boot/firmware/ $NOT_OWNED_TEMP/boot/firmware/
+# /boot
+rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* --exclude *.ignore* $MOODE_DIR/boot/ $PKG_ROOT_DIR/boot/
+rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/boot/ $NOT_OWNED_TEMP/boot/
 
 # /etc
 rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/etc/ $PKG_ROOT_DIR/etc/
