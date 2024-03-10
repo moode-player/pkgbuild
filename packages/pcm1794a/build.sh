@@ -17,12 +17,8 @@ PKG="pcm1794a_0.1-1"
 # required for creating a dkms project:
 DKMS_MODULE="pcm1794a/0.1"
 SRC_DIR="pcm1794a-0.1"
-if [ $ARCH64 -eq 1 ]
-then
-  ARCHS=( v8+ )
-else
-  ARCHS=( v7l+ v7+ )
-fi
+
+ARCHS=( rpi8-rpi-v8 rpi8-rpi-2712 )
 MODULE="snd-soc-pcm1794a.ko"
 MODULE_PATH='sound/soc/codecs'
 
@@ -67,7 +63,7 @@ rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh
 rbl_dkms_grab_modules
 
 # build the package
-fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VERSION_PKG_SMALL} -v $PKGVERSION \
 --license GPLv3 \
 --category sound \
 -S moode \
