@@ -48,7 +48,7 @@ rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh
 rbl_dkms_grab_modules
 
 # build the package
-fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VERSION_PKG_SMALL} -v $PKGVERSION \
 --license GPLv3 \
 --category sound \
 -S moode \
