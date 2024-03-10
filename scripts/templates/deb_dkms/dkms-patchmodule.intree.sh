@@ -30,7 +30,8 @@ KERNEL_ARCHIVE=$KERNEL_SOURCE_ARCHIVE
 KERNEL_BASE_NAME=`basename $KERNEL_ARCHIVE .tar.xz`
 
 echo "Extracting original source"
-tar -xf $KERNEL_ARCHIVE $KERNEL_BASE_NAME/$1 --xform=s,$KERNEL_BASE_NAME/$1,.,
+mkdir -p $1
+cp -r $KERNEL_SOURCE_DIR/$1/* .
 
 # The new module version should be increased to allow the new module to be
 # installed during kernel upgrade

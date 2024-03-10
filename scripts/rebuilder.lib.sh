@@ -534,25 +534,76 @@ function rbl_grab_debian_archive {
 # If not it will install it and if it can't install it it will abort
 function rbl_get_kernel_source {
     local _KERNEL_VER_FULL=$(rbl_get_current_kernel_full_version)
-    local _KERNEL_VER=$(rbl_get_current_kernel_version)
+    local KERNEL_PACKAGE=linux-image-$_KERNEL_VER_FULL
 
-    local _KERNEL_VER_SHORT=$(uname -r| sed -r "s/^([0-9][.][0-9]{1,2})[.][0-9]{1,3}-.*/\1/")
+    KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show $KERNEL_PACKAGE`
+    echo "kernel package        : ${KERNEL_PACKAGE}"
+    echo "kernel package version: ${KERNEL_PKG_VERSION}"
 
-    KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show linux-image-$_KERNEL_VER_FULL`
-    rbl_check_build_dep_with_version linux-source-$_KERNEL_VER_SHORT $KERNEL_PKG_VERSION
-    echo "${GREEN} Kernel source is present!${NORMAL}"
+    KERNEL_DOWNLOAD_LOCATION="$PKGBUILD_ROOT/tmp"
 
+    KERNEL_SOURCE_DIR=$PKGBUILD_ROOT/tmp/linux-$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}[.][0-9]{1,3})[-].*/\1/")
+    echo "${KERNEL_SOURCE_DIR}"
+    export KERNEL_SOURCE_DIR=$KERNEL_SOURCE_DIR # for using with other scripts
+    export KERNEL_VERSION_PKG_SMALL=$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}[.][0-9]{1,3})[-].*/\1/")
 
-    KERNEL_SOURCE_ARCHIVE=/usr/src/linux-source-${_KERNEL_VER_SHORT}.tar.xz
-
-    export KERNEL_SOURCE_ARCHIVE=$KERNEL_SOURCE_ARCHIVE # for using with other scripts
-    if [ -f "$KERNEL_SOURCE_ARCHIVE" ]
+    # If needed dowload source package and patch it
+    if [ -d "$KERNEL_SOURCE_DIR" ]
     then
-        echo "${GREEN} Kernel source archive is present${NORMAL}"
+        echo "${GREEN} Kernel source is already present ${NORMAL}"
     else
-        echo "${RED} Kernel source archive not present, abort${NORMAL}"
-        exit 1
+        CURR_DIR=`pwd`
+        echo "${YELLOW} Kernel source not present, downloading it ${NORMAL}"
+
+        # Make sure the raspi source repo is enabled
+        cat /etc/apt/sources.list.d/raspi.list | grep "^#deb-src http://archive.raspberrypi.com/debian/ bookworm main" > /dev/null
+        if [ $? -eq 0 ]
+        then
+            echo "${YELLOW} Apt raspberry source respo disabled, fixing it!${NORMAL}"
+            sudo sed -i "s/#deb-src/deb-src/" /etc/apt/sources.list.d/raspi.list
+        else
+            echo "${GREEN} Apt raspberry source repo is enabled ${NORMAL}"
+        fi
+
+        # Download the source package
+
+        mkdir -p $KERNEL_DOWNLOAD_LOCATION
+        cd $KERNEL_DOWNLOAD_LOCATION
+        apt-get source $KERNEL_PACKAGE=$KERNEL_PKG_VERSION
+        if [[ $? -gt 0 ]]
+        then
+            echo "${RED} Problems downloading kernel source package '${KERNEL_PACKAGE}' ${NORMAL}"
+            cd $CURR_DIR
+            exit 1
+        fi
+
+        # Apply general raspberry pi patches to kernel (from raspberry org)
+        echo "${NORMAL} Patching kernel source with raspberry pi patches${NORMAL}"
+        cd $KERNEL_SOURCE_DIR
+        find debian/patches-rpi -type f -name "*.patch" -exec bash -c "cat {} | patch -p1 > patch.log" \;
+        if [[ $? -gt 0 ]]
+        then
+            echo "${RED} Problems patching kernel source ${NORMAL}"
+            cd $CURR_DIR
+            exit 1
+        fi
+
+        cd $CURR_DIR
     fi
+
+
+
+
+    # KERNEL_SOURCE_ARCHIVE=/usr/src/linux-source-${_KERNEL_VER_SHORT}.tar.xz
+
+    # export KERNEL_SOURCE_ARCHIVE=$KERNEL_SOURCE_ARCHIVE # for using with other scripts
+    # if [ -f "$KERNEL_SOURCE_ARCHIVE" ]
+    # then
+    #     echo "${GREEN} Kernel source archive is present${NORMAL}"
+    # else
+    #     echo "${RED} Kernel source archive not present, abort${NORMAL}"
+    #     exit 1
+    # fi
 }
 
 # Check if correct kernel headers deb is installed.
@@ -653,13 +704,8 @@ function rbl_dkms_grab_modules {
     do
         echo "Grab $i"
         mkdir -p $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
-        if [ $ARCH64 -eq 1 ]
-        then
-            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
-        else
-            # with dkms there is always a armv7l subdir also for armv7+
-            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
-        fi
+        echo "install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/"
+        install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
         if [[ $? -gt 0 ]]
         then
             echo "${RED}Error: failure during rbl_dkms_grab_modules!${NORMAL}"
