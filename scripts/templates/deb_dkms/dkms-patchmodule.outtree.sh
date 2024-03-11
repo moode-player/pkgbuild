@@ -20,18 +20,6 @@ fi
 HEADERS_DIR="/usr/src/linux-headers-${kernelver}"
 arch=$(echo "${kernelver}" |sed -r 's/.*-(.*)/\1/' )
 
-if [ ! -d "$HEADERS_DIR" ]
-then
-  prev_path=`pwd`
-  cd $KERNEL_SOURCE_DIR
-  $prev_path/prepkernel.sh $arch
-  cd $prev_path
-  HEADERS_DIR="$KERNEL_SOURCE_DIR"
-  echo "Using kernel source."
-else
-  echo "Using kernel headers."
-fi
-
 # auto unpack tars in source dir
 if [ $(find -name "*.tar" | wc -l) -gt 0 ]
 then

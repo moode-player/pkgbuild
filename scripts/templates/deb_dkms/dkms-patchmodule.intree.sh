@@ -17,19 +17,7 @@ if [ -z "$kernelver" ] ; then
 fi
 
 arch=$(echo "${kernelver}" |sed -r 's/.*-(.*)/\1/' )
-# When no kernel headers are present, prep an kernel source
 HEADERS_DIR="/usr/src/linux-headers-${kernelver}"
-if [ ! -d "$HEADERS_DIR" ]
-then
-  prev_path=`pwd`
-  cd $KERNEL_SOURCE_DIR
-  $prev_path/prepkernel.sh $arch
-  cd $prev_path
-  HEADERS_DIR="$KERNEL_SOURCE_DIR"
-  echo "Using kernel source."
-else
-  echo "Using kernel headers."
-fi
 
 vers=(${kernelver//./ })   # split kernel version into individual elements
 major="${vers[0]}"
@@ -39,10 +27,11 @@ version="$major.$minor"    # recombine as needed
 subver=$(grep "SUBLEVEL =" $HEADERS_DIR/Makefile | tr -d " " | cut -d "=" -f 2)
 
 KERNEL_ARCHIVE=$KERNEL_SOURCE_ARCHIVE
-KERNEL_BASE_NAME=`basename $KERNEL_ARCHIVE .tar.gz`
+KERNEL_BASE_NAME=`basename $KERNEL_ARCHIVE .tar.xz`
 
 echo "Extracting original source"
-tar -xf $KERNEL_ARCHIVE $KERNEL_BASE_NAME/$1 --xform=s,$KERNEL_BASE_NAME/$1,.,
+mkdir -p $1
+cp -r $KERNEL_SOURCE_DIR/$1/* .
 
 # The new module version should be increased to allow the new module to be
 # installed during kernel upgrade

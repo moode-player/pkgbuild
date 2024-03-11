@@ -530,99 +530,101 @@ function rbl_grab_debian_archive {
     rm ../$DEB_ARCHIVE_NAME
 }
 
-# Downloads the full source of the current running kernel as tarbal.
-# You can find the filename in the the env setting $KERNEL_SOURCE_ARCHIVE or local var $KERNEL_SOURCE_ARCHIVE
+# Check if correct kernel source deb is installed.
+# If not it will install it and if it can't install it it will abort
 function rbl_get_kernel_source {
-    rbl_check_build_dep rpi-source
+    local _KERNEL_VER_FULL=$(rbl_get_current_kernel_full_version)
+    local KERNEL_PACKAGE=linux-image-$_KERNEL_VER_FULL
+
+    KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show $KERNEL_PACKAGE`
+    echo "kernel package        : ${KERNEL_PACKAGE}"
+    echo "kernel package version: ${KERNEL_PKG_VERSION}"
+
     KERNEL_DOWNLOAD_LOCATION="$PKGBUILD_ROOT/tmp"
-    mkdir -p $KERNEL_DOWNLOAD_LOCATION
-    KERNEL_SOURCE_ARCHIVE=`rpi-source --dry-run --skip-update --download-only --dest $KERNEL_DOWNLOAD_LOCATION | grep "kernel source tarball:" | sed -r "s/.* (.*linux-.*[.]tar[.]gz)/\1/"`
-    # KERNEL_SOURCE_ARCHIVE=`rpi-source --dry-run --skip-update --download-only --uri https://github.com/raspberrypi/rpi-firmware --dest $KERNEL_DOWNLOAD_LOCATION | grep "kernel source tarball:" | sed -r "s/.* (.*linux-.*[.]tar[.]gz)/\1/"`
-    if [[ $? -gt 0 ]]
-    then
-        echo "${RED}Error: failure during running rpi-source!${NORMAL}"
-        exit 1
-    fi
 
-    export KERNEL_SOURCE_ARCHIVE=$KERNEL_SOURCE_ARCHIVE # for using with other scripts
+    KERNEL_SOURCE_DIR=$PKGBUILD_ROOT/tmp/linux-$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}[.][0-9]{1,3})[-].*/\1/")
+    echo "${KERNEL_SOURCE_DIR}"
+    export KERNEL_SOURCE_DIR=$KERNEL_SOURCE_DIR # for using with other scripts
+    export KERNEL_VERSION_PKG_SMALL=$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}[.][0-9]{1,3})[-].*/\1/")
 
-    if [ -f "$KERNEL_SOURCE_ARCHIVE" ]
+    # If needed dowload source package and patch it
+    if [ -d "$KERNEL_SOURCE_DIR" ]
     then
-        echo "${GREEN} Kernel source archive already downloaded${NORMAL}"
+        echo "${GREEN} Kernel source is already present ${NORMAL}"
     else
-        echo "${YELLOW} Kernel source archive not present, downloading it${NORMAL}"
-        rpi-source --skip-update --download-only --dest $KERNEL_DOWNLOAD_LOCATION
+        CURR_DIR=`pwd`
+        echo "${YELLOW} Kernel source not present, downloading it ${NORMAL}"
+
+        # Make sure the raspi source repo is enabled
+        cat /etc/apt/sources.list.d/raspi.list | grep "^#deb-src http://archive.raspberrypi.com/debian/ bookworm main" > /dev/null
+        if [ $? -eq 0 ]
+        then
+            echo "${YELLOW} Apt raspberry source respo disabled, fixing it!${NORMAL}"
+            sudo sed -i "s/#deb-src/deb-src/" /etc/apt/sources.list.d/raspi.list
+        else
+            echo "${GREEN} Apt raspberry source repo is enabled ${NORMAL}"
+        fi
+
+        # Download the source package
+
+        mkdir -p $KERNEL_DOWNLOAD_LOCATION
+        cd $KERNEL_DOWNLOAD_LOCATION
+        apt-get source $KERNEL_PACKAGE=$KERNEL_PKG_VERSION
         if [[ $? -gt 0 ]]
         then
-            echo "Error: failure during downloading kernel source with rpi-source!${NORMAL}"
-            exit 1
-        fi
-        if [ ! -f "$KERNEL_SOURCE_ARCHIVE" ]
-        then
-            echo "${RED}Error: failure during downloading kernel source with rpi-source!${NORMAL}"
+            echo "${RED} Problems downloading kernel source package '${KERNEL_PACKAGE}' ${NORMAL}"
+            cd $CURR_DIR
             exit 1
         fi
 
+        # Apply general raspberry pi patches to kernel (from raspberry org)
+        echo "${NORMAL} Patching kernel source with raspberry pi patches${NORMAL}"
+        cd $KERNEL_SOURCE_DIR
+        find debian/patches-rpi -type f -name "*.patch" -exec bash -c "cat {} | patch -p1 > patch.log" \;
+        if [[ $? -gt 0 ]]
+        then
+            echo "${RED} Problems patching kernel source ${NORMAL}"
+            cd $CURR_DIR
+            exit 1
+        fi
+
+        cd $CURR_DIR
     fi
+
+
+
+
+    # KERNEL_SOURCE_ARCHIVE=/usr/src/linux-source-${_KERNEL_VER_SHORT}.tar.xz
+
+    # export KERNEL_SOURCE_ARCHIVE=$KERNEL_SOURCE_ARCHIVE # for using with other scripts
+    # if [ -f "$KERNEL_SOURCE_ARCHIVE" ]
+    # then
+    #     echo "${GREEN} Kernel source archive is present${NORMAL}"
+    # else
+    #     echo "${RED} Kernel source archive not present, abort${NORMAL}"
+    #     exit 1
+    # fi
 }
 
-# check if kernel headers are present, else unpack the kernel source if needed and set the flag MODULE_BUILD_USE_SOURCE
+# Check if correct kernel headers deb is installed.
+# If not it will install it and if it can't install it it will abort
 function rbl_check_kernel_headers {
-    local  _KERNEL_VER=$(rbl_get_current_kernel_version)
+    local _KERNEL_VER_FULL=$(rbl_get_current_kernel_full_version)
+    KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show linux-image-$_KERNEL_VER_FULL`
+    echo "Current kernel is linux-image-${_KERNEL_VER_FULL} = ${KERNEL_PKG_VERSION}"
 
-    KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show raspberrypi-kernel`
-    rbl_check_build_dep_with_version raspberrypi-kernel-headers $KERNEL_PKG_VERSION
+    rbl_check_build_dep_with_version linux-headers-$_KERNEL_VER_FULL $KERNEL_PKG_VERSION
 
-    if [ $ARCH64 -eq 1 ]
-    then
-        local _KERNEL_VER_FULL=`uname -r`
-    else
-        local _KERNEL_VER_FULL=$_KERNEL_VER
-    fi
-    # if [ $(ls -d /usr/src/linux-headers-$_KERNEL_VER* 2>&1 |wc -l) -lt 1 ]
     ls -d /usr/src/linux-headers-$_KERNEL_VER_FULL* 2>&1 | grep "No such file or directory" > /dev/null
     if [ $? -eq 0 ]
     then
-        prev_path=`pwd`
-        if [ -z $KERNEL_SOURCE_ARCHIVE ]
-        then
-            rbl_get_kernel_source
-        fi
-        KERNEL_DIR="$KERNEL_DOWNLOAD_LOCATION/source/$(basename $KERNEL_SOURCE_ARCHIVE .tar.gz)"
-        if [ ! -d $KERNEL_DIR ]
-        then
-            echo "${YELLOW}Warning: No kernel headers present, trying to setup source instead${NORMAL}"
-            echo "The first time this will take a while ..."
-            mkdir -p $KERNEL_DOWNLOAD_LOCATION/source
-            cd $KERNEL_DOWNLOAD_LOCATION/source
-            pv $KERNEL_SOURCE_ARCHIVE | tar -xz
-        else
-            echo "${YELLOW}Warning: No kernel headers present, using source instead${NORMAL}"
-        fi
-
-        # Required by some modules build processes if headers doesn't exists,
-        # normally when headers exits build points to the same location.
-        # for i in "${ARCHS[@]}"
-        # do
-        #     if [ ! -e "/lib/modules/5.15.21-${i}/build" ]
-        #     then
-        #         echo "Creating symlink /lib/modules/${_KERNEL_VER}-${i}/build -> $KERNEL_DIR"
-        #         sudo ln -s $KERNEL_DIR /lib/modules/${_KERNEL_VER}-${i}/build
-        #     fi
-        # done
-
-        cd $prev_path
-        export KERNEL_SOURCE_DIR=$KERNEL_DIR
-                MODULE_BUILD_USE_SOURCE=1
-        MODULE_BUILD_USE_HEADERS=0
-        # required to point dkms to the alternative kernel source:
-        DKMS_OPTS=(--kernelsourcedir "$KERNEL_DIR")
+        echo "${RED}Warning: No kernel headers found at the expected location, abort${NORMAL}"
+        exit 1
     else
         echo "${GREEN} Kernel headers are present!${NORMAL}"
         MODULE_BUILD_USE_HEADERS=1
         MODULE_BUILD_USE_SOURCE=0
     fi
-
 }
 
 function rbl_build {
@@ -643,6 +645,10 @@ function rbl_get_current_kernel_version {
     echo "$_kernel_ver"
 }
 
+function rbl_get_current_kernel_full_version {
+    local _kernel_ver=$(uname -r )
+    echo "$_kernel_ver"
+}
 # copies an patch while replacing the maintainer to the current env vars DEBFULLNAME and DEBEMAIL
 function rbl_fix_control_patch_maintainer () {
     if [ -z "$1" ] || [ -z "$2" ]
@@ -698,13 +704,8 @@ function rbl_dkms_grab_modules {
     do
         echo "Grab $i"
         mkdir -p $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
-        if [ $ARCH64 -eq 1 ]
-        then
-            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
-        else
-            # with dkms there is always a armv7l subdir also for armv7+
-            install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/armv7l/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
-        fi
+        echo "install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/"
+        install -m644 $BUILD_ROOT_DIR/$DKMS_MODULE/$KERNEL_VER-$i/aarch64/module/$MODULE* $BUILD_ROOT_DIR/lib/modules/$KERNEL_VER-$i/updates/dkms/
         if [[ $? -gt 0 ]]
         then
             echo "${RED}Error: failure during rbl_dkms_grab_modules!${NORMAL}"
@@ -725,7 +726,7 @@ function rbl_dkms_prepare {
     #TODO: improve it by using the ARCHS (contains list of architecture to build) instead the 64bit test flag
     if [ $ARCH64 -eq 1 ]
     then
-        DKMS_KERNEL_STRING="-k $KERNEL_VER-v8+"
+        DKMS_KERNEL_STRING="-k $KERNEL_VER-rpi8-rpi-v8 -k $KERNEL_VER-rpi8-rpi-2712"
     else
         DKMS_KERNEL_STRING="-k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+"
     fi
@@ -743,17 +744,13 @@ function rbl_dkms_prepare {
     _rbl_change_to_build_root
     rbl_check_build_dep dkms
 
+    rbl_check_kernel_headers
     # for intree modules builds the kernel source (not only the headers is required), but if no headers are present the source is also required
     if [ "$mode" = "intree" ]
     then
-        # make sure we have the rpi-source package available
-        rbl_check_build_dep rpi-source
         # this will download the kernel source if needed and set the ENV KERNEL_SOURCE_ARCHIVE to the location of the tarball
         # if already present the cached source will be used
         rbl_get_kernel_source
-
-        # normally kernel headers are used, but when not present we need to use the source tree instead
-        rbl_check_kernel_headers
 
         echo "dkms build prepared at: $BUILD_ROOT_DIR/source/$SRC_DIR"
         mkdir -p $BUILD_ROOT_DIR/source/$SRC_DIR
@@ -767,9 +764,6 @@ function rbl_dkms_prepare {
         # if patched or tar files are needed for the dkms project
         cp $BASE_DIR/*.patch $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
         cp $BASE_DIR/*.tar $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
-    else
-        # normally kernel headers are used, but when not present we need to use the source tree instead
-        rbl_check_kernel_headers
     fi
 }
 

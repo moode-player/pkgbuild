@@ -18,12 +18,7 @@ PKG="aloop_0.1-1"
 DKMS_MODULE="aloop/0.1"
 SRC_DIR="aloop-0.1"
 
-if [ $ARCH64 -eq 1 ]
-then
-  ARCHS=( v8+ )
-else
-  ARCHS=( v7l+ v7+ )
-fi
+ARCHS=( rpi8-rpi-v8 rpi8-rpi-2712 )
 
 MODULE="snd-aloop.ko"
 MODULE_PATH='sound/drivers'
@@ -53,7 +48,7 @@ rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh
 rbl_dkms_grab_modules
 
 # build the package
-fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VERSION_PKG_SMALL} -v $PKGVERSION \
 --license GPLv3 \
 --category sound \
 -S moode \
