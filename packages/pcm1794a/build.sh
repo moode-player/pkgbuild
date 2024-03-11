@@ -19,7 +19,7 @@ DKMS_MODULE="pcm1794a/0.1"
 SRC_DIR="pcm1794a-0.1"
 
 ARCHS=( rpi8-rpi-v8 rpi8-rpi-2712 )
-MODULE="snd-soc-pcm1794a.ko"
+MODULE="snd-soc-pcm1794a.ko.xz"
 MODULE_PATH='sound/soc/codecs'
 
 rbl_dkms_prepare intree

@@ -611,6 +611,8 @@ function rbl_get_kernel_source {
 function rbl_check_kernel_headers {
     local _KERNEL_VER_FULL=$(rbl_get_current_kernel_full_version)
     KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show linux-image-$_KERNEL_VER_FULL`
+    export KERNEL_VERSION_PKG_SMALL=$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}[.][0-9]{1,3})[-].*/\1/")
+
     echo "Current kernel is linux-image-${_KERNEL_VER_FULL} = ${KERNEL_PKG_VERSION}"
 
     rbl_check_build_dep_with_version linux-headers-$_KERNEL_VER_FULL $KERNEL_PKG_VERSION

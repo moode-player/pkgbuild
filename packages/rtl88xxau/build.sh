@@ -21,7 +21,7 @@ PKG_SOURCE_GIT_TAG="v5.6.4.2"
 
 # required for creating a dkms project:
 ARCHS=( rpi8-rpi-v8 rpi8-rpi-2712 )
-MODULE="88XXau.ko"
+MODULE="88XXau.ko.xz"
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
@@ -63,7 +63,7 @@ rbl_dkms_apply_template $PKGBUILD_ROOT/scripts/templates/deb_dkms/afterremove.sh
 rbl_dkms_grab_modules
 
 # build the package
-fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VERSION_PKG_SMALL} -v $PKGVERSION \
 --license GPLv3 \
 --category misc \
 -S moode \
