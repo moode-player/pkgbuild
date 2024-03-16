@@ -316,6 +316,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends upmpdcli \
 --depends upmpdcli-qobuz \
 --depends winbind \
+--depends wsdd \
 --depends xfsprogs \
 --depends xinit \
 --depends xorg \
