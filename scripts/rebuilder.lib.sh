@@ -728,7 +728,7 @@ function rbl_dkms_prepare {
     #TODO: improve it by using the ARCHS (contains list of architecture to build) instead the 64bit test flag
     if [ $ARCH64 -eq 1 ]
     then
-        DKMS_KERNEL_STRING="-k $KERNEL_VER-rpi8-rpi-v8 -k $KERNEL_VER-rpi8-rpi-2712"
+        DKMS_KERNEL_STRING="-k $KERNEL_VER-rpi-v8 -k $KERNEL_VER-rpi-2712"
     else
         DKMS_KERNEL_STRING="-k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+"
     fi

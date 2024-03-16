@@ -18,7 +18,7 @@ PKG="aloop_0.1-1"
 DKMS_MODULE="aloop/0.1"
 SRC_DIR="aloop-0.1"
 
-ARCHS=( rpi8-rpi-v8 rpi8-rpi-2712 )
+ARCHS=( rpi-v8 rpi-2712 )
 
 MODULE="snd-aloop.ko"
 MODULE_PATH='sound/drivers'

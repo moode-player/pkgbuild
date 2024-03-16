@@ -20,8 +20,8 @@ PKG_SOURCE_GIT="https://github.com/aircrack-ng/rtl8812au.git"
 PKG_SOURCE_GIT_TAG="v5.6.4.2"
 
 # required for creating a dkms project:
-ARCHS=( rpi8-rpi-v8 rpi8-rpi-2712 )
-MODULE="88XXau.ko.xz"
+ARCHS=( rpi-v8 rpi-2712 )
+MODULE="88XXau.ko"
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
