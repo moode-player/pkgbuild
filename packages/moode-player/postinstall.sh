@@ -141,8 +141,9 @@ function on_install() {
       # CamillaDSP
       chmod -R a+rw /usr/share/camilladsp
       chown -R mpd /var/lib/cdsp
-      echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
-      chown -R mpd /var/lib/cdsp/camilladsp_volume_state
+      # Not needed, camilla2 uses statefile.yml
+      #echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
+      #chown -R mpd /var/lib/cdsp/camilladsp_volume_state
 
       echo "** Create database"
       if [ -f $SQLDB ]
@@ -153,7 +154,7 @@ function on_install() {
       cat $SQLDB".sql" | grep -v "INSERT INTO cfg_radio" | sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499" | sqlite3 $SQLDB
 
-      # Set to Carrot for moOde 8 series
+      # Set to Carrot
       sqlite3 $SQLDB "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
 
       import_stations full "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_$PKG_VERSION.zip"
