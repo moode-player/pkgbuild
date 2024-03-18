@@ -193,14 +193,15 @@ function on_install() {
       cp -rf $SRC/usr/* /usr/ > /dev/null 2>&1
       cp -rf $SRC/var/lib /var/lib/ > /dev/null 2>&1
       # Logic to handle config.txt
-      if [ -d "/boot/firmware" ]; then
+      ischroot
+      if [ $? -gt 0 ]; then
           # Installing on running Bookworm Lite
           echo "** Copy config.txt to /boot/firmware"
-          cp -rf $SRC/boot/* /boot/ > /dev/null 2>&1
+          cp -f $SRC/boot/firmware/config.txt /boot/firmware > /dev/null 2>&1
       else
           # Installing during imgbuild
           echo "** Copy config.txt to /boot"
-          cp $SRC/boot/firmware/config.txt /boot/ > /dev/null 2>&1
+          cp -f $SRC/boot/firmware/config.txt /boot > /dev/null 2>&1
       fi
 
       # ------------------------------------------------------------------------------------------
