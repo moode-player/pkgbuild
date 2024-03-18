@@ -51,8 +51,11 @@ function import_stations() {
 }
 
 function on_install() {
-      # perform install
+      echo "Moode-player package postinstall started"
 
+      # ------------------------------------------------------------------------------------------
+      # Initial configuration
+      # ------------------------------------------------------------------------------------------
       echo "** Basic optimizations"
       dphys-swapfile swapoff
       dphys-swapfile uninstall
@@ -66,14 +69,9 @@ function on_install() {
       systemctl stop apt-daily-upgrade.timer > /dev/null 2>&1
       systemctl disable apt-daily-upgrade.timer > /dev/null 2>&1
       systemctl mask apt-daily-upgrade.timer > /dev/null 2>&1
-
-      echo "** Systemd enable/disable"
       systemctl daemon-reload > /dev/null 2>&1
 
-      # Not needed in Bookworm
-      # systemctl enable haveged > /dev/null 2>&1
-      # systemctl unmask hostapd > /dev/null 2>&1
-
+      echo "** Disable certain systemd services"
       # These services are started on-demand or by moOde worker daemon (worker.php)
       disable_services=(
           bluetooth \
@@ -98,10 +96,6 @@ function on_install() {
           udisks2 \
           upmpdcli)
 
-      # Not needed in Bookworm
-      # dnsmasq \
-      # hostapd \
-
       for service in "${disable_services[@]}"
       do
         systemctl stop "${service}" > /dev/null 2>&1
@@ -117,23 +111,23 @@ function on_install() {
       echo "** Set permissions for triggerhappy (to execute ALSA commands)"
       usermod -a -G audio nobody
 
-
-      echo "** Create symlinks"
+      echo "** Create MPD and NFS symlinks"
       [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
       [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
       [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
       [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
 
-
-      echo "** Create logfiles"
+      echo "** Create moode and PHP logfiles"
       touch /var/log/moode.log
       chmod 0666 /var/log/moode.log
       touch /var/log/php_errors.log
       chmod 0666 /var/log/php_errors.log
 
+      echo "** Set permissions on homedir scripts"
       chmod 0755 /home/pi/*.sh
 
-      echo "** Set permissions"
+      echo "** Set permissions on www and camilladsp dirs"
+      # Web dirs
       chmod -R 0755 /var/www
       chmod -R 0755 /var/local/www
       chmod -R 0777 /var/local/www/db
@@ -141,32 +135,29 @@ function on_install() {
       # CamillaDSP
       chmod -R a+rw /usr/share/camilladsp
       chown -R mpd /var/lib/cdsp
-      # Not needed, camilla2 uses statefile.yml
-      #echo "0 0" > /var/lib/cdsp/camilladsp_volume_state
-      #chown -R mpd /var/lib/cdsp/camilladsp_volume_state
 
-      echo "** Create database"
+      echo "** Create moode-sqlite3.db database"
       if [ -f $SQLDB ]
       then
         rm $SQLDB
       fi
-      # strip creation of radio stations from the sql, stations are create by the station backup import
+      # Strip creation of radio stations from the sql, stations are create by the station backup import
       cat $SQLDB".sql" | grep -v "INSERT INTO cfg_radio" | sqlite3 $SQLDB
       cat $SQLDB".sql" | grep "INSERT INTO cfg_radio" | grep "(499" | sqlite3 $SQLDB
 
-      # Set to Carrot
+      echo "** Set default accent color"
       sqlite3 $SQLDB "UPDATE cfg_system SET value='Carrot' WHERE param='accent_color'"
 
+      echo "** Import radio stations"
       import_stations full "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-full_$PKG_VERSION.zip"
 
-      LIBCACHE_BASE="/var/local/www/libcache"
-      echo "** Initial permissions for certain files. These also get set during moOde Worker startup"
+      echo "** Set permissions for currentsong.txt and playhistory.log"
       touch /var/log/moode_playhistory.log
       touch /var/local/www/currentsong.txt
       chmod 0777 /var/log/moode_playhistory.log
       chmod 0777 /var/local/www/currentsong.txt
 
-      echo "** Establish permissions"
+      echo "** Set permissions for /var/local/www/db and /var/local/php dirs"
       chmod -R 0777 /var/local/www/db
       chown www-data:www-data /var/local/php
 
@@ -176,7 +167,7 @@ function on_install() {
       chmod 0755 /opt/alsaequal/alsaequal.bin
       chown mpd:audio /opt/alsaequal//alsaequal.bin
 
-      echo "** Misc deletes"
+      echo "** Delete certain Linux default files"
       if [ -d "/var/www/html" ]
       then
         rm -rf /var/www/html
@@ -192,20 +183,30 @@ function on_install() {
       chmod 0440 /etc/sudoers.d/010_moode
       chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
 
-      echo "** Setup config files"
       # ------------------------------------------------------------------------------------------
-      # Overwrite files not owned by moode-player (a prob owned by other packages)
+      # Overwrite files not owned by moode-player (owned by other packages)
       # ------------------------------------------------------------------------------------------
+      echo "** Copy overwrite files to target dirs"
       SRC=/usr/share/moode-player
       cp -rf $SRC/etc/* /etc/
       cp -rf $SRC/lib/* /lib/ > /dev/null 2>&1
       cp -rf $SRC/usr/* /usr/ > /dev/null 2>&1
-      cp -rf $SRC/boot/* /boot/ > /dev/null 2>&1
       cp -rf $SRC/var/lib /var/lib/ > /dev/null 2>&1
+      # Logic to handle config.txt
+      if [ -d "/boot/firmware" ]; then
+          # Installing on running Bookworm Lite
+          echo "** Copy config.txt to /boot/firmware"
+          cp -rf $SRC/boot/* /boot/ > /dev/null 2>&1
+      else
+          # Installing during imgbuild
+          echo "** Copy config.txt to /boot"
+          cp $SRC/boot/firmware/config.txt /boot/ > /dev/null 2>&1
+      fi
 
       # ------------------------------------------------------------------------------------------
-      # Patch files with sed
+      # Patch config files with sed
       # ------------------------------------------------------------------------------------------
+      echo "** Patch config files with sed"
       # From the root moode git repo find files to patch with sed:
       #  find . -name "*.sed*" |sort
       PHP_VER="8.2"
@@ -360,57 +361,39 @@ function on_install() {
              -e "s/^#RuntimeMaxUse.*/RuntimeMaxUse=20M/" \
              /etc/systemd/journald.conf
 
-      # NGINX
+      # ------------------------------------------------------------------------------------------
+      # Install NGINX and MPD configs
+      # ------------------------------------------------------------------------------------------
+      # NGINX config
+      echo "** Install NGINX conf"
       cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
       rm -f /etc/nginx/sites-enabled/*
       sudo ln -s /etc/nginx/sites-available/moode-http.conf /etc/nginx/sites-enabled/moode-http.conf
 
-      # MPD
+      # MPD config
+      echo "** Install MPD conf"
       touch /etc/mpd.conf
       chown mpd:audio /etc/mpd.conf
       chmod 0666 /etc/mpd.conf
 
-      # in case any changes are made to systemd file reload config
+      # In case any changes are made to systemd file reload config
+      echo "** Restart systemd (daemon-reload)"
       systemctl daemon-reload
-
-      sync
 
       #--------------------------------------------------------------------------------------------------------
       # bring it alive ;-)
       #--------------------------------------------------------------------------------------------------------
-      #echo "** Starting servers"
-      # restart some services to pickup new configuration
-      # systemctl stop nginx
-      # systemctl restart php$PHP_VER-fpm
-      # systemctl start nginx
-      # systemctl restart smbd
-      # systemctl restart nmbd
-      # systemctl restart winbind
-
-      #TODO: make this a systemd service
-      # /usr/bin/udisks-glue --config=/etc/udisks-glue.conf > /dev/null 2>&1
-      # systemctl restart udisks-glue
-
-      #don't now why there is a empty database dir instead of a database file
-      if [ -d /var/lib/mpd/database ]
+      # Don't now why there is a empty database dir instead of a database file
+      if [ -d "/var/lib/mpd/database" ]
       then
+        echo "** Delete /var/lib/mpd/database dir (it should be a file)"
         rmdir -rf /var/lib/mpd/database
       fi
 
-      # On boot set default playlist and output 1
-      # NOTE: Moved to worker.php for r810 release
-#cat > /etc/runonce.d/moode_first_boot <<EOL
-#!/bin/bash
-#timeout 30s bash -c 'until mpc status; do sleep 3; done';
-#mpc status
-#if [[ $? -eq 0 ]]
-#then
-#  mpc load "Default Playlist"
-#  mpc enable only 1
-#fi
-#EOL
+      echo "** Sync changes to disk"
+      sync
 
-      echo "moode-player install finished, please reboot"
+      echo "Moode-player package postinstall finished, please reboot"
 }
 
 function on_upgrade() {
