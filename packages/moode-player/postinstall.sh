@@ -32,7 +32,8 @@ function import_stations() {
     then
       cp $MOODE_STATIONS_URL $TMP_STATIONS_BACKUP
     else
-      wget --no-verbose -O $TMP_STATIONS_BACKUP $MOODE_STATIONS_URL || true
+      #wget --no-verbose -O $TMP_STATIONS_BACKUP $MOODE_STATIONS_URL || true
+      wget -q -O $TMP_STATIONS_BACKUP $MOODE_STATIONS_URL || true
     fi
 
     if [ -f $TMP_STATIONS_BACKUP ]
@@ -57,8 +58,9 @@ function on_install() {
       # Initial configuration
       # ------------------------------------------------------------------------------------------
       echo "** Basic optimizations"
-      dphys-swapfile swapoff
-      dphys-swapfile uninstall
+      # DELETE: the /var/swap dir does not exist
+      #dphys-swapfile swapoff
+      #dphys-swapfile uninstall
       systemctl disable dphys-swapfile > /dev/null 2>&1
       systemctl disable cron.service > /dev/null 2>&1
       systemctl enable rpcbind > /dev/null 2>&1
@@ -378,11 +380,15 @@ function on_install() {
       chmod 0666 /etc/mpd.conf
 
       # In case any changes are made to systemd file reload config
-      echo "** Restart systemd (daemon-reload)"
-      systemctl daemon-reload
+      ischroot
+      if [ $? -gt 0 ]; then
+          # Installing on running Bookworm Lite
+          echo "** Restart systemd (daemon-reload)"
+          systemctl daemon-reload
+      fi
 
       #--------------------------------------------------------------------------------------------------------
-      # bring it alive ;-)
+      # Finish up
       #--------------------------------------------------------------------------------------------------------
       # Don't now why there is a empty database dir instead of a database file
       if [ -d "/var/lib/mpd/database" ]
