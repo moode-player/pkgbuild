@@ -18,7 +18,8 @@ KERNEL_VER=$(rbl_get_current_kernel_version)
 PKG="motu-avb-usb_1.0-2"
 
 PKG_SOURCE_GIT="https://github.com/Drumfix/motu-avb-usb.git"
-PKG_SOURCE_GIT_TAG="1f0e0a0ec19b25baaf2d83808047067e7cd947ae"
+# PKG_SOURCE_GIT_TAG="1f0e0a0ec19b25baaf2d83808047067e7cd947ae"
+PKG_SOURCE_GIT_TAG="main"
 
 
 # required for creating a dkms project:
@@ -27,12 +28,10 @@ PKG_SOURCE_GIT_TAG="1f0e0a0ec19b25baaf2d83808047067e7cd947ae"
 # ARCHS=( v7l+ v7+ )
 # MODULE="ax88179_178a.ko"
 # MODULE_PATH='drivers/net/usb'
-if [ $ARCH64 -eq 1 ]
-then
-  ARCHS=( v8+ )
-else
-  ARCHS=( v7l+ v7+ )
-fi
+# if [ $ARCH64 -eq 1 ]
+# then
+ARCHS=( rpi-v8 rpi-2712 )
+# fi
 MODULE="motu.ko"
 
 
@@ -49,7 +48,7 @@ DKMS_MODULE="$PKGNAME/$PKGVERSION"
 #------------------------------------------------------------
 # Custom part of the packing
 
-rbl_patch $BUILD_ROOT_DIR/motu_remove_tasklet.patch
+# rbl_patch $BUILD_ROOT_DIR/motu_remove_tasklet.patch
 
 # 1. build the modules with dkms:
 
@@ -84,7 +83,7 @@ mkdir -p $BUILD_ROOT_DIR/etc//modprobe.d
 cp $BASE_DIR/motu-avb.conf $BUILD_ROOT_DIR/etc/modprobe.d/
 
 # build the package
-fpm -s dir -t deb -n $PKGNAME-${KERNEL_VER} -v $PKGVERSION \
+fpm -s dir -t deb -n $PKGNAME-${KERNEL_VERSION_PKG_SMALL} -v $PKGVERSION \
 --license GPLv3 \
 --category misc \
 -S moode \
