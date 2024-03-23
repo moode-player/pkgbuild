@@ -11,14 +11,13 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="mpd2cdspvolume_1.0.0-1moode1"
+PKG="mpd2cdspvolume_1.0.0-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/mpd2cdspvolume.git"
 PKG_SOURCE_GIT_TAG="v1.0.0"
 
 # rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT
-git checkout features/cdsp_next20
 
 #------------------------------------------------------------
 # Custom part of the packing
