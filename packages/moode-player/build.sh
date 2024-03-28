@@ -48,7 +48,6 @@ _rbl_change_to_build_root
 # location where we build a fakeroot system with the moode file to be package into the package
 PKG_ROOT_DIR="$BUILD_ROOT_DIR/root"
 
-
 # init build root
 rm -rf $BUILD_ROOT_DIR/root
 mkdir -p $BUILD_ROOT_DIR/root
@@ -58,7 +57,6 @@ then
     echo "${YELLOW}Error: MOODE_DIR is should point to a moode source dir${NORMAL}"
     exit 1
 fi
-
 
 if [ -z "$PKG_ROOT_DIR" ]
 then
@@ -218,8 +216,8 @@ cat $BASE_DIR/postinstall.sh | sed -e "s/^PKG_VERSION=.*/PKG_VERSION=\"$PKGVERSI
 #TODO: Critical look at the deps, remove unneeded.
 #TODO: Add license and readme, improve description
 
-# Don't include packages as dependency, if those package depends on the used kernel (like drivers).
-# Install those separate.
+# Don't include packages deps (kernel drivers) in this section which depend on
+# a specific kernel. Install those packages in imgbuild stage3/02.
 fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --license GPLv3 \
 --category sound \
@@ -329,11 +327,6 @@ root/mnt/.=/mnt \
 root/usr/.=/usr \
 root/lib/.=/lib \
 root/etc/.=/etc
-
-# Not needed in Bookworm
-#--depends dnsmasq \
-#--depends haveged \
-#--depends hostapd \
 
 if [[ $? -gt 0 ]]
 then
