@@ -309,7 +309,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends telnet \
 --depends triggerhappy \
 --depends trx \
---depends udevil \
 --depends udisks-glue \
 --depends upmpdcli \
 --depends upmpdcli-qobuz \
