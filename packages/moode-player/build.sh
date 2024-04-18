@@ -237,6 +237,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends ashuffle \
 --depends avahi-utils \
 --depends bluez \
+--depends bluez-tools \
 --depends bluez-alsa-utils \
 --depends bluez-firmware \
 --depends boss2-oled-p3 \

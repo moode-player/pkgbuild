@@ -80,8 +80,9 @@ function on_install() {
     # These services are started on-demand or by moOde worker daemon (worker.php)
     disable_services=(
         bluetooth \
+        bluealsa \
         bluealsa-aplay \
-        bluez-alsa \
+        bt-agent \
         hciuart \
         minidlna \
         mpd \
@@ -227,12 +228,14 @@ function on_install() {
     #   Stay discoverable forever
     # ControllerMode = dual
     #   Both BR/EDR and LE transports enabled (when supported by the HW)
+    # JustWorksRepairing = always
     # TemporaryTimeout = 90
     #   How long to keep temporary devices around
     sed -i -e 's/[#]Name[ ]=[ ].*/Name = Moode Bluetooth/' \
         -e 's/[#]Class[ ]=[ ].*/Class = 0x20041C/' \
         -e 's/#DiscoverableTimeout[ ]/DiscoverableTimeout /' \
         -e 's/[#]ControllerMode[ ]=[ ].*/ControllerMode = dual/' \
+        -e 's/[#]JustWorksRepairing[ ]=[ ].*/JustWorksRepairing = always/' \
         -e 's/[#]TemporaryTimeout[ ]=[ ].*/TemporaryTimeout = 90/' \
         /etc/bluetooth/main.conf
 
