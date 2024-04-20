@@ -111,10 +111,12 @@ function on_install() {
     echo "** Create MPD runtime environment"
     touch /var/lib/mpd/state
 
-    echo "** Set permissions for D-Bus (for bluez-alsa)"
+    echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
+    echo "** Set permissions for bt-agent PIN code file"
+    chmod 0600 /etc/bluetooth/pin.conf
 
-    echo "** Set permissions for triggerhappy (to execute ALSA commands)"
+    echo "** Set permissions for triggerhappy to execute ALSA commands"
     usermod -a -G audio nobody
 
     echo "** Create MPD and NFS symlinks"
@@ -222,8 +224,9 @@ function on_install() {
     # Name = Moode Bluetooth
     # Class = 0x20041C
     #   2  = Service Class: Audio
-    #   4  = Major Device Class: Audio/Video
-    #   1C = Minor Device Class: Loudspeaker x14 & Headphones  x18
+    #   c  = Rendering (Printing, Speaker) Capturing (Scanner, Microphone)
+    #   04 = Major Device Class: Audio/Video
+    #   1c = Minor Device Class: Portable Audio (Loudspeaker x14 + Headphones  x18)
     # DiscoverableTimeout = 0
     #   Stay discoverable forever
     # ControllerMode = dual
@@ -232,7 +235,7 @@ function on_install() {
     # TemporaryTimeout = 90
     #   How long to keep temporary devices around
     sed -i -e 's/[#]Name[ ]=[ ].*/Name = Moode Bluetooth/' \
-        -e 's/[#]Class[ ]=[ ].*/Class = 0x20041C/' \
+        -e 's/[#]Class[ ]=[ ].*/Class = 0x2c041c/' \
         -e 's/#DiscoverableTimeout[ ]/DiscoverableTimeout /' \
         -e 's/[#]ControllerMode[ ]=[ ].*/ControllerMode = dual/' \
         -e 's/[#]JustWorksRepairing[ ]=[ ].*/JustWorksRepairing = always/' \
