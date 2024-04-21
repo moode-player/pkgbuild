@@ -349,7 +349,8 @@ function on_install() {
 
     # /etc/X11/Xwrapper.config
     # allowed_users=anybody
-    sed -i "s/^allowed_users.*/allowed_users=anybody/" /etc/X11/Xwrapper.config
+    # needs_root_rights=yes
+    sed -i "s/^allowed_users.*/allowed_users=anybody\nneeds_root_rights=yes/" /etc/X11/Xwrapper.config
 
     # /etc/systemd/journald.conf
     # SystemMaxUse=20M
