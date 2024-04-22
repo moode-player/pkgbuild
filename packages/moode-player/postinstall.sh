@@ -108,8 +108,13 @@ function on_install() {
         systemctl disable "${service}" > /dev/null 2>&1
     done
 
-    echo "** Create MPD runtime environment"
-    touch /var/lib/mpd/state
+    echo "** Set permissions for service files"
+    chmod 0644 \
+    /etc/systemd/system/bluealsa-aplay@.service \
+    /etc/systemd/system/bluealsa.service \
+    /etc/systemd/system/bt-agent.service \
+    /etc/udev/rules.d/10-a2dp-autoconnect.rules \
+    /lib/systemd/system/shellinabox.service
 
     echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
@@ -118,6 +123,10 @@ function on_install() {
 
     echo "** Set permissions for triggerhappy to execute ALSA commands"
     usermod -a -G audio nobody
+
+
+    echo "** Create MPD runtime environment"
+    touch /var/lib/mpd/state
 
     echo "** Create MPD and NFS symlinks"
     [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
