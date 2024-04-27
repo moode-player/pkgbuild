@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camilladsp_2.0.1-1moode1"
+PKG="camilladsp_2.0.1-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camilladsp.git"
 PKG_SOURCE_GIT_TAG="v2.0.1"
@@ -44,7 +44,7 @@ sed -i "s/^version[ ]=[ ]\".*\"/version=\"$PKGVERSION\"/" Cargo.toml
 #     rustup default stable-armv7-unknown-linux-gnueabihf
 # fi
 echo "starting build:"
-RUSTFLAGS='-C target-cpu=native' cargo-deb -- --no-default-features --features websocket
+RUSTFLAGS='' cargo-deb -- --no-default-features --features websocket
 
 if [ $? -gt 0 ]
 then
