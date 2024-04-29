@@ -20,6 +20,16 @@ then
 fi
 
 PKG=$1
+CMP=$2
+
+if [ $2 ]
+then
+  CMP="$2"
+else
+  CMP="main"
+fi
+
+echo "Using channel: $CMP"
 
 # Used for coloured output
 BLACK=$(tput setaf 0)
@@ -60,7 +70,7 @@ fi
 if [[ -n $DEB ]]
 then
     echo "${GREEN}Found package to upload${NORMAL}"
-    cloudsmith push deb $REPO $DEB
+    cloudsmith push deb $REPO $DEB --component $CMP
 else
     echo "${YELLOW}No deb packages found to upload. Skipping.${NORMAL}"
 fi
@@ -69,7 +79,7 @@ if [[ -n $DSC  && -n $DEBIAN && -n $SRC ]]
 then
     echo "${GREEN}Found sources${NORMAL}"
     echo "cloudsmith push deb $REPO $DSC --sources-file $SRC  --changes-file $DEBIAN"
-    cloudsmith push deb $REPO $DSC --sources-file $SRC  --changes-file $DEBIAN
+    cloudsmith push deb $REPO $DSC --sources-file $SRC  --changes-file $DEBIAN --component $CMP
 else
     echo "${YELLOW}No source found${NORMAL}"
 fi
