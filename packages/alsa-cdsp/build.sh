@@ -10,16 +10,19 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="alsa-cdsp_1.2.0-1moode1"
+PKG="alsa-cdsp_1.2.0-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsa_cdsp.git"
-PKG_SOURCE_GIT_TAG="v1.2.0"
+# PKG_SOURCE_GIT_TAG="v1.2.0"
+# PKG_SOURCE_GIT_TAG="fixes/bookworm_cargs_empty"
 
 rbl_check_build_dep libasound2-dev
 # used for converting readme.md to man page
 rbl_check_build_dep pandoc
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
+git checkout fixes/bookworm_cargs_empty
+PKG_SOURCE_GIT_TAG="fixes/bookworm_cargs_empty"
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------
