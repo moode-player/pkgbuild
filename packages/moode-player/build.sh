@@ -291,7 +291,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends php8.2-gd \
 --depends pi-bluetooth \
 --depends python3-dbus \
---depends python3-libupnpp \
+--depends python3-libupnpp16 \
 --depends python3-musicpd \
 --depends python3-pip \
 --depends python3-rpi.gpio \
@@ -313,6 +313,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends udisks-glue \
 --depends upmpdcli \
 --depends upmpdcli-qobuz \
+--depends upmpdcli-tidal \
 --depends winbind \
 --depends wsdd \
 --depends xfsprogs \
