@@ -11,10 +11,10 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="libupnpp7_0.22.4-1moode1"
+PKG="libupnpp_0.26.4-1moode1"
 
 PKG_SOURCE_GIT="https://framagit.org/medoc92/libupnpp.git"
-PKG_SOURCE_GIT_TAG="libupnpp-v0.22.4"
+PKG_SOURCE_GIT_TAG="libupnpp-v0.26.4"
 
 rbl_prepare_from_git_with_deb_repo
 

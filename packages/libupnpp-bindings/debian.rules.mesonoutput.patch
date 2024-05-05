@@ -1,0 +1,9 @@
+--- foo/debian/rules.org	2024-05-05 14:39:57.260535775 +0200
++++ foo/debian/rules	2024-05-05 14:44:40.136146553 +0200
+@@ -24,3 +24,6 @@
+ 	if test -d $(CURDIR)/debian/tmp/usr/lib/python*/site-packages ; then \
+ 	      mv -f $(CURDIR)/debian/tmp/usr/lib/python*/site-packages/* \
+ 	      $(CURDIR)/debian/tmp/usr/lib/python3/dist-packages/;fi
++	cp -r -p $(CURDIR)/debian/python3-libupnpp/usr/lib/python3/dist-packages/* $(CURDIR)/debian/tmp/usr/lib/python3/dist-packages/
++	rm -rf $(CURDIR)/debian/tmp/usr/lib/python*/*/*/__pycache__
++
