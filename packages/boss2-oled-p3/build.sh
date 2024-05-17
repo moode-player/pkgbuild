@@ -40,7 +40,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --url https://github.com/allocom/allo_boss2_oled_p3 \
 -m moodeaudio.org \
 --description 'Allo BOSS2 OLED driver that runs on Python 3.x .' \
---depends python3-rpi.lgpio \
+--depends python3-rpi-lgpio \
 --depends python3-smbus \
 --depends python3-pil \
 --deb-systemd $BUILD_ROOT_DIR/$PKGNAME-$PKGVERSION/boss2_oled_p3/boss2oled.service \
