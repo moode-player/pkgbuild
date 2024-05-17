@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="boss2-oled-p3_1.0.0-1moode1"
+PKG="boss2-oled-p3_1.0.0-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/allocom/allo_boss2_oled_p3.git"
 PKG_SOURCE_GIT_TAG="main"
@@ -39,8 +39,8 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --deb-priority optional \
 --url https://github.com/allocom/allo_boss2_oled_p3 \
 -m moodeaudio.org \
---description 'This Allo BOSS2 OLED application that runs on Python 3.x .' \
---depends python3-rpi.gpio \
+--description 'Allo BOSS2 OLED driver that runs on Python 3.x .' \
+--depends python3-rpi.lgpio \
 --depends python3-smbus \
 --depends python3-pil \
 --deb-systemd $BUILD_ROOT_DIR/$PKGNAME-$PKGVERSION/boss2_oled_p3/boss2oled.service \
@@ -58,5 +58,3 @@ fi
 rbl_move_to_dist
 
 echo "done"
-
-
