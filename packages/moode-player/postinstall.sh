@@ -114,6 +114,7 @@ function on_install() {
     /etc/systemd/system/bluealsa.service \
     /etc/systemd/system/bt-agent.service \
     /etc/udev/rules.d/10-a2dp-autoconnect.rules \
+    /lib/systemd/system/rotenc.service \
     /lib/systemd/system/shellinabox.service
 
     echo "** Set permissions for bluez-alsa D-Bus"
