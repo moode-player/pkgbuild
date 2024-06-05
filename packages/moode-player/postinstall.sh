@@ -443,6 +443,15 @@ function on_upgrade() {
         chmod 0644 /lib/systemd/system/rotenc.service
     fi
 
+    # Introduced in r9.0.2
+    dpkg --compare-versions $VERSION lt "9.0.2-1moode1"
+    if [ $? -eq 0 ]; then
+        # Add plumbing for Plexamp renderer
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='paactive', value='0' WHERE param='RESERVED_13'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='pasvc', value='0' WHERE param='RESERVED_64'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='rsmafterpa', value='No' WHERE param='RESERVED_115'"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
