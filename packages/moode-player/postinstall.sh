@@ -450,6 +450,20 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET param='paactive', value='0' WHERE param='RESERVED_13'"
         sqlite3 $SQLDB "UPDATE cfg_system SET param='pasvc', value='0' WHERE param='RESERVED_64'"
         sqlite3 $SQLDB "UPDATE cfg_system SET param='rsmafterpa', value='No' WHERE param='RESERVED_115'"
+        # Default cover images
+        rm /var/www/images/default-cover-v6*
+        rm /var/www/images/notfound.jpg
+        rm /var/www/images/pldefault.jpg
+        # Pi 7inch touch display
+        # - Remove square pixels lines (no solution with KMS driver)
+        sed -i -e '/Square pixels/d' \
+            -e '/framebuffer_width/d' \
+            -e '/framebuffer_height/d' \
+            -e '/framebuffer_aspect/d' \
+            -e '/lcd_rotate/d' \
+            /boot/firmware/config.txt
+        # - Add support for backlight and 180 deg screen rotate
+        sed -i '/dtparam=pciex1_gen=3/a # Pi Touch\ndtoverlay=rpi-backlight\n#dtoverlay=vc4-kms-dsi-7inch,invx,invy' /boot/firmware/config.txt
     fi
 
     # --------------------------------------------------------------------------
