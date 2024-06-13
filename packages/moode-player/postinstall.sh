@@ -268,8 +268,9 @@ function on_install() {
 
     # /etc/php/$PHP_VER/fpm/php.ini
     # max_execution_time = 300
-    # max_input_vars = 10000
+    # max_input_vars = 32768
     # memory_limit = -1
+    # post_max_size = 75M
     # upload_max_filesize = 75M
     # session.save_path = "0;666;/var/local/php"
     sed -i -e "s/^;session.save_path.*/session.save_path = \"0;666;\/var\/local\/php\"/" \
@@ -423,7 +424,7 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Release 9 series (Bookworm)
     # --------------------------------------------------------------------------
-    # Introduced in r9.0.1
+    # Introduced in r901
     dpkg --compare-versions $VERSION lt "9.0.1-1moode1"
     if [ $? -eq 0 ]; then
         # Fix GPIO buttons
@@ -443,7 +444,7 @@ function on_upgrade() {
         chmod 0644 /lib/systemd/system/rotenc.service
     fi
 
-    # Introduced in r9.0.2
+    # Introduced in r902
     dpkg --compare-versions $VERSION lt "9.0.2-1moode1"
     if [ $? -eq 0 ]; then
         # Add plumbing for Plexamp renderer
@@ -464,6 +465,12 @@ function on_upgrade() {
             /boot/firmware/config.txt
         # - Add support for backlight and 180 deg screen rotate
         sed -i '/dtparam=pciex1_gen=3/a # Pi Touch\ndtoverlay=rpi-backlight\n#dtoverlay=vc4-kms-dsi-7inch,invx,invy' /boot/firmware/config.txt
+    fi
+
+    # Introduced in r903
+    dpkg --compare-versions $VERSION lt "9.0.3-1moode1"
+    if [ $? -eq 0 ]; then
+        # Placeholder
     fi
 
     # --------------------------------------------------------------------------
