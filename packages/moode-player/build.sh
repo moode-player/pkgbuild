@@ -313,6 +313,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends udisks-glue \
 --depends upmpdcli \
 --depends upmpdcli-qobuz \
+--depends upmpdcli-tidal \
 --depends winbind \
 --depends wsdd \
 --depends xfsprogs \
