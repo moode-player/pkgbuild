@@ -470,7 +470,12 @@ function on_upgrade() {
     # Introduced in r903
     dpkg --compare-versions $VERSION lt "9.0.3-1moode1"
     if [ $? -eq 0 ]; then
-        # Placeholder
+        # Update Hifiberry overlay names
+        sqlite3 $SQLDB "UPDATE cfg_audiodev SET driver='hifiberry-dacplus-std' WHERE name='HiFiBerry Amp2/4'"
+        sqlite3 $SQLDB "UPDATE cfg_audiodev SET driver='hifiberry-dacplus-std' WHERE name='HiFiBerry DAC+'"
+        sqlite3 $SQLDB "UPDATE cfg_audiodev SET driver='hifiberry-dacplus-pro' WHERE name='HiFiBerry DAC+ Pro'"
+        # Remove usb_auto_updatedb
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_108', value='' WHERE param='usb_auto_updatedb'"
     fi
 
     # --------------------------------------------------------------------------
