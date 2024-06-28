@@ -64,7 +64,7 @@ function on_install() {
     # Initial configuration
     # --------------------------------------------------------------------------
     echo "** Basic optimizations"
-    systemctl disable dphys-swapfile > /dev/null 2>&1
+    #systemctl disable dphys-swapfile > /dev/null 2>&1
     systemctl disable cron.service > /dev/null 2>&1
     systemctl enable rpcbind > /dev/null 2>&1
     systemctl set-default multi-user.target > /dev/null 2>&1
