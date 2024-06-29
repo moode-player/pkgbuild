@@ -478,6 +478,18 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_108', value='' WHERE param='usb_auto_updatedb'"
     fi
 
+    # Introduced in r904
+    dpkg --compare-versions $VERSION lt "9.0.4-1moode1"
+    if [ $? -eq 0 ]; then
+        # Remove old Setup Guide
+        rm /var/www/setup.txt
+        # Enable swapfile
+        systemctl enable dphys-swapfile
+        # Install Lato fonts package (Thin style for for CoverView Digital Clock)
+        # /usr/share/fonts/truetype/lato
+        apt -y install fonts-lato 
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
