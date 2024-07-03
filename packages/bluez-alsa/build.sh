@@ -15,10 +15,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="bluez-alsa_4.2.0-2moode2"
+PKG="bluez-alsa_4.1.0-2moode2"
 
 PKG_SOURCE_GIT="https://github.com/arkq/bluez-alsa.git"
-PKG_SOURCE_GIT_TAG="v4.2.0"
+PKG_SOURCE_GIT_TAG="v4.1.0"
 
 PKG_DEBIAN="http://deb.debian.org/debian/pool/main/b/bluez-alsa/bluez-alsa_4.0.0-2.debian.tar.xz"
 
