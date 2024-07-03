@@ -1,5 +1,5 @@
---- bluez-alsa-4.2.0/debian/rules.org	2023-05-26 21:26:02.056493584 +0200
-+++ bluez-alsa-4.2.0/debian/rules	2023-05-26 21:23:55.965501303 +0200
+--- bluez-alsa-4.1.0/debian/rules.org	2023-05-26 21:26:02.056493584 +0200
++++ bluez-alsa-4.1.0/debian/rules	2023-05-26 21:23:55.965501303 +0200
 @@ -9,7 +9,11 @@
  	--enable-ofono \
  	--enable-systemd \
@@ -12,3 +12,4 @@
 +	--with-libopenaptx
  # fdk-aac (libfdk-aac-dev) is in non-free
  #	--enable-aac
+ 
