@@ -76,7 +76,7 @@ function on_install() {
     systemctl daemon-reload > /dev/null 2>&1
     sed -i "s/^CONF_SWAPSIZE.*/CONF_SWAPSIZE=200/" /etc/dphys-swapfile
 
-    echo "** Disable certain systemd services"
+    echo "** Disable systemd services managed by moOde"
     # These services are started on-demand or by moOde worker daemon (worker.php)
     disable_services=(
         bluetooth \
