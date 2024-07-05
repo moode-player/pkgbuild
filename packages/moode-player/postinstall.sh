@@ -486,9 +486,6 @@ function on_upgrade() {
         # Enable 200MB swapfile
         systemctl enable dphys-swapfile
         sed -i "s/^CONF_SWAPSIZE.*/CONF_SWAPSIZE=200/" /etc/dphys-swapfile
-        # Install Lato fonts package (Thin style for for CoverView Digital Clock)
-        # /usr/share/fonts/truetype/lato
-        apt -y install fonts-lato 
     fi
 
     # --------------------------------------------------------------------------

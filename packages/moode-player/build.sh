@@ -257,6 +257,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends fonts-ipafont-mincho \
 --depends fonts-unfonts-core \
 --depends fonts-unfonts-core \
+--depends fonts-lato \
 --depends id3v2 \
 --depends inotify-tools \
 --depends libasound2-plugin-bluez \
