@@ -9,30 +9,29 @@
 # While 3.0.2 was just a rebuild from a dsc, for 4.0.0:
 #  - the deb skeleton files from 3.0.2 are used
 #  - Source from the git repo are used
+# With 4.2.0 switched back to a build from dsc
 #
 #########################################################################
 
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="bluez-alsa_4.1.0-2moode2"
+PKG="bluez-alsa_4.2.0-2moode1"
 
-PKG_SOURCE_GIT="https://github.com/arkq/bluez-alsa.git"
-PKG_SOURCE_GIT_TAG="v4.1.0"
+PKG_DSC_URL="http://ftp.debian.org/debian/pool/main/b/bluez-alsa/bluez-alsa_4.2.0-1.dsc"
+rbl_prepare_from_dsc_url $PKG_DSC_URL
 
-PKG_DEBIAN="http://deb.debian.org/debian/pool/main/b/bluez-alsa/bluez-alsa_4.0.0-2.debian.tar.xz"
-
-
-rbl_prepare_from_git_with_deb_repo
 
 #------------------------------------------------------------
 # Custom part of the packing
 
-# grab debian dir of older version
-rbl_grab_debian_archive $PKG_DEBIAN
 
 # enable cli
 rbl_patch $BASE_DIR/build_cli.debian.rules.patch
+
+# changes deps
+rbl_patch $BASE_DIR/debian.control.patch
+
 echo "usr/share/man/man1/bluealsa-cli.1" >> debian/bluez-alsa-utils.manpages
 
 

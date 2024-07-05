@@ -1,0 +1,11 @@
+--- bluez-alsa-4.2.0/debian/control.org	2024-07-05 16:34:27.822504172 +0200
++++ bluez-alsa-4.2.0/debian/control	2024-07-05 16:34:36.876368642 +0200
+@@ -19,7 +19,7 @@
+ 	libspandsp-dev,
+ 	python3-docutils,
+ 	pkgconf,
+-	systemd-dev
++	libsystemd-dev
+ Rules-Requires-Root: no
+ Standards-Version: 4.7.0
+ Homepage: https://github.com/Arkq/bluez-alsa
