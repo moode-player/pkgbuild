@@ -64,7 +64,6 @@ function on_install() {
     # Initial configuration
     # --------------------------------------------------------------------------
     echo "** Basic optimizations"
-    #systemctl disable dphys-swapfile > /dev/null 2>&1
     systemctl disable cron.service > /dev/null 2>&1
     systemctl enable rpcbind > /dev/null 2>&1
     systemctl set-default multi-user.target > /dev/null 2>&1
@@ -75,6 +74,7 @@ function on_install() {
     systemctl disable apt-daily-upgrade.timer > /dev/null 2>&1
     systemctl mask apt-daily-upgrade.timer > /dev/null 2>&1
     systemctl daemon-reload > /dev/null 2>&1
+    sed -i "s/^CONF_SWAPSIZE.*/CONF_SWAPSIZE=200/" /etc/dphys-swapfile
 
     echo "** Disable certain systemd services"
     # These services are started on-demand or by moOde worker daemon (worker.php)
@@ -483,8 +483,9 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         # Remove old Setup Guide
         rm /var/www/setup.txt
-        # Enable swapfile
+        # Enable 200MB swapfile
         systemctl enable dphys-swapfile
+        sed -i "s/^CONF_SWAPSIZE.*/CONF_SWAPSIZE=200/" /etc/dphys-swapfile
         # Install Lato fonts package (Thin style for for CoverView Digital Clock)
         # /usr/share/fonts/truetype/lato
         apt -y install fonts-lato 
