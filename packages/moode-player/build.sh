@@ -277,6 +277,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends libtool-bin \
 --depends libzen0v5 \
 --depends lsb-release \
+--depends lsof \
 --depends mediainfo \
 --depends minidlna \
 --depends mpc \
