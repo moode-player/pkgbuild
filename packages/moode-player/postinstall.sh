@@ -115,7 +115,8 @@ function on_install() {
     /etc/systemd/system/bt-agent.service \
     /etc/udev/rules.d/10-a2dp-autoconnect.rules \
     /lib/systemd/system/rotenc.service \
-    /lib/systemd/system/shellinabox.service
+    /lib/systemd/system/shellinabox.service \
+    /lib/systemd/system/localui.service
 
     echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
@@ -486,6 +487,14 @@ function on_upgrade() {
         # Enable 200MB swapfile
         systemctl enable dphys-swapfile
         sed -i "s/^CONF_SWAPSIZE.*/CONF_SWAPSIZE=200/" /etc/dphys-swapfile
+    fi
+
+    # Introduced in r905
+    dpkg --compare-versions $VERSION lt "9.0.5-1moode1"
+    if [ $? -eq 0 ]; then
+        # Fix permissions on localui.service
+        chmod 0644 /lib/systemd/system/localui.service
+
     fi
 
     # --------------------------------------------------------------------------
