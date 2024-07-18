@@ -495,8 +495,8 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         # Fix permissions on localui.service
         chmod 0644 /lib/systemd/system/localui.service
-        # Install updated smb.conf containing [NVMe] section
-        cp -f $SRC/etc/samba/smb.conf /etc/samba/
+        # Add [NVMe] block to smb.conf
+        sed -i "/Playlists/i[NVMe]\ncomment = NVMe Storage\npath = /mnt/NVME\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
         # Update rpi-backlight
         LOCALUI=$(sqlite3 $SQLDB "SELECT value from cfg_system WHERE param='localui'")
         if [ "$LOCALUI" = "0" ]; then
