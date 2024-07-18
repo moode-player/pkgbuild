@@ -41,7 +41,7 @@ function import_stations() {
 
     if [ -f $TMP_STATIONS_BACKUP ]
     then
-        if [ "$mode" == "full" ]
+        if [ "$mode" = "full" ]
         then
             /var/www/util/station_manager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP > /dev/null
         else
@@ -132,6 +132,7 @@ function on_install() {
 
     echo "** Create MPD and NFS symlinks"
     [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
+    [ ! -e /var/lib/mpd/music/NVME ] &&  ln -s /mnt/NVME /var/lib/mpd/music/NVME
     [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
     [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
     [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
@@ -494,7 +495,13 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         # Fix permissions on localui.service
         chmod 0644 /lib/systemd/system/localui.service
-
+        # Install updated smb.conf containing [NVMe] section
+        cp -f $SRC/etc/samba/smb.conf /etc/samba/
+        # Update rpi-backlight
+        LOCALUI=$(sqlite3 $SQLDB "SELECT value from cfg_system WHERE param='localui'")
+        if [ "$LOCALUI" = "0" ]; then
+            sed -i /rpi-backlight/c\#dtoverlay=rpi-backlight /boot/firmware/config.txt
+        fi
     fi
 
     # --------------------------------------------------------------------------
