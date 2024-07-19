@@ -504,7 +504,7 @@ function on_upgrade() {
         sed -i "/Playlists/i[NVMe]\ncomment = NVMe Storage\npath = /mnt/NVME\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
         # - Remove old NFS symlink
         systemctl stop nfs-kernel-server
-        rm /srv/nfs
+        rm -f /srv/nfs
         # - Create new NFS symlinks
         [ ! -e /srv/nfs ] && mkdir /srv/nfs
         [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
