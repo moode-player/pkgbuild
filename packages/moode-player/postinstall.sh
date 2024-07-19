@@ -135,7 +135,9 @@ function on_install() {
     [ ! -e /var/lib/mpd/music/NVME ] &&  ln -s /mnt/NVME /var/lib/mpd/music/NVME
     [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
     [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
-    [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
+    [ ! -e /srv/nfs ] && mkdir /srv/nfs
+    [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
+    [ ! -e /srv/nfs/nvme ] && ln -s /mnt/NVME /srv/nfs/nvme
 
     echo "** Create moode and PHP logfiles"
     touch /var/log/moode.log
@@ -495,8 +497,18 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         # Fix permissions on localui.service
         chmod 0644 /lib/systemd/system/localui.service
-        # Add [NVMe] block to smb.conf
+        # NVMe drive support
+        # - Create mount dir
+        [ ! -e /mnt/NVME ] && mkdir /mnt/NVME
+        # - Add [NVMe] block to smb.conf
         sed -i "/Playlists/i[NVMe]\ncomment = NVMe Storage\npath = /mnt/NVME\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
+        # - Remove old NFS symlink
+        systemctl stop nfs-kernel-server
+        rm /srv/nfs
+        # - Create new NFS symlinks
+        [ ! -e /srv/nfs ] && mkdir /srv/nfs
+        [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
+        [ ! -e /srv/nfs/nvme ] && ln -s /mnt/NVME /srv/nfs/nvme
         # Update rpi-backlight
         LOCALUI=$(sqlite3 $SQLDB "SELECT value from cfg_system WHERE param='localui'")
         if [ "$LOCALUI" = "0" ]; then
