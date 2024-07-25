@@ -113,10 +113,20 @@ function on_install() {
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bluealsa.service \
     /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/bluealsa.service \
+    /etc/systemd/system/plexamp.service \
     /etc/udev/rules.d/10-a2dp-autoconnect.rules \
     /lib/systemd/system/rotenc.service \
     /lib/systemd/system/shellinabox.service \
+    /lib/systemd/system/squeezelite.service \
     /lib/systemd/system/localui.service
+
+    echo "Set permissions for etc files"
+    chmod 0644 \
+    /etc/bluealsaaplay.conf \
+    /etc/machine-info \
+    /etc/nftables.conf \
+    /etc/squeezelite.conf
 
     echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
@@ -125,7 +135,6 @@ function on_install() {
 
     echo "** Set permissions for triggerhappy to execute ALSA commands"
     usermod -a -G audio nobody
-
 
     echo "** Create MPD runtime environment"
     touch /var/lib/mpd/state
@@ -514,6 +523,29 @@ function on_upgrade() {
         if [ "$LOCALUI" = "0" ]; then
             sed -i /rpi-backlight/c\#dtoverlay=rpi-backlight /boot/firmware/config.txt
         fi
+    fi
+
+    # Introduced in r906
+    dpkg --compare-versions $VERSION lt "9.0.6-1moode1"
+    if [ $? -eq 0 ]; then
+        # Set permissions for service files
+        chmod 0644 \
+        /etc/systemd/system/bluealsa-aplay@.service \
+        /etc/systemd/system/bluealsa.service \
+        /etc/systemd/system/bt-agent.service \
+        /etc/systemd/system/bluealsa.service \
+        /etc/systemd/system/plexamp.service \
+        /etc/udev/rules.d/10-a2dp-autoconnect.rules \
+        /lib/systemd/system/rotenc.service \
+        /lib/systemd/system/shellinabox.service \
+        /lib/systemd/system/squeezelite.service \
+        /lib/systemd/system/localui.service
+        # Set permissions for etc files
+        chmod 0644 \
+        /etc/bluealsaaplay.conf \
+        /etc/machine-info \
+        /etc/nftables.conf \
+        /etc/squeezelite.conf
     fi
 
     # --------------------------------------------------------------------------
