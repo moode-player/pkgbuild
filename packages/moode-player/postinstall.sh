@@ -546,6 +546,11 @@ function on_upgrade() {
         /etc/machine-info \
         /etc/nftables.conf \
         /etc/squeezelite.conf
+        # Remove ttf font file, its replaced by a woff file
+        rm -f /var/www/fonts/Lato-Thin.ttf
+        # Replace fbset with kmsprint for auto screensize
+        HOME_DIR=$(moodeutl -d -gv home_dir)
+        sed -i -e "s/SCREENSIZE=.*/SCREENSIZE=$\(kmsprint | awk '\$1 == \"FB\" {print \$3}' | awk -F\"x\" '{print \$1\",\"\$2}'\)/" $HOME_DIR/.xinitrc
     fi
 
     # --------------------------------------------------------------------------
