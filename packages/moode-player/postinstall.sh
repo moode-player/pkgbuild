@@ -553,6 +553,15 @@ function on_upgrade() {
         sed -i -e "s/SCREENSIZE=.*/SCREENSIZE=$\(kmsprint | awk '\$1 == \"FB\" {print \$3}' | awk -F\"x\" '{print \$1\",\"\$2}'\)/" $HOME_DIR/.xinitrc
     fi
 
+    # Introduced in r907
+    dpkg --compare-versions $VERSION lt "9.0.7-1moode1"
+    if [ $? -eq 0 ]; then
+        # Replace NPO Radio 4 with NPO Klassiek
+        # - Handled by package
+        # Convert ; to , delimiter in param 'camilladsp_quickconv'
+        sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
