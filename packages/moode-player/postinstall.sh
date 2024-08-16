@@ -562,6 +562,13 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
     fi
 
+    # Introduced in r908
+    dpkg --compare-versions $VERSION lt "9.0.8-1moode1"
+    if [ $? -eq 0 ]; then
+        # Add debuglog param to cfg_system
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='debuglog', value='0' WHERE param='RESERVED_108'"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
