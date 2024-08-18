@@ -569,7 +569,7 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET param='debuglog', value='0' WHERE param='RESERVED_108'"
         # Add Pi2Design devices
         sqlite3 $SQLDB "DELETE FROM cfg_audiodev";
-        cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB'
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
     fi
 
     # --------------------------------------------------------------------------
