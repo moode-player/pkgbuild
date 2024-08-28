@@ -572,6 +572,14 @@ function on_upgrade() {
         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
     fi
 
+    # Introduced in r909
+    dpkg --compare-versions $VERSION lt "9.0.9-1moode1"
+    if [ $? -eq 0 ]; then
+        # Add IanCanada and Hifiberry DAC8x devices
+        sqlite3 $SQLDB "DELETE FROM cfg_audiodev";
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
