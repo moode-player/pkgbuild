@@ -10,13 +10,18 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG_DSC_URL="http://deb.debian.org/debian/pool/main/m/mpd/mpd_0.23.14-1.dsc"
+PKG="mpd_0.23.15-1moode1"
+PKG_SOURCE_GIT="https://github.com/MusicPlayerDaemon/MPD.git"
+PKG_SOURCE_GIT_TAG="v0.23.15"
 DEBSUFFIXVERSION=1
-
-rbl_prepare_from_dsc_url $PKG_DSC_URL
+PKG_DEBIAN="http://deb.debian.org/debian/pool/main/m/mpd/mpd_0.23.15-1.debian.tar.xz"
+rbl_prepare_from_git_with_deb_repo
 
 #------------------------------------------------------------
 # Custom part of the packing
+
+# grab debian dir of same or older version
+rbl_grab_debian_archive $PKG_DEBIAN
 
 rbl_patch $BASE_DIR/mpd_0.23.xx_selective_resample_mode.patch
 EDITOR=/bin/true dpkg-source --commit . selective_resample_mode.patch
