@@ -578,6 +578,9 @@ function on_upgrade() {
         # Add IanCanada and Hifiberry DAC8x devices
         sqlite3 $SQLDB "DELETE FROM cfg_audiodev";
         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
+        # In param 'camilladsp_quickconv' convert ; to , delimiter and remove leading or trailing single quotes
+        sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, '''', '') WHERE param='camilladsp_quickconv'"
     fi
 
     # --------------------------------------------------------------------------
