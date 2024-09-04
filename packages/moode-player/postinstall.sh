@@ -581,6 +581,8 @@ function on_upgrade() {
         # In param 'camilladsp_quickconv' convert ; to , delimiter and remove leading or trailing single quotes
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, '''', '') WHERE param='camilladsp_quickconv'"
+        # Add ap_fallback to cfg_spotify
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "ap_fallback"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
     fi
 
     # --------------------------------------------------------------------------
