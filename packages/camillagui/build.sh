@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camillagui_2.0.0-1moode1"
+PKG="camillagui_2.0.0-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camillagui.git"
 PKG_SOURCE_GIT_TAG="v2.0.0"

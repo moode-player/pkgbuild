@@ -21,6 +21,7 @@
     --error-field-background-color: var(--error-text-color);
     --success-text-color: #46c846;
     --neutral-text-color: #bbb;
+    --disabled-text-color: #777;
     --border-radius: 5px;
 
     /* Buttons */
@@ -40,6 +41,9 @@
     --highlighted-button-background-color: #242;
     --highlighted-button-border: 2px solid #4b4;
 
+    /* Links */
+    --link-color: #77f;
+
     /* Boxes */
     --box-border-width: 2px;
     --box-border-color: rgb(70, 70, 70);
@@ -51,15 +55,19 @@
 
     /* Filter plot */
     --axes-color: #555;
-    --gain-color: #4646f0;
-    --phase-color: var(--error-text-color);
-    --impulse-color: var(--success-text-color);
+    --gain-color: #1E90FF;
+    --phase-color: #FF4500;
+    --impulse-color: #32CD32;
+    --groupdelay-color: #ffa010;
 
     /* Pipeline plot */
     --arrow-color: var(--axes-color);
+    --arrow-width: 3px;
     --frame-background-color: #333;
     --block-background-color: rgb(200, 200, 200);
+    --disabled-block-background-color: rgb(120, 120, 120);
     --block-text-color: rgb(16, 10, 90);
+    --disabled-block-text-color: rgb(75, 75, 75);
 }
 
 /*
@@ -94,6 +102,9 @@
     --highlighted-button-background-color: #cfc;
     --highlighted-button-border: var(--button-border);
 
+    /* Links */
+    --link-color: #44f;
+
     /* Boxes */
     --box-border-width: 1px;
     --box-border-color: #9090B0;
@@ -111,6 +122,7 @@
 
     /* Pipeline plot */
     --arrow-color: var(--text-color);
+    --arrow-width: 3px;
     --frame-background-color: rgb(180, 180, 180);
     --block-background-color: rgb(233, 233, 233);
     --block-text-color: rgb(16, 10, 90);
@@ -129,6 +141,7 @@
     --error-field-background-color: var(--error-text-color);
     --success-text-color: #27ae60;
     --neutral-text-color: #bbb;
+    --disabled-text-color: #777;
     --border-radius: 5px;
 
     /* Buttons */
@@ -148,6 +161,9 @@
     --highlighted-button-background-color: var(--button-background-color);
     --highlighted-button-border: 1px solid var(--accent-color);
 
+     /* Links */
+     --link-color: #77f;
+
     /* Boxes */
     --box-border-width: 1px;
     --box-border-color: #999;
@@ -157,15 +173,19 @@
     --input-border: 1px solid rgba(128,128,128,.5);
     --focused-input-border: 1px solid var(--accent-color);
 
-    /* Dialogs */
+     /* Filter plot */
     --axes-color: #555;
     --gain-color: #3980b9;
-    --phase-color: #27ae60;
-    --impulse-color: #c0392b;
+    --phase-color: #FF4500;
+    --impulse-color: #32CD32;
+    --groupdelay-color: #ffa010;
 
     /* Pipeline plot */
     --arrow-color: var(--axes-color);
+    --arrow-width: 3px;
     --frame-background-color: #333;
     --block-background-color: rgb(200, 200, 200);
+    --disabled-block-background-color: rgb(120, 120, 120);
     --block-text-color: rgb(16, 10, 90);
+    --disabled-block-text-color: rgb(75, 75, 75);
 }
