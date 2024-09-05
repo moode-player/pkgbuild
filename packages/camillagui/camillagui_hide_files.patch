@@ -33,20 +33,21 @@ index 45f51e0..0a43b29 100644
            <Tab>Shortcuts</Tab>
          </TabList>
          <TabPanel/>
-@@ -296,14 +296,15 @@ class CamillaConfig extends React.Component<
+@@ -328,14 +328,15 @@ class CamillaConfig extends React.Component<
            />
          </TabPanel>
          <TabPanel>
 +          {this.state.guiConfig.hide_file_manager===false &&
            <Files
-               currentConfigFile={this.state.currentConfigFile}
+               currentConfigFile={currentConfigFile}
                config={config}
                setCurrentConfig={this.setCurrentConfig}
                setCurrentConfigFileName={this.setCurrentConfigFileName}
+               updateConfig={this.updateConfig}
                saveNotify={this.saveNotify}
                guiConfig={this.state.guiConfig}
 -          />
 +          />}
          </TabPanel>
-       </Tabs>
-     </div>
+         <TabPanel>
+           <Shortcuts
