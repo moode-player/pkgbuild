@@ -100,6 +100,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends python3-numpy \
 --pre-install $BASE_DIR/deb_preinstall.sh \
 --before-remove $BASE_DIR/deb_beforeremove.sh \
+--after-install $BASE_DIR/deb_postinstall.sh \
 --deb-no-default-config-files \
 package/opt/camillagui/.=/opt/camillagui \
 package/etc/=/etc/.

@@ -1,0 +1,1 @@
+cat /opt/camillagui/config/camillagui.yml  |grep bind_address|| echo "bind_address: \"0.0.0.0\"" >> /opt/camillagui/config/camillagui.yml
