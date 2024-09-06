@@ -573,7 +573,7 @@ function on_upgrade() {
     fi
 
     # Introduced in r909
-    dpkg --compare-versions $VERSION lt "9.0.9-1moode1"
+    dpkg --compare-versions $VERSION lt "9.1.0-1moode1"
     if [ $? -eq 0 ]; then
         # Add IanCanada and Hifiberry DAC8x devices
         sqlite3 $SQLDB "DELETE FROM cfg_audiodev";
