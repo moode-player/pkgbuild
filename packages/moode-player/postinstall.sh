@@ -583,6 +583,8 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, '''', '') WHERE param='camilladsp_quickconv'"
         # Add ap_fallback to cfg_spotify
         cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "ap_fallback"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        # Update min initial-volume in cfg_spotify
+        sqlite3 $SQLDB "UPDATE cfg_spotify SET value='5' WHERE param='initial_volume' AND value='0'"
     fi
 
     # --------------------------------------------------------------------------
