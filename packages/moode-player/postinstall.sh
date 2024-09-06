@@ -41,7 +41,7 @@ function import_stations() {
 
     if [ -f $TMP_STATIONS_BACKUP ]
     then
-        if [ "$mode" == "full" ]
+        if [ "$mode" = "full" ]
         then
             /var/www/util/station_manager.py --scope moode --how clear --import $TMP_STATIONS_BACKUP > /dev/null
         else
@@ -113,9 +113,20 @@ function on_install() {
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bluealsa.service \
     /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/bluealsa.service \
+    /etc/systemd/system/plexamp.service \
     /etc/udev/rules.d/10-a2dp-autoconnect.rules \
     /lib/systemd/system/rotenc.service \
-    /lib/systemd/system/shellinabox.service
+    /lib/systemd/system/shellinabox.service \
+    /lib/systemd/system/squeezelite.service \
+    /lib/systemd/system/localui.service
+
+    echo "Set permissions for etc files"
+    chmod 0644 \
+    /etc/bluealsaaplay.conf \
+    /etc/machine-info \
+    /etc/nftables.conf \
+    /etc/squeezelite.conf
 
     echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
@@ -125,15 +136,17 @@ function on_install() {
     echo "** Set permissions for triggerhappy to execute ALSA commands"
     usermod -a -G audio nobody
 
-
     echo "** Create MPD runtime environment"
     touch /var/lib/mpd/state
 
     echo "** Create MPD and NFS symlinks"
     [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
+    [ ! -e /var/lib/mpd/music/NVME ] &&  ln -s /mnt/NVME /var/lib/mpd/music/NVME
     [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
     [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
-    [ ! -e /srv/nfs ] && ln -s /media /srv/nfs
+    [ ! -e /srv/nfs ] && mkdir /srv/nfs
+    [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
+    [ ! -e /srv/nfs/nvme ] && ln -s /mnt/NVME /srv/nfs/nvme
 
     echo "** Create moode and PHP logfiles"
     touch /var/log/moode.log
@@ -486,6 +499,92 @@ function on_upgrade() {
         # Enable 200MB swapfile
         systemctl enable dphys-swapfile
         sed -i "s/^CONF_SWAPSIZE.*/CONF_SWAPSIZE=200/" /etc/dphys-swapfile
+    fi
+
+    # Introduced in r905
+    dpkg --compare-versions $VERSION lt "9.0.5-1moode1"
+    if [ $? -eq 0 ]; then
+        # Fix permissions on localui.service
+        chmod 0644 /lib/systemd/system/localui.service
+        # NVMe drive support
+        # - Create mount dir
+        [ ! -e /mnt/NVME ] && mkdir /mnt/NVME
+        # - Add [NVMe] block to smb.conf
+        sed -i "/Playlists/i[NVMe]\ncomment = NVMe Storage\npath = /mnt/NVME\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
+        # - Remove old NFS symlink
+        systemctl stop nfs-kernel-server
+        rm -f /srv/nfs
+        # - Create new NFS symlinks
+        [ ! -e /srv/nfs ] && mkdir /srv/nfs
+        [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
+        [ ! -e /srv/nfs/nvme ] && ln -s /mnt/NVME /srv/nfs/nvme
+        # Update rpi-backlight
+        LOCALUI=$(sqlite3 $SQLDB "SELECT value from cfg_system WHERE param='localui'")
+        if [ "$LOCALUI" = "0" ]; then
+            sed -i /rpi-backlight/c\#dtoverlay=rpi-backlight /boot/firmware/config.txt
+        fi
+    fi
+
+    # Introduced in r906
+    dpkg --compare-versions $VERSION lt "9.0.6-1moode1"
+    if [ $? -eq 0 ]; then
+        # Set permissions for service files
+        chmod 0644 \
+        /etc/systemd/system/bluealsa-aplay@.service \
+        /etc/systemd/system/bluealsa.service \
+        /etc/systemd/system/bt-agent.service \
+        /etc/systemd/system/bluealsa.service \
+        /etc/systemd/system/plexamp.service \
+        /etc/udev/rules.d/10-a2dp-autoconnect.rules \
+        /lib/systemd/system/rotenc.service \
+        /lib/systemd/system/shellinabox.service \
+        /lib/systemd/system/squeezelite.service \
+        /lib/systemd/system/localui.service
+        # Set permissions for etc files
+        chmod 0644 \
+        /etc/bluealsaaplay.conf \
+        /etc/machine-info \
+        /etc/nftables.conf \
+        /etc/squeezelite.conf
+        # Remove ttf font file, its replaced by a woff file
+        rm -f /var/www/fonts/Lato-Thin.ttf
+        # Replace fbset with kmsprint for auto screensize
+        HOME_DIR=$(moodeutl -d -gv home_dir)
+        sed -i -e "s/SCREENSIZE=.*/SCREENSIZE=$\(kmsprint | awk '\$1 == \"FB\" {print \$3}' | awk -F\"x\" '{print \$1\",\"\$2}'\)/" $HOME_DIR/.xinitrc
+    fi
+
+    # Introduced in r907
+    dpkg --compare-versions $VERSION lt "9.0.7-1moode1"
+    if [ $? -eq 0 ]; then
+        # Replace NPO Radio 4 with NPO Klassiek
+        # - Handled by package
+        # Convert ; to , delimiter in param 'camilladsp_quickconv'
+        sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
+    fi
+
+    # Introduced in r908
+    dpkg --compare-versions $VERSION lt "9.0.8-1moode1"
+    if [ $? -eq 0 ]; then
+        # Add debuglog param to cfg_system
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='debuglog', value='0' WHERE param='RESERVED_108'"
+        # Add Pi2Design devices
+        sqlite3 $SQLDB "DELETE FROM cfg_audiodev";
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
+    fi
+
+    # Introduced in r909
+    dpkg --compare-versions $VERSION lt "9.0.9-1moode1"
+    if [ $? -eq 0 ]; then
+        # Add IanCanada and Hifiberry DAC8x devices
+        sqlite3 $SQLDB "DELETE FROM cfg_audiodev";
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
+        # In param 'camilladsp_quickconv' convert ; to , delimiter and remove leading or trailing single quotes
+        sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, '''', '') WHERE param='camilladsp_quickconv'"
+        # Add ap_fallback to cfg_spotify
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "ap_fallback"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        # Update min initial-volume in cfg_spotify
+        sqlite3 $SQLDB "UPDATE cfg_spotify SET value='5' WHERE param='initial_volume' AND value='0'"
     fi
 
     # --------------------------------------------------------------------------

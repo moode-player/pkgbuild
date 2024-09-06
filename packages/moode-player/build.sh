@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_9.0.4-1moode1"
+PKG="moode-player_9.0.8-1moode1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -158,7 +158,7 @@ rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/lib/ $NOT_OWNED_TEMP/lib/
 
 # /mnt (mount points)
-mkdir -p $PKG_ROOT_DIR/mnt/{NAS,SDCARD}
+mkdir -p $PKG_ROOT_DIR/mnt/{NAS,NVME,SDCARD}
 cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
 
 # /usr
@@ -277,6 +277,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends libtool-bin \
 --depends libzen0v5 \
 --depends lsb-release \
+--depends lsof \
 --depends mediainfo \
 --depends minidlna \
 --depends mpc \
