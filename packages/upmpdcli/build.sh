@@ -11,10 +11,10 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="upmpdcli_1.8.12-1moode1"
+PKG="upmpdcli_1.8.16-1moode1"
 
 PKG_SOURCE_GIT="https://framagit.org/medoc92/upmpdcli.git"
-PKG_SOURCE_GIT_TAG="upmpdcli-v1.8.12"
+PKG_SOURCE_GIT_TAG="upmpdcli-v1.8.16"
 
 rbl_prepare_from_git_with_deb_repo
 
