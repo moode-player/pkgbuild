@@ -572,7 +572,7 @@ function on_upgrade() {
         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
     fi
 
-    # Introduced in r909
+    # Introduced in r910
     dpkg --compare-versions $VERSION lt "9.1.0-1moode1"
     if [ $? -eq 0 ]; then
         # Add IanCanada and Hifiberry DAC8x devices
@@ -581,7 +581,7 @@ function on_upgrade() {
         # In param 'camilladsp_quickconv' convert ; to , delimiter and remove leading or trailing single quotes
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, '''', '') WHERE param='camilladsp_quickconv'"
-        # Add ap_fallback to cfg_spotify
+        # Add ap_fallback param to cfg_spotify
         cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "ap_fallback"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
         # Update min initial-volume in cfg_spotify
         sqlite3 $SQLDB "UPDATE cfg_spotify SET value='5' WHERE param='initial_volume' AND value='0'"
