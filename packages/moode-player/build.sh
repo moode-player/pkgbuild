@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_9.1.0-1moode1"
+PKG="moode-player_9.1.2-1moode1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -276,6 +276,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends libsgutils2-1.46-2 \
 --depends libtool-bin \
 --depends libzen0v5 \
+--depends log2ram \
 --depends lsb-release \
 --depends lsof \
 --depends mediainfo \

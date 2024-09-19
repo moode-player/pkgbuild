@@ -64,7 +64,6 @@ function on_install() {
     # Initial configuration
     # --------------------------------------------------------------------------
     echo "** Basic optimizations"
-    systemctl disable cron.service > /dev/null 2>&1
     systemctl enable rpcbind > /dev/null 2>&1
     systemctl set-default multi-user.target > /dev/null 2>&1
     systemctl stop apt-daily.timer > /dev/null 2>&1
@@ -383,6 +382,13 @@ function on_install() {
         -e "s/^#RuntimeMaxUse.*/RuntimeMaxUse=20M/" \
         /etc/systemd/journald.conf
 
+    # /etc/log2ram.conf
+    # SIZE=32M
+    # NOTIFICATION=false
+    sed -i -e "s/^SIZE.*/SIZE=32M/" \
+        -e "s/^#NOTIFICATION=.*/NOTIFICATION=false/" \
+        /etc/log2ram.conf
+
     # --------------------------------------------------------------------------
     # Install NGINX and MPD configs
     # --------------------------------------------------------------------------
@@ -557,7 +563,7 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "9.0.7-1moode1"
     if [ $? -eq 0 ]; then
         # Replace NPO Radio 4 with NPO Klassiek
-        # - Handled by package
+        # - Handled by moode-player package
         # Convert ; to , delimiter in param 'camilladsp_quickconv'
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
     fi
@@ -587,6 +593,15 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_spotify SET value='5' WHERE param='initial_volume' AND value='0'"
         # Replace radio station 200px thumbs with native resolution main images
         cp "/var/local/www/imagesw/radio-logos/*.jpg" "/var/local/www/imagesw/radio-logos/thumbs/"
+    fi
+
+    # Introduced in r912
+    dpkg --compare-versions $VERSION lt "9.1.2-1moode1"
+    if [ $? -eq 0 ]; then
+        # Remove FluxFM Hard Rock station (discontinued)
+        # - Handled by moode-player package
+        # Enable cron for log2ram
+        systemctl enable cron
     fi
 
     # --------------------------------------------------------------------------
