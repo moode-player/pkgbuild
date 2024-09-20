@@ -388,6 +388,10 @@ function on_install() {
     sed -i -e "s/^SIZE.*/SIZE=32M/" \
         -e "s/^#NOTIFICATION=.*/NOTIFICATION=false/" \
         /etc/log2ram.conf
+    # /usr/local/bin/log2ram
+    # Add A (preserve ACL's) to rsync options
+    # Note: Remove this when new version includes the patch
+    sed -i "s/rsync -aXv/rsync -AaXv/" /usr/local/bin/log2ram
 
     # --------------------------------------------------------------------------
     # Install NGINX and MPD configs
@@ -600,8 +604,12 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         # Remove FluxFM Hard Rock station (discontinued)
         # - Handled by moode-player package
-        # Enable cron for log2ram
+        # Log2ram
+        # - Enable cron
         systemctl enable cron
+        # - Add A (preserve ACL's) to rsync options
+        # - Note: Remove this when new version includes the patch
+        sed -i "s/rsync -aXv/rsync -AaXv/" /usr/local/bin/log2ram
     fi
 
     # --------------------------------------------------------------------------
