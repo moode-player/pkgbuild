@@ -608,8 +608,10 @@ function on_upgrade() {
         # - Enable cron
         systemctl enable cron
         # - Add A (preserve ACL's) to rsync options
-        # - Note: Remove this when new version includes the patch
+        # - Note: Remove this prior to release if new version log2ram includes the patch
         sed -i "s/rsync -aXv/rsync -AaXv/" /usr/local/bin/log2ram
+        # Remove Prefs adaptive coloring (not used, bugs)
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_91', value='' WHERE param='adaptive'"
     fi
 
     # --------------------------------------------------------------------------
