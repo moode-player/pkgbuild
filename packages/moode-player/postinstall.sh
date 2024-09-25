@@ -612,6 +612,13 @@ function on_upgrade() {
         sed -i "s/rsync -aXv/rsync -AaXv/" /usr/local/bin/log2ram
         # Remove Prefs adaptive coloring (not used, bugs)
         sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_91', value='' WHERE param='adaptive'"
+        # Migrate rx_hostnames and rx_addresses session-only vars to SQL/Session
+        RX_HOSTS=$(moodeutl -d -gv rx_hostnames)
+        RX_ADDRS=$(moodeutl -d -gv rx_addresses)
+        if [ -z $RX_HOSTS ]; then RX_HOSTS="-1"; fi
+        if [ -z $RX_ADDRS ]; then RX_ADDRS="-1"; fi
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='rx_hostnames', value='$RX_HOSTS' WHERE param='usb_volknob'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='rx_addresses', value='$RX_ADDRS' WHERE param='led_state'"
     fi
 
     # --------------------------------------------------------------------------
