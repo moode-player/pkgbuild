@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camillagui_2.1.0-1moode1"
+PKG="camillagui_2.1.0-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camillagui.git"
 PKG_SOURCE_GIT_TAG="v2.1.0"
@@ -38,6 +38,7 @@ echo "build root : $BUILD_ROOT_DIR"
 
 # add option to hide files tab on expert mode:
 rbl_patch $BASE_DIR/camillagui_hide_files.patch
+rbl_patch $BASE_DIR/camillagui_remove_quick_config.patch
 # installing npm deps with npm ci failed, so use npm install instead
 # npm ci
 npm install
@@ -55,6 +56,8 @@ cd camillagui-backend
 git checkout -b $PKG_SOURCE_GIT_TAG_BACKEND $PKG_SOURCE_GIT_TAG_BACKEND
 # add option to hide files tab on expert mode:
 rbl_patch $BASE_DIR/camillagui_backend_hide_files.patch
+rbl_patch $BASE_DIR/camillagui_backend_default_shortcuts.patch
+rm -rf backend/*.orig
 cd ..
 
 # ---------------------------------------------------------------
