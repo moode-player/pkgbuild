@@ -621,6 +621,14 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET param='rx_addresses', value='$RX_ADDRS' WHERE param='led_state'"
     fi
 
+    # Introduced in r913
+    dpkg --compare-versions $VERSION lt "9.1.3-1moode1"
+    if [ $? -eq 0 ]; then
+        # Update Opus frame size default to 20ms (960) from 10ms (480)
+        sqlite3 $SQLDB  "UPDATE cfg_multiroom SET value='960' WHERE param='tx_frame_size' AND value='480'"
+        sqlite3 $SQLDB  "UPDATE cfg_multiroom SET value='960' WHERE param='rx_frame_size' AND value='480'"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
