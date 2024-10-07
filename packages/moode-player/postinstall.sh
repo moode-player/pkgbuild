@@ -627,6 +627,8 @@ function on_upgrade() {
         # Update Opus frame size default to 20ms (960) from 10ms (480)
         sqlite3 $SQLDB  "UPDATE cfg_multiroom SET value='960' WHERE param='tx_frame_size' AND value='480'"
         sqlite3 $SQLDB  "UPDATE cfg_multiroom SET value='960' WHERE param='rx_frame_size' AND value='480'"
+        # Comment out rpi-backlight overlay since its now an option in per-config
+        sed -i "s/^dtoverlay=rpi-backlight/#dtoverlay=rpi-backlight/" /boot/firmware/config.txt
     fi
 
     # --------------------------------------------------------------------------
