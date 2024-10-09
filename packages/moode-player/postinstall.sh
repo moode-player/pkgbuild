@@ -629,6 +629,8 @@ function on_upgrade() {
         sqlite3 $SQLDB  "UPDATE cfg_multiroom SET value='960' WHERE param='rx_frame_size' AND value='480'"
         # Comment out rpi-backlight overlay since its now an option in per-config
         sed -i "s/^dtoverlay=rpi-backlight/#dtoverlay=rpi-backlight/" /boot/firmware/config.txt
+        # Update log2ram memory size (reduce from default 128M to 32M)
+        sed -i "s/^SIZE=.*/SIZE=32M/" /etc/log2ram.conf
     fi
 
     # --------------------------------------------------------------------------
