@@ -13,19 +13,19 @@
 #########################################################################
 . ../../scripts/rebuilder.lib.sh
 
-PKG_VERSION=95.0.4638.78-rpt6
+# 2024-07-18
+PKG_VERSION=126.0.6478.164-rpt1
 
 mkdir -p dist/binary
 cd dist/binary
 
 rm -rf *$PKG_VERSION*.deb*
 
-wget "http://archive.raspberrypi.org/debian/pool/main/c/chromium-browser/chromium-browser_${PKG_VERSION}_armhf.deb"
+wget "http://archive.raspberrypi.org/debian/pool/main/c/chromium-browser/chromium-browser_${PKG_VERSION}_arm64.deb"
 wget "http://archive.raspberrypi.org/debian/pool/main/c/chromium-browser/chromium-browser-l10n_${PKG_VERSION}_all.deb"
-wget "http://archive.raspberrypi.org/debian/pool/main/c/chromium-browser/chromium-codecs-ffmpeg-extra_${PKG_VERSION}_armhf.deb"
+wget "http://archive.raspberrypi.org/debian/pool/main/c/chromium-browser/chromium-codecs-ffmpeg-extra_${PKG_VERSION}_arm64.deb"
 
 ls
 echo "Ready for upload to moode repo"
 
 cd ../../
-
