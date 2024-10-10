@@ -245,7 +245,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends camilladsp \
 --depends camillagui \
 --depends caps \
---depends chromium-browser \
 --depends dos2unix \
 --depends exfat-fuse \
 --depends expect \
