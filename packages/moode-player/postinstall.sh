@@ -631,6 +631,8 @@ function on_upgrade() {
         sed -i "s/^dtoverlay=rpi-backlight/#dtoverlay=rpi-backlight/" /boot/firmware/config.txt
         # Update log2ram memory size (reduce from default 128M to 32M)
         sed -i "s/^SIZE=.*/SIZE=32M/" /etc/log2ram.conf
+        # Screen saver when playing
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='scnsaver_whenplaying', value='No' WHERE param='RESERVED_91'"        
     fi
 
     # --------------------------------------------------------------------------
