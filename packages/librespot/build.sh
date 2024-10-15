@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="librespot_0.5.0-dev-1moode1"
+PKG="librespot_0.5.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/librespot-org/librespot.git"
-PKG_SOURCE_GIT_TAG="2ea7436"
+PKG_SOURCE_GIT_TAG="v0.5.0"
 DEBSUFFIXVERSION=2
 
 rbl_check_cargo
