@@ -632,7 +632,10 @@ function on_upgrade() {
         # Update log2ram memory size (reduce from default 128M to 32M)
         sed -i "s/^SIZE=.*/SIZE=32M/" /etc/log2ram.conf
         # Screen saver when playing
-        sqlite3 $SQLDB "UPDATE cfg_system SET param='scnsaver_whenplaying', value='No' WHERE param='RESERVED_91'"        
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='scnsaver_whenplaying', value='No' WHERE param='RESERVED_91'"
+        # Librespot 5 AP fallback
+        sqlite3 $SQLDB "UPDATE cfg_spotify SET value='No' WHERE param='ap_fallback'"
+
     fi
 
     # --------------------------------------------------------------------------
