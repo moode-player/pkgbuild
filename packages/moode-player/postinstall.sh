@@ -538,24 +538,6 @@ function on_upgrade() {
     # Introduced in r906
     dpkg --compare-versions $VERSION lt "9.0.6-1moode1"
     if [ $? -eq 0 ]; then
-        # Set permissions for service files
-        chmod 0644 \
-        /etc/systemd/system/bluealsa-aplay@.service \
-        /etc/systemd/system/bluealsa.service \
-        /etc/systemd/system/bt-agent.service \
-        /etc/systemd/system/bluealsa.service \
-        /etc/systemd/system/plexamp.service \
-        /etc/udev/rules.d/10-a2dp-autoconnect.rules \
-        /lib/systemd/system/rotenc.service \
-        /lib/systemd/system/shellinabox.service \
-        /lib/systemd/system/squeezelite.service \
-        /lib/systemd/system/localui.service
-        # Set permissions for etc files
-        chmod 0644 \
-        /etc/bluealsaaplay.conf \
-        /etc/machine-info \
-        /etc/nftables.conf \
-        /etc/squeezelite.conf
         # Remove ttf font file, its replaced by a woff file
         rm -f /var/www/fonts/Lato-Thin.ttf
         # Replace fbset with kmsprint for auto screensize
@@ -646,6 +628,25 @@ function on_upgrade() {
 
     # Update radio stations and logos
     import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
+
+    # Set permissions for service files
+    chmod 0644 \
+    /etc/systemd/system/bluealsa-aplay@.service \
+    /etc/systemd/system/bluealsa.service \
+    /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/bluealsa.service \
+    /etc/systemd/system/plexamp.service \
+    /etc/udev/rules.d/10-a2dp-autoconnect.rules \
+    /lib/systemd/system/rotenc.service \
+    /lib/systemd/system/shellinabox.service \
+    /lib/systemd/system/squeezelite.service \
+    /lib/systemd/system/localui.service
+    # Set permissions for etc files
+    chmod 0644 \
+    /etc/bluealsaaplay.conf \
+    /etc/machine-info \
+    /etc/nftables.conf \
+    /etc/squeezelite.conf
 
     # Update sample playlists
     # NOTE: Updates will be new image only
