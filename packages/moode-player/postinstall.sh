@@ -617,7 +617,12 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET param='scnsaver_whenplaying', value='No' WHERE param='RESERVED_91'"
         # Librespot 5 AP fallback
         sqlite3 $SQLDB "UPDATE cfg_spotify SET value='No' WHERE param='ap_fallback'"
+    fi
 
+    # Introduced in r914
+    dpkg --compare-versions $VERSION lt "9.1.4-1moode1"
+    if [ $? -eq 0 ]; then
+        # Text goes here
     fi
 
     # --------------------------------------------------------------------------
