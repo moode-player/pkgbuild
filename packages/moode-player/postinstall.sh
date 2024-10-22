@@ -622,7 +622,7 @@ function on_upgrade() {
     # Introduced in r914
     dpkg --compare-versions $VERSION lt "9.1.4-1moode1"
     if [ $? -eq 0 ]; then
-        # Text goes here
+        NOP="Updates go here"
     fi
 
     # --------------------------------------------------------------------------
