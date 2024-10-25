@@ -622,7 +622,8 @@ function on_upgrade() {
     # Introduced in r914
     dpkg --compare-versions $VERSION lt "9.1.4-1moode1"
     if [ $? -eq 0 ]; then
-        NOP="Updates go here"
+        # Reset first use help to show the Welcome notification
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='y,y' WHERE param='first_use_help'"
     fi
 
     # --------------------------------------------------------------------------
