@@ -626,6 +626,13 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET value='y,y' WHERE param='first_use_help'"
     fi
 
+    # Introduced in r915
+    dpkg --compare-versions $VERSION lt "9.1.5-1moode1"
+    if [ $? -eq 0 ]; then
+        # Placeholder for updates
+        echo "No postinstall updates for release 9.1.5"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
