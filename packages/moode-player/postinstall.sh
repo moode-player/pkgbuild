@@ -640,6 +640,10 @@ function on_upgrade() {
     cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
     # Update radio stations and logos
+    dpkg --compare-versions $VERSION lt "9.1.4-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.1.4.zip"
+    fi
     import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
     # Set permissions for service files
