@@ -629,8 +629,8 @@ function on_upgrade() {
     # Introduced in r915
     dpkg --compare-versions $VERSION lt "9.1.5-1moode1"
     if [ $? -eq 0 ]; then
-        # Placeholder for updates
-        echo "No postinstall updates for release 9.1.5"
+        # Pi Touch 2
+        sed -i -e $'$a\\\n#dtoverlay=vc4-kms-dsi-ili9881-7inch,invx,invy' /boot/firmware/config.txt
     fi
 
     # --------------------------------------------------------------------------
