@@ -631,9 +631,11 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         # Pi Touch 2 (TODO: is this only needed for labwc compositor?)
         sed -i -e $'$a\\\n#dtoverlay=vc4-kms-dsi-ili9881-7inch,invx,invy' /boot/firmware/config.txt
-        # TODO: Replace SCREENSIZE with conditional SCREENSIZE in xinitrc
-        HOME_DIR=$(moodeutl -d -gv home_dir)
-        sed -i -e "s/SCREENSIZE=.*/\BLOCK OF CODE/" $HOME_DIR/.xinitrc
+        # HDMI screen orientation
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='landscape', param='hdmi_scn_orient' WHERE param='timezone'"
+
+        # TODO: How to update xinitrc?
+
     fi
 
     # --------------------------------------------------------------------------
