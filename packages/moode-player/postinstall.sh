@@ -110,7 +110,6 @@ function on_install() {
     echo "** Set permissions for service files"
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
-    /etc/systemd/system/bluealsa.service \
     /etc/systemd/system/bt-agent.service \
     /etc/systemd/system/plexamp.service \
     /etc/udev/rules.d/10-a2dp-autoconnect.rules \
@@ -118,13 +117,14 @@ function on_install() {
     /lib/systemd/system/shellinabox.service \
     /lib/systemd/system/squeezelite.service \
     /lib/systemd/system/localui.service
+    #/etc/systemd/system/bluealsa.service \ We get file not found, very odd
 
     echo "Set permissions for etc files"
     chmod 0644 \
     /etc/bluealsaaplay.conf \
-    /etc/machine-info \
     /etc/nftables.conf \
     /etc/squeezelite.conf
+    #/etc/machine-info \ We get file not found, very odd
 
     echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
