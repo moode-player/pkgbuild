@@ -628,10 +628,14 @@ function on_upgrade() {
     # Introduced in r915
     dpkg --compare-versions $VERSION lt "9.1.5-1moode1"
     if [ $? -eq 0 ]; then
-        # Pi Touch 2 (TODO: is this only needed for labwc compositor?)
-        sed -i -e $'$a\\\n#dtoverlay=vc4-kms-dsi-ili9881-7inch,invx,invy' /boot/firmware/config.txt
-        # HDMI screen orientation
+        # Local display refactor
+        # - SQL/session vars
         sqlite3 $SQLDB "UPDATE cfg_system SET value='landscape', param='hdmi_scn_orient' WHERE param='timezone'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='0', param='local_display' WHERE param='localui'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='', param='RESERVED_84' WHERE param='touchscn'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='', param='RESERVED_85' WHERE param='scnblank'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='none', param='dsi_scn_type' WHERE param='scnrotate'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='0', param='dsi_scn_rotate' WHERE param='scnbrightness'"
     fi
 
     # --------------------------------------------------------------------------
