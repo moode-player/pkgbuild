@@ -116,7 +116,7 @@ function on_install() {
     /lib/systemd/system/rotenc.service \
     /lib/systemd/system/shellinabox.service \
     /lib/systemd/system/squeezelite.service \
-    /lib/systemd/system/localui.service
+    /lib/systemd/system/localdisplay.service
     #/etc/systemd/system/bluealsa.service \ We get file not found, very odd
 
     echo "Set permissions for etc files"
@@ -661,7 +661,7 @@ function on_upgrade() {
     /lib/systemd/system/rotenc.service \
     /lib/systemd/system/shellinabox.service \
     /lib/systemd/system/squeezelite.service \
-    /lib/systemd/system/localui.service
+    /lib/systemd/system/localdisplay.service
     # Set permissions for etc files
     chmod 0644 \
     /etc/bluealsaaplay.conf \
