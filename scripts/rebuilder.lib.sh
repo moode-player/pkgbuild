@@ -256,6 +256,7 @@ function _rbl_check_build_deps {
 
 function _build_deb {
     # build package
+    # DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -us -uc
     dpkg-buildpackage -us -uc
     if [[ $? -gt 0 ]]
     then
@@ -295,7 +296,7 @@ function rbl_check_cargo {
     export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
     export PATH=$PATH:/home/pi/.cargo/bin
 
-    RUSTC_MIN_VERSION="1.65"
+    RUSTC_MIN_VERSION="1.82"
     # RUST_CHAIN="nightly"
     # until 1.61 is available on stable switch to nightly
     RUST_CHAIN="stable"
@@ -340,23 +341,6 @@ function rbl_check_cargo {
         echo "${GREEN}cargo-deb: already installed${NORMAL}"
     fi
 
-    rustup show | grep $RUST_CHAIN-armv7-unknown-linux-gnueabihf > /dev/null
-    if [[ $? -gt 0 ]]
-    then
-        echo "${YELLOW}rustup: armv7 toolchain not installed, installing it.${NORMAL}"a
-        rustup toolchain install stable-armv7-unknown-linux-gnueabihf
-    else
-        echo "${GREEN}rustup: armv7 toolchain already installed${NORMAL}"
-    fi
-
-    rustup show | grep $RUST_CHAIN-arm-unknown-linux-gnueabihf > /dev/null
-    if [[ $? -gt 0 ]]
-    then
-        echo "${YELLOW}rustup: armv6 toolchain not installed, installing it.${NORMAL}"a
-        rustup toolchain install stable-arm-unknown-linux-gnueabihf
-    else
-        echo "${GREEN}rustup: armv6 toolchain already installed${NORMAL}"
-    fi
 }
 
 function rbl_check_fpm {
