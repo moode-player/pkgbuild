@@ -636,6 +636,11 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET value='', param='RESERVED_85' WHERE param='scnblank'"
         sqlite3 $SQLDB "UPDATE cfg_system SET value='none', param='dsi_scn_type' WHERE param='scnrotate'"
         sqlite3 $SQLDB "UPDATE cfg_system SET value='0', param='dsi_scn_rotate' WHERE param='scnbrightness'"
+        # Config.txt
+        # - Improve comment
+        sed -i s/Touch/Touch1/ /boot/firmware/config.txt
+        # - Fan speed control
+        sed -i -e "s/vc4-kms-dsi-7inch,invx,invy/vc4-kms-dsi-7inch,invx,invy\n# Fan speed\n#dtparam=fan_temp0=50000,fan_temp0_hyst=5000,fan_temp0_speed=75/" /boot/firmware/config.txt
     fi
 
     # --------------------------------------------------------------------------
