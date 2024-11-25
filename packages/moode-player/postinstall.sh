@@ -641,6 +641,8 @@ function on_upgrade() {
         sed -i s/Touch/Touch1/ /boot/firmware/config.txt
         # - Fan speed control
         sed -i -e "s/vc4-kms-dsi-7inch,invx,invy/vc4-kms-dsi-7inch,invx,invy\n# Fan speed\n#dtparam=fan_temp0=50000,fan_temp0_hyst=5000,fan_temp0_speed=75/" /boot/firmware/config.txt
+        # Smb.conf
+        sed -i -e "s/^guest account.*/guest account = root\n#admin users = @users/" /etc/samba/smb.conf
     fi
 
     # --------------------------------------------------------------------------
