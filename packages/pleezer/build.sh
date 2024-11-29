@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="pleezer_0.2.0-1moode1"
+PKG="pleezer_0.3.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/roderickvd/pleezer.git"
-PKG_SOURCE_GIT_TAG="v0.2.0"
+PKG_SOURCE_GIT_TAG="v0.3.0"
 
 rbl_check_cargo
 rbl_prepare_clone_from_git ${PKG_SOURCE_GIT} ${PKG_SOURCE_GIT_TAG}
