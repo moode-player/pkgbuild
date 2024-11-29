@@ -9,11 +9,11 @@
 #########################################################################
 
 . ../../scripts/rebuilder.lib.sh
-
-PKG="pleezer_0.3.0-1moode1"
+VER="0.3.0"
+PKG="pleezer_$VER-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/roderickvd/pleezer.git"
-PKG_SOURCE_GIT_TAG="v0.3.0"
+PKG_SOURCE_GIT_TAG="v$VER"
 
 rbl_check_cargo
 rbl_prepare_clone_from_git ${PKG_SOURCE_GIT} ${PKG_SOURCE_GIT_TAG}
@@ -39,7 +39,7 @@ then
 fi
 
 mv target/debian/pleezer*.deb ..
-/build/pleezer-0.2.0/target/debian/pleezer_0.2.0_arm64.deb
+/build/pleezer-"$VER"/target/debian/pleezer_"$VER"_arm64.deb
 #------------------------------------------------------------
 # post_build
 rbl_move_to_dist
