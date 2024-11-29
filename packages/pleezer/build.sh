@@ -38,8 +38,6 @@ then
     exit
 fi
 
-mv target/debian/pleezer*.deb ..
-/build/pleezer-"$VER"/target/debian/pleezer_"$VER"_arm64.deb
 #------------------------------------------------------------
 # post_build
 rbl_move_to_dist
