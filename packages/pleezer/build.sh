@@ -22,17 +22,13 @@ rbl_create_git_archive ${PKG_SOURCE_GIT_TAG} ../${PKGNAME}_${PKGVERSION}.orig.ta
 # ------------------------------------------------------------
 # Custom part of the packing
 
-#Add to [package.metadata.deb] section of Cargo.toml:
-# sed -i "s/^priority = \"optional\"/priority = \"optional\"\nrevision = \"${DEBVER}${DEBLOC}\"/" Cargo.toml
-# if [[ $? -gt 0 ]]
-# then
-#     echo "${RED}Error: sed failed to set correct PKG VERSION!${NORMAL}"
-#     exit
-# fi
-echo -e "\n[package.metadata.deb]\n\
-revision = \"${DEBVER}${DEBLOC}\" \
- " >> Cargo.toml
-
+# Add to [package.metadata.deb] section of Cargo.toml:
+sed -i "s/^priority = \"optional\"/priority = \"optional\"\nrevision = \"${DEBVER}${DEBLOC}\"/" Cargo.toml
+if [[ $? -gt 0 ]]
+then
+    echo "${RED}Error: sed failed to set correct PKG VERSION!${NORMAL}"
+    exit
+fi
 
 RUSTFLAGS='-Ccodegen-units=1' cargo-deb --
 
