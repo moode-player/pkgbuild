@@ -645,6 +645,35 @@ function on_upgrade() {
         sed -i -e "s/^guest account.*/guest account = root\n#admin users = @users/" /etc/samba/smb.conf
     fi
 
+    # Introduced in r920
+    dpkg --compare-versions $VERSION lt "9.2.0-1moode1"
+    if [ $? -eq 0 ]; then
+        # Deezer Connect
+        # - Feature bitmask
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='97271' WHERE param='feat_bitmask'"
+        # - Cfg_system params
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='deezersvc', value='0' WHERE param='RESERVED_84'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='deezername', value='moOde Deezer' WHERE param='RESERVED_85'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='rsmafterdeez', value='No' WHERE param='lcdup'"
+        sqlite3 $SQLDB "UPDATE cfg_system SET param='deezactive', value='0' WHERE param='eth0chk'"
+        # - Cfg_deezer table
+        sqlite3 $SQLDB "CREATE TABLE cfg_deezer (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (1, 'normalize_volume', 'No')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (2, 'no_interruptions', 'No')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (3, 'format', 'S16')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (4, 'RESERVED_4', '')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (5, 'RESERVED_4', '')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (6, 'RESERVED_4', '')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (7, 'RESERVED_4', '')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (8, 'RESERVED_4', '')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (9, 'email', '')"
+        sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (10, 'password', '')"
+        # - Credentials file
+        # /etc/deezer/deezer.toml
+        # - Event script
+        # /var/local/www/commandw/deezevent.sh
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
