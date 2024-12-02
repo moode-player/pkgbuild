@@ -38,6 +38,7 @@ then
     exit
 fi
 
+mv target/debian/* ..
 #------------------------------------------------------------
 # post_build
 rbl_move_to_dist
