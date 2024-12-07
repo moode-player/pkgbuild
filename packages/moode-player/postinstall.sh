@@ -672,9 +672,14 @@ function on_upgrade() {
         sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (9, 'email', '')"
         sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (10, 'password', '')"
         # - Credentials file
-        # /etc/deezer/deezer.toml
+        #   /etc/deezer/deezer.toml
         # - Event script
-        # /var/local/www/commandw/deezevent.sh
+        #   /var/local/www/commandw/deezevent.sh
+        # Remove orphaned FluxFM files (FluxFM station renamed to FluxFM - Livestream)
+        rm "/var/lib/mpd/music/RADIO/FluxFM.pls"
+        rm "/var/local/www/imagesw/radio-logos/FluxFM.jpg"
+        rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM.jpg"
+        rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM_sm.jpg"
     fi
 
     # --------------------------------------------------------------------------
