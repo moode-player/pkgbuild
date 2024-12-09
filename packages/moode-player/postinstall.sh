@@ -680,7 +680,7 @@ function on_upgrade() {
         rm "/var/local/www/imagesw/radio-logos/FluxFM.jpg"
         rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM.jpg"
         rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM_sm.jpg"
-        # SATA drive support
+        # PCIe SATA drive support
         # - Create mount dir
         [ ! -e /mnt/SATA ] && mkdir /mnt/SATA
         # - Add [SATA] block to smb.conf
