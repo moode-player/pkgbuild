@@ -680,6 +680,13 @@ function on_upgrade() {
         rm "/var/local/www/imagesw/radio-logos/FluxFM.jpg"
         rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM.jpg"
         rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM_sm.jpg"
+        # SATA drive support
+        # - Create mount dir
+        [ ! -e /mnt/SATA ] && mkdir /mnt/SATA
+        # - Add [SATA] block to smb.conf
+        sed -i "/Playlists/i[SATA]\ncomment = SATA Storage\npath = /mnt/SATA\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
+        # - Add sata symlink to /srv/nfs
+        [ ! -e /srv/nfs/sata ] && ln -s /mnt/SATA /srv/nfs/sata
     fi
 
     # --------------------------------------------------------------------------
