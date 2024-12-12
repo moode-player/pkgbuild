@@ -684,12 +684,16 @@ function on_upgrade() {
         sed -i "/Playlists/i[SATA]\ncomment = SATA Storage\npath = /mnt/SATA\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
         # - Add sata symlink to /srv/nfs
         [ ! -e /srv/nfs/sata ] && ln -s /mnt/SATA /srv/nfs/sata
+        # Chromium downgrade to v126
+        apt-mark unhold chromium chromium-browser chromium-common chromium-sandbox rpi-chromium-mods
+        apt-get -y install chromium-browser=126.0.6478.164-rpt1 chromium-browser-l10n=126.0.6478.164-rpt1 chromium-codecs-ffmpeg-extra=126.0.6478.164-rpt1 --allow-downgrades --allow-change-held-packages
+        apt-get -y purge chromium chromium-common chromium-sandbox rpi-chromium-mods
+        apt-get -y autoremove
     fi
 
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
-
     # Update SSH header
     cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
@@ -717,12 +721,6 @@ function on_upgrade() {
     /etc/machine-info \
     /etc/nftables.conf \
     /etc/squeezelite.conf
-
-    # Downgrade chromium to v126
-    apt-mark unhold chromium chromium-browser chromium-common chromium-sandbox rpi-chromium-mods
-    apt-get -y install chromium-browser=126.0.6478.164-rpt1 chromium-browser-l10n=126.0.6478.164-rpt1 chromium-codecs-ffmpeg-extra=126.0.6478.164-rpt1 --allow-downgrades --allow-change-held-packages
-    apt-get -y purge chromium chromium-common chromium-sandbox rpi-chromium-mods
-    apt-get -y autoremove
 
     # Update sample playlists
     # NOTE: Updates will be new image only
