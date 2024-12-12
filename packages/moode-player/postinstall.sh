@@ -152,9 +152,6 @@ function on_install() {
     touch /var/log/php_errors.log
     chmod 0666 /var/log/php_errors.log
 
-    echo "** Set ownership on homedir/.config"
-    chown pi:pi /home/pi/.config/
-
     echo "** Set permissions on homedir scripts"
     chmod 0755 /home/pi/*.sh
 
