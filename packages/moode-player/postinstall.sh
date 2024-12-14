@@ -684,6 +684,8 @@ function on_upgrade() {
         sed -i "/Playlists/i[SATA]\ncomment = SATA Storage\npath = /mnt/SATA\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
         # - Add sata symlink to /srv/nfs
         [ ! -e /srv/nfs/sata ] && ln -s /mnt/SATA /srv/nfs/sata
+        # - Remove orphaned chrome-updater.sh (renamed to chromium-updater.sh)
+        rm /var/www/util/chrome-updater.sh
     fi
 
     # --------------------------------------------------------------------------
