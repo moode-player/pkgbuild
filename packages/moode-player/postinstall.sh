@@ -686,6 +686,8 @@ function on_upgrade() {
         [ ! -e /srv/nfs/sata ] && ln -s /mnt/SATA /srv/nfs/sata
         # - Remove orphaned chrome-updater.sh (renamed to chromium-updater.sh)
         rm /var/www/util/chrome-updater.sh
+        # Add rfkill unblock bluetooth to rc.local
+        sed -i "s|/usr/sbin/rfkill unblock wifi.*|/usr/sbin/rfkill unblock wifi > /dev/null 2>\&1\n/usr/sbin/rfkill unblock bluetooth > /dev/null 2>\&1|" /etc/rc.local
     fi
 
     # --------------------------------------------------------------------------
