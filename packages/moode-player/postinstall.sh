@@ -688,6 +688,8 @@ function on_upgrade() {
         rm /var/www/util/chrome-updater.sh
         # Add rfkill unblock bluetooth to rc.local
         sed -i "s|/usr/sbin/rfkill unblock wifi.*|/usr/sbin/rfkill unblock wifi > /dev/null 2>\&1\n/usr/sbin/rfkill unblock bluetooth > /dev/null 2>\&1|" /etc/rc.local
+        # Fix default amixname in cfg_system
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='PCM' WHERE param='amixname' AND value='HDMI'"
     fi
 
     # --------------------------------------------------------------------------
