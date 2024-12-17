@@ -690,6 +690,8 @@ function on_upgrade() {
         sed -i "s|/usr/sbin/rfkill unblock wifi.*|/usr/sbin/rfkill unblock wifi > /dev/null 2>\&1\n/usr/sbin/rfkill unblock bluetooth > /dev/null 2>\&1|" /etc/rc.local
         # Fix default amixname in cfg_system
         sqlite3 $SQLDB "UPDATE cfg_system SET value='PCM' WHERE param='amixname' AND value='HDMI'"
+        # Remove rpi-backlight overlay
+        sed -i /rpi-backlight/d /boot/firmware/config.txt
     fi
 
     # --------------------------------------------------------------------------
