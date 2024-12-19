@@ -140,11 +140,13 @@ function on_install() {
     echo "** Create MPD and NFS symlinks"
     [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
     [ ! -e /var/lib/mpd/music/NVME ] &&  ln -s /mnt/NVME /var/lib/mpd/music/NVME
+    [ ! -e /var/lib/mpd/music/SATA ] &&  ln -s /mnt/SATA /var/lib/mpd/music/SATA
     [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
     [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
     [ ! -e /srv/nfs ] && mkdir /srv/nfs
     [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
     [ ! -e /srv/nfs/nvme ] && ln -s /mnt/NVME /srv/nfs/nvme
+    [ ! -e /srv/nfs/sata ] && ln -s /mnt/SATA /srv/nfs/sata
 
     echo "** Create moode and PHP logfiles"
     touch /var/log/moode.log
