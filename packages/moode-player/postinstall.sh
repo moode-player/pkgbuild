@@ -692,6 +692,9 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET value='PCM' WHERE param='amixname' AND value='HDMI'"
         # Remove rpi-backlight overlay
         sed -i /rpi-backlight/d /boot/firmware/config.txt
+        # Add zeroconf port option to cfg_spotify
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "zeroconf"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "zeroconf_port"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
     fi
 
     # --------------------------------------------------------------------------
