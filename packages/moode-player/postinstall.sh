@@ -529,6 +529,8 @@ function on_upgrade() {
         [ ! -e /srv/nfs ] && mkdir /srv/nfs
         [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
         [ ! -e /srv/nfs/nvme ] && ln -s /mnt/NVME /srv/nfs/nvme
+        # - Create new MPD symlink
+        [ ! -e /var/lib/mpd/music/NVME ] &&  ln -s /mnt/NVME /var/lib/mpd/music/NVME
         # Update rpi-backlight
         LOCALUI=$(sqlite3 $SQLDB "SELECT value from cfg_system WHERE param='localui'")
         if [ "$LOCALUI" = "0" ]; then
@@ -670,10 +672,8 @@ function on_upgrade() {
         sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (8, 'RESERVED_8', '')"
         sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (9, 'email', '')"
         sqlite3 $SQLDB "INSERT INTO cfg_deezer (id, param, value) VALUES (10, 'password', '')"
-        # - Credentials file
-        #   /etc/deezer/deezer.toml
-        # - Event script
-        #   /var/local/www/commandw/deezevent.sh
+        # - Credentials:  /etc/deezer/deezer.toml
+        # - Event script: /var/local/www/commandw/deezevent.sh
         # Remove orphaned FluxFM files (FluxFM station renamed to FluxFM - Livestream)
         rm "/var/lib/mpd/music/RADIO/FluxFM.pls"
         rm "/var/local/www/imagesw/radio-logos/FluxFM.jpg"
@@ -684,8 +684,9 @@ function on_upgrade() {
         [ ! -e /mnt/SATA ] && mkdir /mnt/SATA
         # - Add [SATA] block to smb.conf
         sed -i "/Playlists/i[SATA]\ncomment = SATA Storage\npath = /mnt/SATA\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
-        # - Add sata symlink to /srv/nfs
+        # - Add sata symlinks
         [ ! -e /srv/nfs/sata ] && ln -s /mnt/SATA /srv/nfs/sata
+        [ ! -e /var/lib/mpd/music/SATA ] &&  ln -s /mnt/SATA /var/lib/mpd/music/SATA
         # - Remove orphaned chrome-updater.sh (renamed to chromium-updater.sh)
         rm /var/www/util/chrome-updater.sh
         # Add rfkill unblock bluetooth to rc.local
