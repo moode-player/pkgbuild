@@ -700,6 +700,12 @@ function on_upgrade() {
         cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "zeroconf_port"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
     fi
 
+    # Introduced in r921
+    dpkg --compare-versions $VERSION lt "9.2.1-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "No r921 updates needed in postinstall"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -712,6 +718,9 @@ function on_upgrade() {
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.1.4.zip"
     fi
     import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
+
+    # Reset first use help to show the Welcome notification
+    sqlite3 $SQLDB "UPDATE cfg_system SET value='y,y' WHERE param='first_use_help'"
 
     # Set permissions for service files
     chmod 0644 \
