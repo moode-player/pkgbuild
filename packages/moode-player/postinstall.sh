@@ -270,8 +270,8 @@ function on_install() {
     sed -i "s/^#[ ]MPDCONF/MPDCONF/" /etc/default/mpd
 
     # /etc/php/$PHP_VER/cli/php.ini
-    sed -i -e "s/^post_max_size.*/post_max_size = 50M/" \
-        -e "s/^upload_max_filesize.*/upload_max_filesize = 50M/" \
+    sed -i -e "s/^post_max_size.*/post_max_size = 128M/" \
+        -e "s/^upload_max_filesize.*/upload_max_filesize = 128M/" \
         -e "s/^;session.save_path.*/session.save_path = \"0;666;\/var\/local\/php\"/" \
         /etc/php/$PHP_VER/cli/php.ini
 
@@ -291,8 +291,8 @@ function on_install() {
         -e "s/^max_input_time.*/max_input_time = -1/" \
         -e "s/^;max_input_vars.*/max_input_vars = 32768/" \
         -e "s/^memory_limit.*/memory_limit = -1/" \
-        -e "s/^post_max_size.*/post_max_size = 75M/" \
-        -e "s/^upload_max_filesize.*/upload_max_filesize = 75M/" \
+        -e "s/^post_max_size.*/post_max_size = 128M/" \
+        -e "s/^upload_max_filesize.*/upload_max_filesize = 128M/" \
         -e "s/^;defensive.*/defensive = 1/" \
         /etc/php/$PHP_VER/fpm/php.ini
 
@@ -704,6 +704,20 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "9.2.1-1moode1"
     if [ $? -eq 0 ]; then
         echo "No r921 updates needed in postinstall"
+    fi
+
+    # Introduced in r922
+    dpkg --compare-versions $VERSION lt "9.2.2-1moode1"
+    if [ $? -eq 0 ]; then
+        # PHP.ini updates
+        sed -i -e "s/^post_max_size.*/post_max_size = 128M/" \
+            -e "s/^upload_max_filesize.*/upload_max_filesize = 128M/" \
+            /etc/php/$PHP_VER/cli/php.ini
+        sed -i -e "s/^post_max_size.*/post_max_size = 128M/" \
+            -e "s/^upload_max_filesize.*/upload_max_filesize = 128M/" \
+            /etc/php/$PHP_VER/fpm/php.ini
+        # NGINX.conf updates (client_max_body_size 128M;)
+        cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
     fi
 
     # --------------------------------------------------------------------------
