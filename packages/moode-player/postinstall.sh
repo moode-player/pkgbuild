@@ -733,8 +733,9 @@ function on_upgrade() {
     fi
     import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
 
-    # Reset first use help to show the Welcome notification
-    sqlite3 $SQLDB "UPDATE cfg_system SET value='y,y' WHERE param='first_use_help'"
+    # Reset first use help to show just the Welcome notification.
+    # Since this is an update we can assume the first use help coupons have already been dismissed.
+    sqlite3 $SQLDB "UPDATE cfg_system SET value='n,n,y' WHERE param='first_use_help'"
 
     # Set permissions for service files
     chmod 0644 \
