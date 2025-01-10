@@ -15,6 +15,7 @@ VERSION=$2
 PKG_VERSION="x.x.x"
 
 SQLDB=/var/local/www/db/moode-sqlite3.db
+PHP_VER="8.2"
 
 ################################################################################
 # Import radio stations
@@ -241,7 +242,6 @@ function on_install() {
     echo "** Patch config files with sed"
     # From the root moode git repo find files to patch with sed:
     #  find . -name "*.sed*" |sort
-    PHP_VER="8.2"
 
     # /etc/bluetooth/main.conf
     # Name = Moode Bluetooth
@@ -718,6 +718,12 @@ function on_upgrade() {
             /etc/php/$PHP_VER/fpm/php.ini
         # NGINX.conf updates (client_max_body_size 128M;)
         cp -f $SRC/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+    fi
+
+    # Introduced in r923
+    dpkg --compare-versions $VERSION lt "9.2.3-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "No updates for r923"
     fi
 
     # --------------------------------------------------------------------------
