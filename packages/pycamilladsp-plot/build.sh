@@ -15,10 +15,12 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="pycamilladsp-plot_2.0.0-1moode1"
+PKG="pycamilladsp-plot_3.0.0-1moode1~beta"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/pycamilladsp-plot.git"
-PKG_SOURCE_GIT_TAG="v2.0.0"
+# PKG_SOURCE_GIT_TAG="v2.0.0"
+PKG_SOURCE_GIT_TAG="next30"
+
 
 # If can be dropped when bullseye support is dropped
 if [[ `lsb_release -c -s| grep bullseye` ]]

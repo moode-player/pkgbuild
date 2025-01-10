@@ -16,10 +16,10 @@
 . ../../scripts/rebuilder.lib.sh
 
 # don't forget to change the debian/changelog on version bump!
-PKG="pycamilladsp_2.0.0-1moode1"
+PKG="pycamilladsp_2.0.2-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/pycamilladsp.git"
-PKG_SOURCE_GIT_TAG="v2.0.0"
+PKG_SOURCE_GIT_TAG="v2.0.2"
 # If can be dropped when bullseye support is dropped
 if [[ `lsb_release -c -s| grep bullseye` ]]
 then
