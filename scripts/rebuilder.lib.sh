@@ -413,23 +413,14 @@ function rbl_prepare_clone_from_git {
     _rbl_cleanup_previous_build
     _rbl_change_to_build_root
 
-    git clone $_PKG_SOURCE_GIT $PKGDIR
+    git clone --branch $_PKG_SOURCE_GIT_TAG $_PKG_SOURCE_GIT $PKGDIR
     if [[ $? -gt 0 ]]
     then
-        echo "${RED}Error: error during git clone from $_PKG_SOURCE_GIT ${NORMAL}"
+        echo "${RED}Error: error during git clone from ${_PKG_SOURCE_GIT} : ${_PKG_SOURCE_GIT_TAG} ${NORMAL}"
         exit 1
     fi
 
     _rbl_cd_source_dir
-    if [[ -n "$_PKG_SOURCE_GIT_TAG" ]]
-    then
-        git checkout -b $_PKG_SOURCE_GIT_TAG $_PKG_SOURCE_GIT_TAG
-    fi
-    if [[ $? -gt 0 ]]
-    then
-        echo "${RED}Error: error during git checkout from $_PKG_SOURCE_GIT_TAG ${NORMAL}"
-        exit 1
-    fi
 }
 
 # Creae archive from git gag
