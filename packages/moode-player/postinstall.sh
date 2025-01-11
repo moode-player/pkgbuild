@@ -11,11 +11,14 @@
 ACTION=$1
 VERSION=$2
 
-# Version number is set by build process
+# Version number is updated via sed upstream in build.sh
 PKG_VERSION="x.x.x"
 
+# SQL database path and PHP version
 SQLDB=/var/local/www/db/moode-sqlite3.db
 PHP_VER="8.2"
+# Files marked as 'overwrite' in the source tree are stored here
+SRC=/usr/share/moode-player
 
 ################################################################################
 # Import radio stations
@@ -219,7 +222,6 @@ function on_install() {
     # Overwrite files not owned by moode-player (owned by other packages)
     # --------------------------------------------------------------------------
     echo "** Copy overwrite files to target dirs"
-    SRC=/usr/share/moode-player
     cp -rf $SRC/etc/* /etc/
     cp -rf $SRC/lib/* /lib/ > /dev/null 2>&1
     cp -rf $SRC/usr/* /usr/ > /dev/null 2>&1
@@ -438,13 +440,10 @@ function on_install() {
 #
 # Upgrades can come from any version:
 # - Detect if a patch is needed to apply
-# - Make the upgrade patches as fault tolerant as needed
+# - Make the patches as fault tolerant as needed
 #
 ################################################################################
 function on_upgrade() {
-    # Files marked as 'overwrite' in the source tree are stored here
-    SRC=/usr/share/moode-player
-
     # --------------------------------------------------------------------------
     # Release 9 series (Bookworm)
     # --------------------------------------------------------------------------
@@ -723,7 +722,7 @@ function on_upgrade() {
     # Introduced in r923
     dpkg --compare-versions $VERSION lt "9.2.3-1moode1"
     if [ $? -eq 0 ]; then
-        echo "No updates for r923"
+        echo "There are no postinstall updates for r923"
     fi
 
     # --------------------------------------------------------------------------
