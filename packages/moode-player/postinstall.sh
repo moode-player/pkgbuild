@@ -725,6 +725,12 @@ function on_upgrade() {
         echo "There are no postinstall updates for r923"
     fi
 
+    # Introduced in r924
+    dpkg --compare-versions $VERSION lt "9.2.4-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r924"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
