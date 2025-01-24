@@ -23,10 +23,10 @@ diff --git a/src/index.tsx b/src/index.tsx
 index 45f51e0..0a43b29 100644
 --- a/src/index.tsx
 +++ b/src/index.tsx
-@@ -259,7 +259,8 @@ class CamillaConfig extends React.Component<
-           <Tab>Filters {errors({path: ['filters'], includeChildren: true}) && <ErrorIcon/>}</Tab>
-           <Tab>Mixers {errors({path: ['mixers'], includeChildren: true}) && <ErrorIcon/>}</Tab>
-           <Tab>Pipeline {errors({path: ['pipeline'], includeChildren: true}) && <ErrorIcon/>}</Tab>
+@@ -305,7 +305,8 @@ class CamillaConfig extends React.Component<
+           <Tab>Mixers {errors.hasErrorsFor('mixers') && <ErrorIcon/>}</Tab>
+           <Tab>Processors {errors.hasErrorsFor('processors') && <ErrorIcon/>}</Tab>
+           <Tab>Pipeline {errors.hasErrorsFor('pipeline') && <ErrorIcon/>}</Tab>
 -          <Tab>Files</Tab>
 +          {this.state.guiConfig.hide_file_manager===false &&
 +          <Tab>Files</Tab>}
