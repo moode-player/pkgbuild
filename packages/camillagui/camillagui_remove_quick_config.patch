@@ -1,12 +1,14 @@
 diff --git a/src/compactview.tsx b/src/compactview.tsx
 index 2e63522..8122fdf 100644
---- a/src/compactview.tsx
-+++ b/src/compactview.tsx
-@@ -40,7 +40,6 @@ export function CompactView(props: {
-     <DisableCompactViewButton disableCompactView={disableCompactView}/>
-     <VolumeBox vuMeterStatus={defaultStatus()} setMessage={() => {}}/>
-     <ShortcutSections sections={guiConfig.custom_shortcuts} config={config} updateConfig={updateConfig}/>
--    <QuickConfigSwitch setConfig={setConfig} currentConfigName={currentConfigName}/>
+--- a/src/compactview.tsx  2025-01-25 09:12:49.228455726 +0100
++++ b/src/compactview.tsx    2025-01-25 09:13:00.410283583 +0100
+@@ -46,7 +46,6 @@
+         outputLabels={null}
+         guiConfig={guiConfig}/>
+       <ShortcutSections sections={guiConfig.custom_shortcuts} config={config} updateConfig={updateConfig}/>
+-      <QuickConfigSwitch setConfig={setConfig} currentConfigName={currentConfigName}/>
+     </ErrorBoundary>
    </div>
  }
- 
+
+

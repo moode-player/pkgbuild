@@ -39,7 +39,7 @@ echo "build root : $BUILD_ROOT_DIR"
 
 # add option to hide files tab on expert mode:
 rbl_patch $BASE_DIR/camillagui_hide_files.patch
-# rbl_patch $BASE_DIR/camillagui_remove_quick_config.patch
+rbl_patch $BASE_DIR/camillagui_remove_quick_config.patch
 # installing npm deps with npm ci failed, so use npm install instead
 
 npm install
