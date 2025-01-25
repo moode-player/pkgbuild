@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 Type=idle
 Group=www-data
-ExecStart=/usr/bin/python3 /opt/camillagui/main.py
+ExecStart=/usr/bin/python3 /opt/camillagui/main.py --config /opt/camillagui/config/camillagui.yml
 
 [Install]
 WantedBy=multi-user.target
