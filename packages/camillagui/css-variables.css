@@ -1,8 +1,3 @@
-/* Fix side panel logo image height (was 100%) */
-.sidepanel img {
-    height:auto!important;
-}
-
 /* Dark skin. */
 .css-variables-disabled {
 
