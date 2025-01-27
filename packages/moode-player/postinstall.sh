@@ -728,7 +728,8 @@ function on_upgrade() {
     # Introduced in r924
     dpkg --compare-versions $VERSION lt "9.2.4-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r924"
+        # Set camilladsp sample configs plugin to v3
+        sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v3-sample-configs' WHERE component='camilladsp' AND type='sample-configs'"
     fi
 
     # --------------------------------------------------------------------------
