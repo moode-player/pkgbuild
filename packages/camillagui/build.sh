@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camillagui_3.0.0-1moode2"
+PKG="camillagui_3.0.0-1moode3"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camillagui.git"
 PKG_SOURCE_GIT_TAG="v3.0.0"
@@ -40,6 +40,7 @@ echo "build root : $BUILD_ROOT_DIR"
 # add option to hide files tab on expert mode:
 rbl_patch $BASE_DIR/camillagui_hide_files.patch
 rbl_patch $BASE_DIR/camillagui_remove_quick_config.patch
+rbl_patch $BASE_DIR/camillagui_vite_relativebase.patch
 # installing npm deps with npm ci failed, so use npm install instead
 
 npm install
