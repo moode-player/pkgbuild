@@ -41,6 +41,7 @@ echo "build root : $BUILD_ROOT_DIR"
 rbl_patch $BASE_DIR/camillagui_hide_files.patch
 rbl_patch $BASE_DIR/camillagui_remove_quick_config.patch
 rbl_patch $BASE_DIR/camillagui_vite_relativebase.patch
+rbl_patch $BASE_DIR/camillagui_logoheight.patch
 # installing npm deps with npm ci failed, so use npm install instead
 
 npm install

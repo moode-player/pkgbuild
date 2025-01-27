@@ -1,0 +1,13 @@
+diff --git a/src/sidepanel/sidepanel.tsx b/src/sidepanel/sidepanel.tsx
+index aa37a57..d78282e 100644
+--- a/src/sidepanel/sidepanel.tsx
++++ b/src/sidepanel/sidepanel.tsx
+@@ -80,7 +80,7 @@ export class SidePanel extends React.Component<
+   render() {
+     return (
+       <section className="sidepanel">
+-        <img src={camillalogo} alt="graph" width="100%" height="100%"/>
++        <img src={camillalogo} alt="graph" width="100%" height="height:auto!important" />
+         {isCdspOnline(this.state.cdspStatus)
+             && <VolumeBox
+                     vuMeterStatus={this.state.cdspStatus}
