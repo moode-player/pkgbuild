@@ -23,23 +23,11 @@ PKG_SOURCE_GIT_TAG="main"
 
 
 # required for creating a dkms project:
-# DKMS_MODULE="ax88179_178a/2.0"
-# SRC_DIR="ax88179_178a-2.0"
-# ARCHS=( v7l+ v7+ )
-# MODULE="ax88179_178a.ko"
-# MODULE_PATH='drivers/net/usb'
-# if [ $ARCH64 -eq 1 ]
-# then
 ARCHS=( rpi-v8 rpi-2712 )
-# fi
+
 MODULE="motu.ko"
 
-
-# allow source with module replacement:
-# SOURCE_GIT="https://github.com/Drumfix/motu-avb-usb.git"
-# SOURCE_GIT_TAG="master"
-
-rbl_prepare_clone_from_git $PKG_SOURCE_GIT
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
 rbl_dkms_prepare outtree
 
