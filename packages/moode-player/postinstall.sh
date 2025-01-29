@@ -730,6 +730,8 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         # Set camilladsp sample configs plugin to v3
         sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v3-sample-configs' WHERE component='camilladsp' AND type='sample-configs'"
+        # Truncate players.txt to force discover at Players first launch
+        truncate /var/local/www/players.txt --size 0
     fi
 
     # --------------------------------------------------------------------------
