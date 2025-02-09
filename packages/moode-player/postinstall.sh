@@ -734,6 +734,12 @@ function on_upgrade() {
         truncate /var/local/www/players.txt --size 0
     fi
 
+    # Introduced in r925
+    dpkg --compare-versions $VERSION lt "9.2.5-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r925"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
