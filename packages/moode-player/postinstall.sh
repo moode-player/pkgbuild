@@ -330,6 +330,7 @@ function on_install() {
     # output_rate = 44100;
     # output_format = "S16";
     # disable_standby_mode = "auto";
+    # disable_synchronization = "no";
     sed -i -e 's/\/\/.*interpolation[ ]=[ ]\"auto\"[;]\(.*\)/interpolation = "soxr";\1/' \
         -e 's/\/\/[[:space:]]\+\(audio_backend_latency_offset_in_seconds\)/\1/' \
         -e 's/\/\/.*\(audio_backend_buffer_desired_length_in_seconds =\)/\1/' \
@@ -342,6 +343,7 @@ function on_install() {
         -e 's/\/\/[[:space:]]\+output_rate[ ]=[ ]\"auto\"[;]\(.*\)/output_rate = 44100;\1/' \
         -e 's/\/\/[[:space:]]\+output_format[ ]=[ ]\"auto\"[;]\(.*\)/output_format = "S16";\1/' \
         -e 's/\/\/[[:space:]]\+disable_standby_mode[ ]=[ ]\"never\"[;]\(.*\)/disable_standby_mode = "auto";\1/' \
+        -e 's/\/\/[[:space:]]\+\(disable_synchronization\)/\1/' \
         /etc/shairport-sync.conf
 
     # /etc/nsswitch.conf
@@ -737,7 +739,10 @@ function on_upgrade() {
     # Introduced in r925
     dpkg --compare-versions $VERSION lt "9.2.5-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r925"
+        #echo "There are no postinstall updates for r925"
+        # Add disable_synchronization param to cfg_airplay
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_airplay" | grep "disable_synchronization"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        sed -i -e 's/\/\/[[:space:]]\+\(disable_synchronization\)/\1/' /etc/shairport-sync.conf
     fi
 
     # --------------------------------------------------------------------------
