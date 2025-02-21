@@ -311,6 +311,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends squeezelite \
 --depends sysstat \
 --depends telnet \
+--depends tree \
 --depends triggerhappy \
 --depends trx \
 --depends udisks-glue \
