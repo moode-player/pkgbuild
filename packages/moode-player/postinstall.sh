@@ -745,6 +745,12 @@ function on_upgrade() {
         sed -i -e 's/\/\/[[:space:]]\+\(disable_synchronization\)/\1/' /etc/shairport-sync.conf
     fi
 
+    # Introduced in r925
+    dpkg --compare-versions $VERSION lt "9.2.6-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r926"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
