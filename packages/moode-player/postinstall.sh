@@ -748,7 +748,13 @@ function on_upgrade() {
     # Introduced in r926
     dpkg --compare-versions $VERSION lt "9.2.6-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r926"
+        #echo "There are no postinstall updates for r926"
+        # Add security protocol columns to cfg_network and cfg_ssid
+        sqlite3 $SQLDB "ALTER TABLE cfg_network ADD COLUMN wlansec char(15)"
+        sqlite3 $SQLDB "ALTER TABLE cfg_ssid ADD COLUMN security char(32)"
+        # Set security protocol default to wpa-psk
+        sqlite3 $SQLDB "UPDATE cfg_network SET wlansec='wpa-psk' WHERE id='2' OR id='3'"
+        sqlite3 $SQLDB "UPDATE cfg_ssid SET security='wpa-psk' WHERE ssid!=''"
     fi
 
     # --------------------------------------------------------------------------
