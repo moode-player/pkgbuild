@@ -757,6 +757,12 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_ssid SET security='wpa-psk' WHERE ssid!=''"
     fi
 
+    # Introduced in r927
+    dpkg --compare-versions $VERSION lt "9.2.7-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r927"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
