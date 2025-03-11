@@ -1,5 +1,5 @@
---- mpd-0.23.11/debian/rules.orig	2022-04-17 16:57:06.000000000 +0200
-+++ mpd-0.23.11/debian/rules	2022-12-14 19:50:27.090308123 +0100
+--- mpd-0.24/debian/rules.org	2025-03-11 21:50:18.539473886 +0100
++++ mpd-0.24/debian/rules	2025-03-11 21:50:52.216776952 +0100
 @@ -31,39 +31,42 @@
  		-Dzzip=enabled
 
@@ -57,7 +57,7 @@
 
  # Other features
  ENABLE_OTHER=-Dcue=true \
-@@ -73,7 +75,7 @@
+@@ -73,7 +76,7 @@
  		-Dlibmpdclient=enabled \
  		-Dinotify=true \
  		-Dsoxr=enabled \
@@ -66,7 +66,7 @@
  		-Dsqlite=enabled \
  		-Dsyslog=enabled \
  		-Dyajl=enabled \
-@@ -81,23 +83,23 @@
+@@ -81,23 +84,23 @@
 
  # Metadata support
  ENABLE_METADATA=-Did3tag=enabled \
@@ -99,7 +99,7 @@
 
  # Streaming encoder support
  # Note: FLAC and Opus enabled under file formats, vorbisenc at top (!tremor)
-@@ -108,9 +110,9 @@
+@@ -108,12 +111,12 @@
  # Streaming support
  ENABLE_STREAMING=-Dcdio_paranoia=enabled \
  		-Dcurl=enabled \
@@ -110,4 +110,8 @@
 +		-Dmms=disabled
 
  # Sphinx documentation
- ENABLE_DOCUMENTATION=-Ddocumentation=enabled
+-ENABLE_DOCUMENTATION=-Ddocumentation=enabled
++ENABLE_DOCUMENTATION=-Ddocumentation=disabled
+
+ ###############################################################
+
