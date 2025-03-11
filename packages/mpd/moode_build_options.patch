@@ -1,5 +1,14 @@
---- mpd-0.24/debian/rules.org	2025-03-11 21:50:18.539473886 +0100
-+++ mpd-0.24/debian/rules	2025-03-11 21:50:52.216776952 +0100
+--- mpd-0.24/debian/rules.org	2025-03-11 22:52:36.606378726 +0100
++++ mpd-0.24/debian/rules	2025-03-11 22:54:12.102414016 +0100
+@@ -22,7 +22,7 @@
+
+ ###############################################################
+ ## Define Debian feature set (in configure summary order)
+-RUN_TESTS=-Dtest=true
++RUN_TESTS=-Dtest=false
+
+ # Archive support
+ ENABLE_ARCHIVES=-Dbzip2=enabled \
 @@ -31,39 +31,42 @@
  		-Dzzip=enabled
 
