@@ -578,7 +578,7 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, ';', ',') WHERE param='camilladsp_quickconv'"
         sqlite3 $SQLDB "UPDATE cfg_system SET value=replace(value, '''', '') WHERE param='camilladsp_quickconv'"
         # Add ap_fallback param to cfg_spotify
-        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "ap_fallback"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "ap_fallback"  | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
         # Update min initial-volume in cfg_spotify
         sqlite3 $SQLDB "UPDATE cfg_spotify SET value='5' WHERE param='initial_volume' AND value='0'"
         # Replace radio station 200px thumbs with native resolution main images
@@ -697,8 +697,8 @@ function on_upgrade() {
         # Remove rpi-backlight overlay
         sed -i /rpi-backlight/d /boot/firmware/config.txt
         # Add zeroconf port option to cfg_spotify
-        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "zeroconf"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
-        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "zeroconf_port"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "zeroconf"  | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_spotify" | grep "zeroconf_port"  | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
     fi
 
     # Introduced in r921
@@ -741,7 +741,7 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         #echo "There are no postinstall updates for r925"
         # Add disable_synchronization param to cfg_airplay
-        cat $SQLDB".sql" | grep "INSERT INTO cfg_airplay" | grep "disable_synchronization"  | sed "s/^INSERT/INSERT OR IGNORE/" |  sqlite3 $SQLDB
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_airplay" | grep "disable_synchronization"  | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
         sed -i -e 's/\/\/[[:space:]]\+\(disable_synchronization\)/\1/' /etc/shairport-sync.conf
     fi
 
@@ -760,7 +760,10 @@ function on_upgrade() {
     # Introduced in r927
     dpkg --compare-versions $VERSION lt "9.2.7-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r927"
+        #echo "There are no postinstall updates for r927"
+        # MPD config updates
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "close_on_pause"  | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
+        sqlite3 $SQLDB "UPDATE cfg_mpd SET value='notice' WHERE param='log_level'"
     fi
 
     # --------------------------------------------------------------------------
