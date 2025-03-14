@@ -1,0 +1,13 @@
+diff --git a/libasound_module_pcm_cdsp.c b/libasound_module_pcm_cdsp.c
+index 115ee1f..280e6f7 100644
+--- a/libasound_module_pcm_cdsp.c
++++ b/libasound_module_pcm_cdsp.c
+@@ -32,7 +32,7 @@
+ #include "rt.h"
+ #include "strrep.h"
+ 
+-#define DEBUG 2
++#define DEBUG 1
+ #define error(fmt, ...) \
+   do { if(DEBUG > 0){fprintf(stderr,"CDSP Plugin ERROR: ");\
+     fprintf(stderr,((fmt)), ##__VA_ARGS__);} } while (0)
