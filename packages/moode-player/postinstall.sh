@@ -764,6 +764,8 @@ function on_upgrade() {
         # MPD config updates
         cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "close_on_pause"  | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
         sqlite3 $SQLDB "UPDATE cfg_mpd SET value='notice' WHERE param='log_level'"
+        # Add saepwd to cfg_ssid
+        sqlite3 $SQLDB "ALTER TABLE cfg_ssid ADD COLUMN saepwd char(32)"
     fi
 
     # --------------------------------------------------------------------------
