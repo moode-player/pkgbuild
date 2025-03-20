@@ -757,10 +757,10 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_ssid SET security='wpa-psk' WHERE ssid!=''"
     fi
 
-    # Introduced in r927
-    dpkg --compare-versions $VERSION lt "9.2.7-1moode1"
+    # Introduced in r930
+    dpkg --compare-versions $VERSION lt "9.3.0-1moode1"
     if [ $? -eq 0 ]; then
-        #echo "There are no postinstall updates for r927"
+        #echo "There are no postinstall updates for r930"
         # MPD config updates
         cat $SQLDB".sql" | grep "INSERT INTO cfg_mpd" | grep "close_on_pause"  | sed "s/^INSERT/INSERT OR IGNORE/" | sqlite3 $SQLDB
         sqlite3 $SQLDB "UPDATE cfg_mpd SET value='notice' WHERE param='log_level'"
