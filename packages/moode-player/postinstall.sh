@@ -766,6 +766,9 @@ function on_upgrade() {
         sqlite3 $SQLDB "UPDATE cfg_mpd SET value='notice' WHERE param='log_level'"
         # Add saepwd to cfg_ssid
         sqlite3 $SQLDB "ALTER TABLE cfg_ssid ADD COLUMN saepwd char(32)"
+        # Add HiFiBerry DAC2 HD to cfg_audiodev
+        sqlite3 $SQLDB "DELETE FROM cfg_audiodev"
+        cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
     fi
 
     # --------------------------------------------------------------------------
