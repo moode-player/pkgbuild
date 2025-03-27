@@ -771,6 +771,12 @@ function on_upgrade() {
         cat $SQLDB".sql" | grep "INSERT INTO cfg_audiodev" | sqlite3 $SQLDB
     fi
 
+    # Introduced in r931
+    dpkg --compare-versions $VERSION lt "9.3.1-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r931"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
