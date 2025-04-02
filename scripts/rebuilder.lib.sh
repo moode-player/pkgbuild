@@ -296,10 +296,10 @@ function rbl_check_cargo {
     export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
     export PATH=$PATH:/home/pi/.cargo/bin
 
-    RUSTC_MIN_VERSION="1.82"
-    # RUST_CHAIN="nightly"
+    RUSTC_MIN_VERSION="1.83"
+    RUST_CHAIN="nightly"
     # until 1.61 is available on stable switch to nightly
-    RUST_CHAIN="stable"
+    #RUST_CHAIN="stable"
     # Install cargo + rust tools
     CARGO_VER=`cargo --version > /dev/null 2>&1`
 
@@ -743,4 +743,3 @@ function rbl_dkms_prepare {
         cp $BASE_DIR/*.tar $BUILD_ROOT_DIR/source/$SRC_DIR/ > /dev/null 2>&1
     fi
 }
-
