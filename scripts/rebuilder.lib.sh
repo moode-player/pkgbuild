@@ -296,7 +296,7 @@ function rbl_check_cargo {
     export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
     export PATH=$PATH:/home/pi/.cargo/bin
 
-    RUSTC_MIN_VERSION="1.83"
+    RUSTC_MIN_VERSION="1.85"
     #RUST_CHAIN="nightly"
     # until 1.61 is available on stable switch to nightly
     RUST_CHAIN="stable"
