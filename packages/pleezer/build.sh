@@ -21,6 +21,7 @@ rbl_create_git_archive ${PKG_SOURCE_GIT_TAG} ../${PKGNAME}_${PKGVERSION}.orig.ta
 
 # ------------------------------------------------------------
 # Custom part of the packing
+rbl_patch $BASE_DIR/rust_edition_2021.patch
 
 # Add to [package.metadata.deb] section of Cargo.toml:
 sed -i "s/^priority = \"optional\"/priority = \"optional\"\nrevision = \"${DEBVER}${DEBLOC}\"/" Cargo.toml

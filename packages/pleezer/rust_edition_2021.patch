@@ -1,0 +1,13 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 26d19d3..d5ece34 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -3,7 +3,7 @@ name = "pleezer"
+ version = "0.14.1"
+ authors = ["Roderick van Domburg"]
+ description = "Headless Deezer Connect player"
+-edition = "2024"
++edition = "2021"
+ rust-version = "1.85"
+ license-file = "LICENSE.md"
+ readme = "README.md"
