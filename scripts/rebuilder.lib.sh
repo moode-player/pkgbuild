@@ -297,9 +297,9 @@ function rbl_check_cargo {
     export PATH=$PATH:/home/pi/.cargo/bin
 
     RUSTC_MIN_VERSION="1.83"
-    RUST_CHAIN="nightly"
+    #RUST_CHAIN="nightly"
     # until 1.61 is available on stable switch to nightly
-    #RUST_CHAIN="stable"
+    RUST_CHAIN="stable"
     # Install cargo + rust tools
     CARGO_VER=`cargo --version > /dev/null 2>&1`
 
