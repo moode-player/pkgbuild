@@ -775,6 +775,9 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "9.3.1-1moode1"
     if [ $? -eq 0 ]; then
         echo "There are no postinstall updates for r931"
+        # WIP AirPlay metadata
+        # - update shairport-sync.conf here and in the "Patch config files with sed" section
+        # - cover_art_cache_directory = "/var/local/www/imagesw/airplay-covers";
     fi
 
     # --------------------------------------------------------------------------
