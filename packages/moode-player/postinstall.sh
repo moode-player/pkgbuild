@@ -331,6 +331,7 @@ function on_install() {
     # output_format = "S16";
     # disable_standby_mode = "auto";
     # disable_synchronization = "no";
+    # cover_art_cache_directory = "/var/local/www/imagesw/airplay-covers";
     sed -i -e 's/\/\/.*interpolation[ ]=[ ]\"auto\"[;]\(.*\)/interpolation = "soxr";\1/' \
         -e 's/\/\/[[:space:]]\+\(audio_backend_latency_offset_in_seconds\)/\1/' \
         -e 's/\/\/.*\(audio_backend_buffer_desired_length_in_seconds =\)/\1/' \
@@ -344,6 +345,7 @@ function on_install() {
         -e 's/\/\/[[:space:]]\+output_format[ ]=[ ]\"auto\"[;]\(.*\)/output_format = "S16";\1/' \
         -e 's/\/\/[[:space:]]\+disable_standby_mode[ ]=[ ]\"never\"[;]\(.*\)/disable_standby_mode = "auto";\1/' \
         -e 's/\/\/[[:space:]]\+\(disable_synchronization\)/\1/' \
+        -e 's/\/\/.*\(cover_art_cache_directory\)[ ]=[ ]\".*\"\(.*\)/\1 = "\/var\/local\/www\/imagesw\/airplay-covers";/' \
         /etc/shairport-sync.conf
 
     # /etc/nsswitch.conf
@@ -774,10 +776,12 @@ function on_upgrade() {
     # Introduced in r931
     dpkg --compare-versions $VERSION lt "9.3.1-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r931"
-        # WIP AirPlay metadata
-        # - update shairport-sync.conf here and in the "Patch config files with sed" section
-        # - cover_art_cache_directory = "/var/local/www/imagesw/airplay-covers";
+        #echo "There are no postinstall updates for r931"
+        # AirPlay metadata
+        mkdir /var/local/www/imagesw/airplay-covers
+        touch /var/local/www/imagesw/airplay-covers/.gitkeep
+        sed -i -e 's/\/\/.*\(cover_art_cache_directory\)[ ]=[ ]\".*\"\(.*\)/\1 = "\/var\/local\/www\/imagesw\/airplay-covers";/' \
+        /etc/shairport-sync.conf
     fi
 
     # --------------------------------------------------------------------------
