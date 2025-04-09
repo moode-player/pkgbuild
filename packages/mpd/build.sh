@@ -17,7 +17,7 @@
 
 PKG="mpd_0.24.3-1moode1"
 PKG_SOURCE_GIT="https://github.com/MusicPlayerDaemon/MPD.git"
-PKG_SOURCE_GIT_TAG="v0.24.2"
+PKG_SOURCE_GIT_TAG="v0.24.3"
 
 PKG_DEBIAN="http://deb.debian.org/debian/pool/main/m/mpd/mpd_0.23.17-1.debian.tar.xz"
 rbl_prepare_from_git_with_deb_repo
