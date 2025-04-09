@@ -15,7 +15,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="mpd_0.24.2-1moode1"
+PKG="mpd_0.24.3-1moode1"
 PKG_SOURCE_GIT="https://github.com/MusicPlayerDaemon/MPD.git"
 PKG_SOURCE_GIT_TAG="v0.24.2"
 
