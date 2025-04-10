@@ -782,6 +782,8 @@ function on_upgrade() {
         touch /var/local/www/imagesw/airplay-covers/.gitkeep
         sed -i -e 's/\/\/.*\(cover_art_cache_directory\)[ ]=[ ]\".*\"\(.*\)/\1 = "\/var\/local\/www\/imagesw\/airplay-covers";/' \
         /etc/shairport-sync.conf
+        # Deezer Connect max_ram (RAM file cache)
+        sqlite3 $SQLDB "UPDATE cfg_deezer SET param='max_ram', value='0' where param='RESERVED_5'"
     fi
 
     # --------------------------------------------------------------------------
