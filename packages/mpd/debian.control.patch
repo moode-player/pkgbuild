@@ -9,12 +9,12 @@
                 libavformat-dev,
                 libboost-dev,
                 libbz2-dev,
-@@ -64,7 +64,7 @@
+@@ -62,7 +62,7 @@
                 libwildmidi-dev,
-                libyajl-dev,
                 libzzip-dev,
+                nlohmann-json3-dev,
 -               systemd-dev [linux-any],
 +#               systemd-dev [linux-any],
  # for docs:
                 python3-sphinx,
- # for tests:
+                python3-sphinx-rtd-theme,
