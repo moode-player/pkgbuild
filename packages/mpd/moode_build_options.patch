@@ -108,12 +108,10 @@
 
  # Streaming encoder support
  # Note: FLAC and Opus enabled under file formats, vorbisenc at top (!tremor)
-@@ -108,12 +111,12 @@
+@@ -108,11 +111,11 @@
  # Streaming support
  ENABLE_STREAMING=-Dcdio_paranoia=enabled \
  		-Dcurl=enabled \
--		-Dsoundcloud=enabled \
-+		-Dsoundcloud=disabled \
  		-Dqobuz=disabled \
 -		-Dmms=enabled
 +		-Dmms=disabled
