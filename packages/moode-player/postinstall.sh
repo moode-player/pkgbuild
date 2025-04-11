@@ -400,6 +400,10 @@ function on_install() {
     # Note: Remove this when new version includes the patch
     sed -i "s/rsync -aXv/rsync -AaXv/" /usr/local/bin/log2ram
 
+    # /etc/logrotate.d/
+    chown root:root /etc/logrotate.d/log2ram
+    sed -i 's/*.log/log/' /etc/logrotate.d/mpd
+
     # --------------------------------------------------------------------------
     # Install NGINX and MPD configs
     # --------------------------------------------------------------------------
@@ -784,6 +788,9 @@ function on_upgrade() {
         /etc/shairport-sync.conf
         # Deezer Connect max_ram (RAM file cache)
         sqlite3 $SQLDB "UPDATE cfg_deezer SET param='max_ram', value='0' where param='RESERVED_5'"
+        # Fixes for /etc/logrotate.d/
+        chown root:root /etc/logrotate.d/log2ram
+        sed -i 's/*.log/log/' /etc/logrotate.d/mpd
     fi
 
     # --------------------------------------------------------------------------
