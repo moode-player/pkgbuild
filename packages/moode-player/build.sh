@@ -303,6 +303,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends runonce \
 --depends samba \
 --depends shairport-sync \
+--depends shairport-sync-metadata-reader \
 --depends shellinabox \
 --depends smbclient \
 --depends sox \
