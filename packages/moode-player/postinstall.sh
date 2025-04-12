@@ -111,7 +111,7 @@ function on_install() {
         systemctl disable "${service}" > /dev/null 2>&1
     done
 
-    echo "** Set permissions for service files"
+    echo "** Set permissions for systemd files"
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bt-agent.service \
@@ -120,7 +120,8 @@ function on_install() {
     /lib/systemd/system/rotenc.service \
     /lib/systemd/system/shellinabox.service \
     /lib/systemd/system/squeezelite.service \
-    /lib/systemd/system/localdisplay.service
+    /lib/systemd/system/localdisplay.service \
+    /lib/systemd/system/tmp.mount
     #/etc/systemd/system/bluealsa.service \ We get file not found, very odd
 
     echo "Set permissions for etc files"
@@ -820,7 +821,8 @@ function on_upgrade() {
     /lib/systemd/system/rotenc.service \
     /lib/systemd/system/shellinabox.service \
     /lib/systemd/system/squeezelite.service \
-    /lib/systemd/system/localdisplay.service
+    /lib/systemd/system/localdisplay.service \
+    /lib/systemd/system/tmp.mount
     # Set permissions for etc files
     chmod 0644 \
     /etc/bluealsaaplay.conf \
