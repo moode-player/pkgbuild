@@ -779,9 +779,16 @@ function on_upgrade() {
     fi
 
     # Introduced in r931
+    # NOTE: this was a pre-release that had a buggy AirPlay metadata module
     dpkg --compare-versions $VERSION lt "9.3.1-1moode1"
     if [ $? -eq 0 ]; then
-        #echo "There are no postinstall updates for r931"
+        echo "There are no postinstall updates for r931"
+    fi
+
+    # Introduced in r932
+    dpkg --compare-versions $VERSION lt "9.3.2-1moode1"
+    if [ $? -eq 0 ]; then
+        #echo "There are no postinstall updates for r932"
         # AirPlay metadata
         mkdir /var/local/www/imagesw/airplay-covers
         touch /var/local/www/imagesw/airplay-covers/.gitkeep
