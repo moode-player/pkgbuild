@@ -801,6 +801,12 @@ function on_upgrade() {
         sed -i 's/*.log/log/' /etc/logrotate.d/mpd
     fi
 
+    # Introduced in r933
+    dpkg --compare-versions $VERSION lt "9.3.3-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r933"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
