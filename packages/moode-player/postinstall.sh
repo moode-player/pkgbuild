@@ -805,7 +805,7 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "9.3.3-1moode1"
     if [ $? -eq 0 ]; then
         #echo "There are no postinstall updates for r933"
-        # Clear Players dashboard cache file. Triggers rediscover/reload HTML
+        # Delete players cache file (replaced by dashboard cache file)
         if [ -f /var/local/www/players.txt ]; then
             rm /var/local/www/players.txt
         fi
