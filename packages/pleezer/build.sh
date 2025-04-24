@@ -9,7 +9,7 @@
 #########################################################################
 
 . ../../scripts/rebuilder.lib.sh
-VER="0.16.0"
+VER="0.17.0"
 PKG="pleezer_$VER-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/roderickvd/pleezer.git"
