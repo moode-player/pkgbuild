@@ -811,7 +811,7 @@ function on_upgrade() {
         fi
         # Deezer Connect dither_bits and noise_shaping
         sqlite3 $SQLDB "UPDATE cfg_deezer SET param='dither_bits', value='0' WHERE param='RESERVED_6'"
-        sqlite3 $SQLDB "UPDATE cfg_deezer SET param='noise_shaping', value='0' WHERE param='RESERVED_7'"
+        sqlite3 $SQLDB "UPDATE cfg_deezer SET param='noise_shaping', value='3' WHERE param='RESERVED_7'"
     fi
 
     # --------------------------------------------------------------------------
