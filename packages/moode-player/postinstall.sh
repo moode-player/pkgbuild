@@ -811,7 +811,7 @@ function on_upgrade() {
         fi
         # Deezer Connect dither_bits and noise_shaping
         sqlite3 $SQLDB "UPDATE cfg_deezer SET param='dither_bits', value='' WHERE param='RESERVED_6'"
-        sqlite3 $SQLDB "UPDATE cfg_deezer SET param='noise_shaping', value='3' WHERE param='RESERVED_7'"
+        sqlite3 $SQLDB "UPDATE cfg_deezer SET param='noise_shaping', value='2' WHERE param='RESERVED_7'"
         # Remove root shares for NVMe and SATA (replaced by actual shared directories)
         sed -i "/NVMe]/,/guest/ d" /etc/samba/smb.conf
         sed -i "/SATA]/,/guest/ d" /etc/samba/smb.conf
