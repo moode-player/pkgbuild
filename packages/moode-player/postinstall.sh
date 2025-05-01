@@ -819,6 +819,12 @@ function on_upgrade() {
         sed -i "/NAS]/,/guest/ d" /etc/samba/smb.conf
     fi
 
+    # Introduced in r934
+    dpkg --compare-versions $VERSION lt "9.3.4-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r934"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
