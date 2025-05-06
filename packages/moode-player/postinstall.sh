@@ -822,7 +822,11 @@ function on_upgrade() {
     # Introduced in r934
     dpkg --compare-versions $VERSION lt "9.3.4-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r934"
+        #echo "There are no postinstall updates for r934"
+        # Delete dashboard cache file (so it gets regenerated)
+        if [ -f /var/local/www/dashboard.txt ]; then
+            rm /var/local/www/dashboard.txt
+        fi
     fi
 
     # --------------------------------------------------------------------------
