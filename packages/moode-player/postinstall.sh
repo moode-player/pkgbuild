@@ -827,6 +827,12 @@ function on_upgrade() {
         if [ -f /var/local/www/dashboard.txt ]; then
             rm /var/local/www/dashboard.txt
         fi
+        # Disable Deezer Connect feature (discontinued by company)
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='97207' WHERE param='feat_bitmask'"
+        # Update xinitrc for DSI type 'other'
+        HOME_DIR=$(moodeutl -d -gv home_dir)
+        sed -i "s/Rotation for Touch2/Rotation for Touch2 or Other/" $HOME_DIR/.xinitrc
+        sed -i "s/\[ \$DSI_SCN_TYPE = '2' \]/\[ \$DSI_SCN_TYPE = '2' \] || \[ \$DSI_SCN_TYPE = 'other' \]/" $HOME_DIR/.xinitrc
     fi
 
     # --------------------------------------------------------------------------
