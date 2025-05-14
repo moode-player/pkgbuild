@@ -835,6 +835,12 @@ function on_upgrade() {
         sed -i "s/\[ \$DSI_SCN_TYPE = '2' \]/\[ \$DSI_SCN_TYPE = '2' \] || \[ \$DSI_SCN_TYPE = 'other' \]/" $HOME_DIR/.xinitrc
     fi
 
+    # Introduced in r935
+    dpkg --compare-versions $VERSION lt "9.3.5-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r934"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
