@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_9.3.5-1moode1"
+PKG="moode-player_9.3.6-1moode1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -19,7 +19,7 @@ PKG="moode-player_9.3.5-1moode1"
 # to use an already checked out and Gulp built version of moode.
 # The enviroment var MOODE_DIR should be set to the location where the moode source repo.
 
-# sync required npm modules for gulp build if if already exists
+# sync required npm modules for gulp build if it already exists
 NPM_CI=0
 # build web app with gulp, to speed up test build without change to frontend (or manual build) diable this
 BUILD_APP=1

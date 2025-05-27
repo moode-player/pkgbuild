@@ -838,7 +838,13 @@ function on_upgrade() {
     # Introduced in r935
     dpkg --compare-versions $VERSION lt "9.3.5-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r934"
+        echo "There are no postinstall updates for r935"
+    fi
+
+    # Introduced in r936
+    dpkg --compare-versions $VERSION lt "9.3.6-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r936"
     fi
 
     # --------------------------------------------------------------------------
