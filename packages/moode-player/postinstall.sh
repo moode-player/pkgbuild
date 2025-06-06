@@ -146,7 +146,7 @@ function on_install() {
     [ ! -e /var/lib/mpd/music/NAS ] &&  ln -s /mnt/NAS /var/lib/mpd/music/NAS
     [ ! -e /var/lib/mpd/music/NVME ] &&  ln -s /mnt/NVME /var/lib/mpd/music/NVME
     [ ! -e /var/lib/mpd/music/SATA ] &&  ln -s /mnt/SATA /var/lib/mpd/music/SATA
-    [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
+    [ ! -e /var/lib/mpd/music/OSDISK ] && ln -s /mnt/OSDISK /var/lib/mpd/music/OSDISK
     [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
     [ ! -e /srv/nfs ] && mkdir /srv/nfs
     [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb
@@ -844,7 +844,22 @@ function on_upgrade() {
     # Introduced in r936
     dpkg --compare-versions $VERSION lt "9.3.6-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r936"
+        #echo "There are no postinstall updates for r936"
+        # Add OSDISK (deprecate SDCARD)
+        # - Create mount dir
+        [ ! -e /mnt/OSDISK ] && mkdir /mnt/OSDISK
+        # - Add [OSDisk] block to smb.conf
+        if [ ! $(grep OSDISK /etc/samba/smb.conf) ]; then
+            sed -i "/SDCard/i[OSDisk]\ncomment = OSDisk Storage\npath = /mnt/OSDISK\nread only = No\nguest ok = Yes" /etc/samba/smb.conf
+        fi
+        # - Create new MPD symlink
+        [ ! -e /var/lib/mpd/music/OSDISK ] &&  ln -s /mnt/OSDISK /var/lib/mpd/music/OSDISK
+        # - Update default playlist for Stereo Test track
+        sed -i "s/SDCARD/OSDISK/" "/var/lib/mpd/playlists/Default Playlist.m3u"
+        mv "/mnt/SDCARD/Stereo Test" "/mnt/OSDISK/Stereo Test"
+        # - Update cfg_system
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='/mnt/OSDISK' WHERE param='recorder_storage'"
+        # - Add thumbnails for Stereo Test track (user runs Update Library)
     fi
 
     # --------------------------------------------------------------------------
