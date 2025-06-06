@@ -857,7 +857,7 @@ function on_upgrade() {
         [ ! -e /var/lib/mpd/music/OSDISK ] &&  ln -s /mnt/OSDISK /var/lib/mpd/music/OSDISK
         # - Update default playlist for Stereo Test track
         sed -i "s/SDCARD/OSDISK/" "/var/lib/mpd/playlists/Default Playlist.m3u"
-        mv "/mnt/SDCARD/Stereo Test" "/mnt/OSDISK/Stereo Test"
+        [ ! -e "/mnt/SDCARD/Stereo Test" ] && mv "/mnt/SDCARD/Stereo Test" "/mnt/OSDISK/Stereo Test"
         # - Update cfg_system
         sqlite3 $SQLDB "UPDATE cfg_system SET value='/mnt/OSDISK' WHERE param='recorder_storage'"
         # - Add thumbnails for Stereo Test track (user runs Update Library)
