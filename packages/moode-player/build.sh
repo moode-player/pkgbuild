@@ -161,7 +161,7 @@ rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="
 # NOTE: SDCARD is deprecated and replaced by OSDISK
 mkdir -p $PKG_ROOT_DIR/mnt/{NAS,NVME,OSDISK,SATA,SDCARD}
 cp -r "$MOODE_DIR/osdisk/Stereo Test/" $PKG_ROOT_DIR/mnt/OSDISK
-cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
+#cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
 
 # /usr
 rsync -av --prune-empty-dirs --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
