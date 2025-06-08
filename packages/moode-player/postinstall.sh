@@ -863,6 +863,12 @@ function on_upgrade() {
         # - Add thumbnails for Stereo Test track (user runs Update Library)
     fi
 
+    # Introduced in r937
+    dpkg --compare-versions $VERSION lt "9.3.7-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r937"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
