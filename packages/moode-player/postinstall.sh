@@ -869,6 +869,12 @@ function on_upgrade() {
         echo "There are no postinstall updates for r937"
     fi
 
+    # Introduced in r938
+    dpkg --compare-versions $VERSION lt "9.3.8-1moode1"
+    if [ $? -eq 0 ]; then
+        echo "There are no postinstall updates for r938"
+    fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
