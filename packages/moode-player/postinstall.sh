@@ -872,7 +872,12 @@ function on_upgrade() {
     # Introduced in r938
     dpkg --compare-versions $VERSION lt "9.3.8-1moode1"
     if [ $? -eq 0 ]; then
-        echo "There are no postinstall updates for r938"
+        #echo "There are no postinstall updates for r938"
+		# Fix Local display feature not working correctly in HTTPS mode
+		cp -f $SRC/etc/nginx/sites-available/moode-https.conf /etc/nginx/sites-available/
+		cp -f $SRC/etc/nginx/sites-available/moode-http.conf  /etc/nginx/sites-available/
+		# Reenable Deezer Connect feature (deprecated but still works on IOS)
+        sqlite3 $SQLDB "UPDATE cfg_system SET value='97271' WHERE param='feat_bitmask'"
     fi
 
     # --------------------------------------------------------------------------
