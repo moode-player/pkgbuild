@@ -877,7 +877,9 @@ function on_upgrade() {
 		cp -f $SRC/etc/nginx/sites-available/moode-https.conf /etc/nginx/sites-available/
 		cp -f $SRC/etc/nginx/sites-available/moode-http.conf  /etc/nginx/sites-available/
 		# Reenable Deezer Connect feature (deprecated but still works on IOS)
-        sqlite3 $SQLDB "UPDATE cfg_system SET value='97271' WHERE param='feat_bitmask'"
+		sqlite3 $SQLDB "UPDATE cfg_system SET value='97271' WHERE param='feat_bitmask'"
+		# Add PeppyMeter display feature
+		sqlite3 $SQLDB "UPDATE cfg_system SET value='131072' WHERE param='feat_bitmask'"
     fi
 
     # --------------------------------------------------------------------------
