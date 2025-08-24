@@ -879,6 +879,15 @@ function on_upgrade() {
 		# Reenable Deezer Connect feature (deprecated but still works on IOS)
 		# Add PeppyMeter display feature
 		sqlite3 $SQLDB "UPDATE cfg_system SET value='228343' WHERE param='feat_bitmask'"
+		# Delete orphaned FluxFM stations
+		sqlite3 $SQLDB "DELETE FROM cfg_radio WHERE name='FluxFM - 90s (320K)'"
+		sqlite3 $SQLDB "DELETE FROM cfg_radio WHERE name='FluxFM - Livestream (128K)'"
+		rm "/var/local/www/imagesw/radio-logos/FluxFM - 90s (320K).jpg"
+		rm "/var/local/www/imagesw/radio-logos/FluxFM - Livestream (128K).jpg"
+		rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM - 90s (320K).jpg"
+		rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM - Livestream (128K).jpg"
+		rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM - 90s (320K)_sm.jpg"
+		rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM - Livestream (128K)_sm.jpg"
     fi
 
     # --------------------------------------------------------------------------
