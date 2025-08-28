@@ -300,6 +300,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends python3-libupnpp \
 --depends python3-musicpd \
 --depends python3-pip \
+--depends python3-pygame \
 --depends python3-rpi.gpio \
 --depends python3-setuptools \
 --depends rpi-update \
