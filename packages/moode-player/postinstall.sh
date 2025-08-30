@@ -413,7 +413,7 @@ function on_install() {
 	# pipe.name = /tmp/peppymeter
 	sed -i -e 's/^framebuffer.device.*/framebuffer.device = \/dev\/fb0/' \
 		-e 's/^mouse.device.*/mouse.device = \/dev\/input\/event0/' \
-		-e 's/^mouse.enabled.*/mouse.device = False/' \
+		-e 's/^mouse.enabled.*/mouse.enabled = False/' \
 		-e 's/^pipe.name.*/pipe.name = \/tmp\/peppymeter/' \
 		/etc/peppymeter/config.txt
 
@@ -424,7 +424,7 @@ function on_install() {
 	# pipe.name = /tmp/peppyspectrum
 	sed -i -e 's/^framebuffer.device.*/framebuffer.device = \/dev\/fb0/' \
 		-e 's/^mouse.device.*/mouse.device = \/dev\/input\/event0/' \
-		-e 's/^mouse.enabled.*/mouse.device = False/' \
+		-e 's/^mouse.enabled.*/mouse.enabled = False/' \
 		-e 's/^pipe.name.*/pipe.name = \/tmp\/peppyspectrum/' \
 		/etc/peppyspectrum/config.txt
 
