@@ -1,0 +1,13 @@
+[Unit]
+Description=Peppy Spectrum
+After=network-online.target
+
+[Service]
+Type=idle
+Group=www-data
+WorkingDirectory=/opt/peppyspectrum
+ExecStart=/usr/bin/python3 /opt/peppyspectrum/spectrum.py
+
+[Install]
+WantedBy=multi-user.target
+

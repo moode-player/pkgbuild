@@ -1,0 +1,16 @@
+diff --git a/spectrumconfigparser.py b/spectrumconfigparser.py
+index fe05c31..54b8312 100644
+--- a/spectrumconfigparser.py
++++ b/spectrumconfigparser.py
+@@ -109,7 +109,10 @@ class SpectrumConfigParser(object):
+
+         :return: dictionary with properties from the config.txt
+         """
+-        config_path = os.path.join(os.getcwd(), FILE_CONFIG)
++
++        config_path = os.path.join('/etc/peppyspectrum', FILE_CONFIG)
++        if not os.path.exists(config_path):
++            config_path = os.path.join(os.getcwd(), FILE_CONFIG)
+
+         if not os.path.exists(config_path):
+             print(f"Cannot read file: {config_path}")
