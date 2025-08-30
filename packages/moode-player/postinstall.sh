@@ -406,6 +406,28 @@ function on_install() {
     chown root:root /etc/logrotate.d/log2ram
     sed -i 's/*.log/log/' /etc/logrotate.d/mpd
 
+	# /etc/peppymeter/config.txt
+	# framebuffer.device = /dev/fb0
+	# mouse.device = /dev/input/event0
+	# mouse.enabled = False
+	# pipe.name = /tmp/peppymeter
+	sed -i -e 's/^framebuffer.device.*/framebuffer.device = \/dev\/fb0/' \
+		-e 's/^mouse.device.*/mouse.device = \/dev\/input\/event0/' \
+		-e 's/^mouse.enabled.*/mouse.device = False/' \
+		-e 's/^pipe.name.*/pipe.name = \/tmp\/peppymeter/' \
+		/etc/peppymeter/config.txt
+
+	# /etc/peppyspectrum/config.txt
+	# framebuffer.device = /dev/fb0
+	# mouse.device = /dev/input/event0
+	# mouse.enabled = False
+	# pipe.name = /tmp/peppyspectrum
+	sed -i -e 's/^framebuffer.device.*/framebuffer.device = \/dev\/fb0/' \
+		-e 's/^mouse.device.*/mouse.device = \/dev\/input\/event0/' \
+		-e 's/^mouse.enabled.*/mouse.device = False/' \
+		-e 's/^pipe.name.*/pipe.name = \/tmp\/peppyspectrum/' \
+		/etc/peppyspectrum/config.txt
+
     # --------------------------------------------------------------------------
     # Install NGINX and MPD configs
     # --------------------------------------------------------------------------
