@@ -1,0 +1,22 @@
+Source: peppy-alsa
+Section: libs
+Priority: optional
+Maintainer: Bitkeeper <bitkeeper@users.noreply.github.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ libasound2-dev,
+ libfftw3-dev,
+Standards-Version: 4.6.2
+Homepage: https://github.com/project-owner/peppyalsa
+Vcs-Git: https://github.com/project-owner/peppyalsa.git
+
+
+Package: peppy-alsa
+Architecture: arm64
+Multi-Arch: same
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: peppyalsa is the ALSA plugin which sends a current audio volume level to a named pipe.
+ Any application written in any language (e.g. C, C++, Java, Python etc.) can read that data from the other end of the named pipe and use it for its own purposes. The most common usage is displaying volume level either in GUI or in some hardware device.
