@@ -1,0 +1,24 @@
+diff --git a/configfileparser.py b/configfileparser.py
+index 26e071e..6a568eb 100644
+--- a/configfileparser.py
++++ b/configfileparser.py
+@@ -164,7 +164,10 @@ class ConfigFileParser(object):
+         self.meter_config = {}
+         c = ConfigParser()
+ 
+-        config_path = "."
++        config_path = "/etc/peppymeter"
++        if not os.path.exists(os.path.join(config_path, FILE_CONFIG)):
++            config_path = "."
++
+         if __package__:
+             pkg_parts = __package__.split(".")
+             if len(pkg_parts) > 0:
+@@ -233,6 +236,7 @@ class ConfigFileParser(object):
+         except:
+             pass
+         
++        config_path='.'
+         meter_config_path = os.path.join(config_path, meter_folder, FILE_METER_CONFIG)
+         if not os.path.exists(meter_config_path):
+             print("Cannot read file: " + meter_config_path)
