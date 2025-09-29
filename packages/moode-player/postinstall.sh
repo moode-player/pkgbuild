@@ -912,6 +912,17 @@ function on_upgrade() {
 		rm "/var/local/www/imagesw/radio-logos/thumbs/FluxFM - Livestream (128K)_sm.jpg"
     fi
 
+	# Introduced in r941
+	dpkg --compare-versions $VERSION lt "9.4.1-1moode1"
+	if [ $? -eq 0 ]; then
+		#echo "There are no postinstall updates for r941"
+		# Convert some session-only cfg_system params for Peppy
+		# This also allows G-EQ/P-EQ and ALSA output mode check to happen when Peppy is turned back on
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='peppy_display', value='0' WHERE param='crossfeed'"
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='peppy_display_type', value='meter' WHERE param='eqfa12p'"
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='peppy_scn_blank_active', value='0' WHERE param='usb_auto_mounter'"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
