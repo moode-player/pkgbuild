@@ -921,6 +921,8 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='peppy_display', value='0' WHERE param='crossfeed'"
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='peppy_display_type', value='meter' WHERE param='eqfa12p'"
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='peppy_scn_blank_active', value='0' WHERE param='usb_auto_mounter'"
+		# Convert cfg_system 'keyboard' param to 'local_display_url' for remote screen blank feature
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='local_display_url', value='http://localhost/' WHERE param='keyboard'"
 	fi
 
     # --------------------------------------------------------------------------
