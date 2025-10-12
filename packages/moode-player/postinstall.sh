@@ -925,6 +925,12 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='local_display_url', value='http://localhost/' WHERE param='keyboard'"
 	fi
 
+	# Introduced in r942
+	dpkg --compare-versions $VERSION lt "9.4.2-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for r942"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
