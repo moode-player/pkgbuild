@@ -16,7 +16,7 @@ PKG_SOURCE_GIT="https://github.com/azlux/log2ram.git"
 PKG_SOURCE_GIT_TAG="1.7.2"
 
 rbl_check_build_dep jq
-rbl_prepare_clone_from_git $PKG_SOURCE_GIT
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 
 #------------------------------------------------------------
 # Custom part of the packing
