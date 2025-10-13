@@ -90,7 +90,7 @@ BUILD_ROOT_DIR="$BASE_DIR/build"
 
 DO_DEP_UPDATE=1
 
-CS_DISTRO="bookworm"
+CS_DISTRO="trixie"
 # make sure apt update is only done once during the build process
 function apt_update {
     if [[ $DO_DEP_UPDATE -gt 0 ]]
@@ -136,7 +136,7 @@ function rbl_check_build_dep_with_version {
 
 # install pre build requirements
 function check_deb_tools {
-    array=( libtool-bin build-essential fakeroot devscripts swig dh-make pv )
+    array=( libtool-bin build-essential fakeroot devscripts swig dh-make pv python3-pip )
     for i in "${array[@]}"
     do
         rbl_check_build_dep $i
