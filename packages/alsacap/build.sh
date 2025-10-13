@@ -12,12 +12,11 @@
 
 PKG="alsacap_1.0.1-1moode1"
 
-PKG_SOURCE_GIT="https://github.com/bitkeeper/alsacap.git"
-PKG_SOURCE_GIT_TAG="master"
+PKG_SOURCE_GIT="https://github.com/bubbapizza/alsacap.git"
+PKG_SOURCE_GIT_TAG="master"  # warning not fixed to git 6b7687ca5542abe05dc3198d444fd8119b82fcee
 
 rbl_check_build_dep libasound2-dev
-# rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
-rbl_prepare_clone_from_git $PKG_SOURCE_GIT
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 #------------------------------------------------------------
