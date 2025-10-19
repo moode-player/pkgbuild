@@ -14,6 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Peppy Player. If not, see <http://www.gnu.org/licenses/>.
+#
+# Copyright 2025 The moOde audio player project / Tim Curtis
+# - Apply patch described in the issue below plus add debug logging
+# - https://github.com/project-owner/PeppySpectrum/issues/1
+#
 
 import pygame
 import time
