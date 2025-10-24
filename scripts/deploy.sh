@@ -8,15 +8,40 @@
 #
 #########################################################################
 
-REPO=moodeaudio/m8y/raspbian/bookworm
+REPO=moodeaudio/m8y/raspbian/trixie
+
+if [ -z "${VIRTUAL_ENV}" ]
+then
+    VENV_DIR=$(dirname "$0")/../.venv
+    echo "no virtual environment active"
+    # echo "dir: ${VENV_DIR}"
+    if [ ! -d "${VENV_DIR}" ]
+    then
+        echo "create python virtual env in .venv"
+        python -m venv ${VENV_DIR}
+    fi
+    source ${VENV_DIR}/bin/activate
+fi
+
 
 cloudsmith --version > /dev/null 2>&1
 if [[ $? -gt 0 ]]
 then
-    sudo apt update
-    sudo apt install python3-click python3-click-didyoumean python3-requests python3-requests-toolbelt python3-semver python3-dateutil cl-py-configparser
-    sudo pip3 install --upgrade --no-deps --break-system-packages cloudsmith-cli cloudsmith-api  click-spinner configparser click-configfile
+    pip install click click-didyoumean requests requests-toolbelt semver dateutil cl-py-configparser six
+    pip3 install --upgrade cloudsmith-cli --extra-index-url=https://dl.cloudsmith.io/public/cloudsmith/cli/python/index/
+    if [[ $? -gt 0 ]]
+    then
+        echo "Error during cloudsmith install!"
+        deactivate
+        exit 1
+    fi
     cloudsmith login
+    if [[ $? -gt 0 ]]
+    then
+        echo "Error during cloudsmith install!"
+        deactivate
+        exit 1
+    fi
 fi
 
 PKG=$1
@@ -26,7 +51,8 @@ if [ $2 ]
 then
   CMP="$2"
 else
-  CMP="main"
+#   CMP="main"
+  CMP="unstable"
 fi
 
 echo "Using channel: $CMP"
@@ -42,6 +68,7 @@ YELLOW=$(tput setaf 3)
 if [ ! -d "dist" ]
 then
     echo "${RED}No dist directory found. This command should be runned from a package root directory.' ${NORMAL}"
+    deactivate
     exit 1
 fi
 
@@ -50,6 +77,7 @@ then
     echo "No package specified, run from package dir."
     echo " usage : deploy.sh foobar_1.2.3"
     echo $DEB
+    deactivate
     exit 1
 fi
 
@@ -64,6 +92,7 @@ if [ $DEB_COUNT -gt 1 ]
 then
     echo "${YELLOW}Multiple packages found to upload, not supported.${NORMAL}"
     echo $DEB
+    deactivate
     exit 1
 fi
 
@@ -83,3 +112,5 @@ then
 else
     echo "${YELLOW}No source found${NORMAL}"
 fi
+
+deactivate

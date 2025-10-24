@@ -16,7 +16,7 @@ PKG_SOURCE_GIT="https://github.com/allocom/allo_boss2_oled_p3.git"
 PKG_SOURCE_GIT_TAG="main"
 
 rbl_check_fpm
-rbl_prepare_clone_from_git $PKG_SOURCE_GIT
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
 
 

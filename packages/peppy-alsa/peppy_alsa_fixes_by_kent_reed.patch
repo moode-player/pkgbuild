@@ -1,0 +1,76 @@
+diff --git a/src/meter.c b/src/meter.c
+index cbdd307..53a09f3 100644
+--- a/src/meter.c
++++ b/src/meter.c
+@@ -79,14 +79,24 @@ static void clean_pipe(void) {
+     send_to_pipe(0, 0);
+ }
+ 
+-static void reader_disconnect_handler(void) {
++static void reader_disconnect_handler(int signum) {
++	(void)signum;
+ 	if(fifo_fd != -1) {
+ 		close(fifo_fd);
+ 		fifo_fd = -1;
+ 	}
+ }
+ 
+-static int init(const char *name, int max, int show, int p) {
++static int init(const char *name, int max, int show,
++                int spectrum_max, int spectrum_size,
++                int log_f, int log_y, int window)
++{
++    (void)spectrum_max;
++    (void)spectrum_size;
++    (void)log_f;
++    (void)log_y;
++    (void)window;
++
+ 	struct sigaction disconnect_action;	
+ 	memset(&disconnect_action, 0, sizeof(disconnect_action));
+     disconnect_action.sa_handler = &reader_disconnect_handler;
+diff --git a/src/peppyalsa.c b/src/peppyalsa.c
+index 0cf7b0f..2a324e6 100644
+--- a/src/peppyalsa.c
++++ b/src/peppyalsa.c
+@@ -251,16 +251,16 @@ int _snd_pcm_scope_peppyalsa_open(
+     int err; 
+     
+     const char *meter_fifo = "";
+-    int meter_max = -1;
+-    int meter_show = -1;
++    long meter_max = -1;
++    long meter_show = -1;
+     
+     const char *spectrum_fifo = "";
+-    int spectrum_max = -1;
+-    int spectrum_size = -1;
+-    int log_f = -1;
+-    int log_y = -1;
+-    int s_factor = -1;
+-    int window = -1;
++    long spectrum_max = -1;
++    long spectrum_size = -1;
++    long log_f = -1;
++    long log_y = -1;
++    long s_factor = -1;
++    long window = -1;
+ 
+     num_meters = MAX_METERS;
+     num_scopes = MAX_METERS;
+diff --git a/src/spectrum.c b/src/spectrum.c
+index fc0585f..a787d96 100644
+--- a/src/spectrum.c
++++ b/src/spectrum.c
+@@ -81,7 +81,11 @@ static void cleanup(void) {
+ 	send_to_pipe(0);
+ }
+ 
++/*
+ static void reader_disconnect_handler(void) {
++*/
++static void reader_disconnect_handler(int signum) {
++	(void)signum;
+ 	if(fifo_fd_sa != -1) {
+ 		close(fifo_fd_sa);
+ 		fifo_fd_sa = -1;
