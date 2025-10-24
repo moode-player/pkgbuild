@@ -938,11 +938,29 @@ function on_upgrade() {
     cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
     # Update radio stations and logos
+    # This was 'special edition' which updated almost everything
     dpkg --compare-versions $VERSION lt "9.1.4-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.1.4.zip"
     fi
-    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_$PKG_VERSION.zip"
+
+    # This one is last one with all updates from 9.1.4 to 9.4.1
+    dpkg --compare-versions $VERSION lt "9.4.1-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.4.1.zip"
+    fi
+
+    # From here only update version to version
+    # Add for each new upcoming version the update zip
+    dpkg --compare-versions $VERSION lt "9.4.2-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.4.2.zip"
+    fi
+    # The next one:
+    #dpkg --compare-versions $VERSION lt "9.4.3-1moode1"
+    #if [ $? -eq 0 ]; then
+    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.4.3.zip"
+    #fi
 
     # Reset first use help to show just the Welcome notification.
     # Since this is an update we can assume the first use help coupons have already been dismissed.
