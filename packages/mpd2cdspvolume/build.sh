@@ -11,7 +11,7 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="mpd2cdspvolume_2.0.0-1moode2"
+PKG="mpd2cdspvolume_2.0.0-1moode3"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/mpd2cdspvolume.git"
 PKG_SOURCE_GIT_TAG="v2.0.0"
@@ -45,7 +45,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --license LICENSE \
 --description "Service for synchronizing MPD volume to CamillaDSP." \
 --deb-systemd etc/mpd2cdspvolume.service \
---depends python3-mpd2 \
+--depends python3-mpd \
 --depends python3-camilladsp \
 --after-install etc/postinstall.sh \
 root/usr/=/usr/. \
