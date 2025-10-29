@@ -510,58 +510,49 @@ function rbl_grab_debian_archive {
 function rbl_get_kernel_source {
     local _KERNEL_VER_FULL=$(rbl_get_current_kernel_full_version)
     local KERNEL_PACKAGE=linux-image-$_KERNEL_VER_FULL
+    local KERNEL_SOURCE=linux-source
 
     KERNEL_PKG_VERSION=`dpkg-query --showformat='${Version}' --show $KERNEL_PACKAGE`
     echo "kernel package        : ${KERNEL_PACKAGE}"
     echo "kernel package version: ${KERNEL_PKG_VERSION}"
+    echo "kernel source package : ${KERNEL_SOURCE}"
 
     KERNEL_DOWNLOAD_LOCATION="$PKGBUILD_ROOT/tmp"
 
-    KERNEL_SOURCE_DIR=$PKGBUILD_ROOT/tmp/linux-$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}[.][0-9]{1,3})[-].*/\1/")
-    echo "${KERNEL_SOURCE_DIR}"
+    KERNEL_SOURCE_VERSION=$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}{1,2}).*/\1/")
+    KERNEL_SOURCE_DIR=$PKGBUILD_ROOT/tmp/linux-source-$KERNEL_SOURCE_VERSION
+    echo "kernel source version : ${KERNEL_SOURCE_VERSION}"
     export KERNEL_SOURCE_DIR=$KERNEL_SOURCE_DIR # for using with other scripts
     export KERNEL_VERSION_PKG_SMALL=$(echo $KERNEL_PKG_VERSION | sed -r "s/[0-9]:([0-9][.][0-9]{1,2}[.][0-9]{1,3})[-].*/\1/")
-
+    echo "kernel source dir : ${KERNEL_SOURCE_DIR}"
     # If needed dowload source package and patch it
-    if [ -d "$KERNEL_SOURCE_DIR" ]
+    if [ -d "${KERNEL_SOURCE_DIR}" ]
     then
         echo "${GREEN} Kernel source is already present ${NORMAL}"
     else
         CURR_DIR=`pwd`
         echo "${YELLOW} Kernel source not present, downloading it ${NORMAL}"
 
-        # Make sure the raspi source repo is enabled
-        cat /etc/apt/sources.list.d/raspi.list | grep "^#deb-src http://archive.raspberrypi.com/debian/ bookworm main" > /dev/null
-        if [ $? -eq 0 ]
-        then
-            echo "${YELLOW} Apt raspberry source respo disabled, fixing it!${NORMAL}"
-            sudo sed -i "s/#deb-src/deb-src/" /etc/apt/sources.list.d/raspi.list
-        else
-            echo "${GREEN} Apt raspberry source repo is enabled ${NORMAL}"
-        fi
-
         # Download the source package
 
         mkdir -p $KERNEL_DOWNLOAD_LOCATION
         cd $KERNEL_DOWNLOAD_LOCATION
-        apt-get source $KERNEL_PACKAGE=$KERNEL_PKG_VERSION
-        if [[ $? -gt 0 ]]
+        KERNEL_SOURCE_FILE=/usr/src/linux-source-$KERNEL_SOURCE_VERSION.tar.xz
+        if [ -f $KERNEL_SOURCE_FILE ]
         then
-            echo "${RED} Problems downloading kernel source package '${KERNEL_PACKAGE}' ${NORMAL}"
-            cd $CURR_DIR
-            exit 1
-        fi
+            echo "${GREEN} Linux source archive  present '${KERNEL_SOURCE}' ${NORMAL}"
+        else
+            echo "${YELLOW} Linux source archive not present '${KERNEL_SOURCE}' ${NORMAL}"
+            sudo apt-get install -y $KERNEL_SOURCE=$KERNEL_PKG_VERSION
+            if [[ $? -gt 0 ]]
+            then
+                echo "${RED} Problems downloading kernel source package '${KERNEL_PACKAGE}' ${NORMAL}"
+                cd $CURR_DIR
+            fi
 
-        # Apply general raspberry pi patches to kernel (from raspberry org)
-        echo "${NORMAL} Patching kernel source with raspberry pi patches${NORMAL}"
-        cd $KERNEL_SOURCE_DIR
-        find debian/patches-rpi -type f -name "*.patch" -exec bash -c "cat {} | patch -p1 > patch.log" \;
-        if [[ $? -gt 0 ]]
-        then
-            echo "${RED} Problems patching kernel source ${NORMAL}"
-            cd $CURR_DIR
-            exit 1
         fi
+        echo "${YELLOW} Extract '${KERNEL_SOURCE_FILE}' to '${KERNEL_DOWNLOAD_LOCATION}' ${NORMAL}"
+        pv $KERNEL_SOURCE_FILE | tar -xJ
 
         cd $CURR_DIR
     fi
@@ -701,12 +692,12 @@ function rbl_dkms_prepare {
     fi
 
     #TODO: improve it by using the ARCHS (contains list of architecture to build) instead the 64bit test flag
-    if [ $ARCH64 -eq 1 ]
-    then
-        DKMS_KERNEL_STRING="-k $KERNEL_VER-rpi-v8 -k $KERNEL_VER-rpi-2712"
-    else
-        DKMS_KERNEL_STRING="-k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+"
-    fi
+    # if [ $ARCH64 -eq 1 ]
+    # then
+    DKMS_KERNEL_STRING="-k $KERNEL_VER-rpi-v8 -k $KERNEL_VER-rpi-2712"
+    # else
+    #     DKMS_KERNEL_STRING="-k $KERNEL_VER-v7l+ -k $KERNEL_VER-v7+"
+    # fi
 
     # $FULL_VERSION is already set this is sign that another build step prep the build tree (like rbl_prepare_clone_from_git)
     # In that case we skip the prep steps
