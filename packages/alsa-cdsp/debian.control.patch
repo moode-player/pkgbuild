@@ -3,7 +3,7 @@
 @@ -6,25 +6,28 @@
  Build-Depends:
   debhelper-compat (= 13),
- Standards-Version: 4.6.2
+ Standards-Version: 4.7.2
 -Homepage: <insert the upstream URL, if relevant>
 -#Vcs-Browser: https://salsa.debian.org/debian/alsa-cdsp
 -#Vcs-Git: https://salsa.debian.org/debian/alsa-cdsp.git

@@ -12,10 +12,10 @@
 
 #TODO: If needed add systemd files
 
-PKG="ashuffle_3.14.1-1moode1"
+PKG="ashuffle_3.14.9-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/joshkunz/ashuffle.git"
-PKG_SOURCE_GIT_TAG="v3.14.1"
+PKG_SOURCE_GIT_TAG="v3.14.9"
 
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
