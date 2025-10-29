@@ -23,7 +23,7 @@ PKG_SOURCE_GIT_TAG="v5.6.4.2"
 ARCHS=( rpi-v8 rpi-2712 )
 MODULE="88XXau.ko"
 
-rbl_prepare_clone_from_git $PKG_SOURCE_GIT
+rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
 rbl_dkms_prepare outtree
 
