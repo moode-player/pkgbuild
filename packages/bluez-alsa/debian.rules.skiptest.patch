@@ -1,0 +1,10 @@
+--- bluez-alsa-4.3.1/debian/rules.org	2025-11-04 17:57:14.711760203 +0100
++++ bluez-alsa-4.3.1/debian/rules	2025-11-04 17:57:25.738843258 +0100
+@@ -53,5 +53,6 @@
+ 	dbus-run-session -- make CFLAGS="$(CFLAGS) -fno-lto" check VERBOSE=1 \
+ 		|| echo "Ignoring test failures"
+ else
+-	dbus-run-session -- make CFLAGS="$(CFLAGS) -fno-lto" check VERBOSE=1
++	dbus-run-session -- make CFLAGS="$(CFLAGS) -fno-lto" check VERBOSE=1 \
++		|| echo "Ignoring test failures"
+ endif

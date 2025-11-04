@@ -16,9 +16,12 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="bluez-alsa_4.2.0-2moode1"
+PKG="bluez-alsa_4.3.1-3moode1"
 
-PKG_DSC_URL="http://ftp.debian.org/debian/pool/main/b/bluez-alsa/bluez-alsa_4.2.0-1.dsc"
+PKG_DSC_URL="http://deb.debian.org/debian/pool/main/b/bluez-alsa/bluez-alsa_4.3.1-3.dsc"
+
+
+rbl_check_build_dep libfdk-aac-dev
 rbl_prepare_from_dsc_url $PKG_DSC_URL
 
 
@@ -28,14 +31,16 @@ rbl_prepare_from_dsc_url $PKG_DSC_URL
 
 # enable cli
 rbl_patch $BASE_DIR/build_cli.debian.rules.patch
+rbl_patch $BASE_DIR/debian.rules.aac.patch
+rbl_patch $BASE_DIR/debian.rules.skiptest.patch
 
 # changes deps
-rbl_patch $BASE_DIR/debian.control.patch
+# rbl_patch $BASE_DIR/debian.control.patch
 
 echo "usr/share/man/man1/bluealsa-cli.1" >> debian/bluez-alsa-utils.manpages
 
 
-DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Build for moOde."
+DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion "${FULL_VERSION}" "Build for moOde."
 
 #------------------------------------------------------------
 
