@@ -1,0 +1,15 @@
+--- bluez-alsa-4.3.1/debian/rules.org	2025-11-04 17:31:35.375162773 +0100
++++ bluez-alsa-4.3.1/debian/rules	2025-11-04 17:31:52.798294101 +0100
+@@ -26,9 +26,10 @@
+ 	--enable-systemd \
+ 	--enable-manpages \
+ 	--enable-debug \
+-	--enable-cli
++	--enable-cli \
++	--enable-aac
+ # fdk-aac (libfdk-aac-dev) is in non-free
+-#	--enable-aac
++
+
+ ifeq ($(DEB_HOST_ARCH_ENDIAN),little)
+ CONFIGURE_FLAGS += --enable-ldac

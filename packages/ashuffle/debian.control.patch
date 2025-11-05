@@ -12,14 +12,14 @@
 + libmpdclient-dev,
 + meson,
 + cmake
- Standards-Version: 4.6.2
+ Standards-Version: 4.7.2
 -Homepage: <insert the upstream URL, if relevant>
 -#Vcs-Browser: https://salsa.debian.org/debian/ashuffle
 -#Vcs-Git: https://salsa.debian.org/debian/ashuffle.git
 +Homepage: https://github.com/joshkunz/ashuffle
 +Vcs-Browser: https://github.com/joshkunz/ashuffle
 +Vcs-Git: https://github.com/joshkunz/ashuffle.git
- 
+
  Package: ashuffle
  Architecture: any
  Depends:
