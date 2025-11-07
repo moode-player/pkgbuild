@@ -29,7 +29,7 @@ GULP_BIN=$MOODE_DIR/node_modules/.bin/gulp
 # Used as reference for generating station patch files.
 # Always one older then the one you are building. This will results in update
 # files that only cover changes between the previous and upcoming release.
-MAJOR_BASE_STATIONS=../dist/binary/moode-stations-full_9.4.1.zip
+MAJOR_BASE_STATIONS=../dist/binary/moode-stations-full_10.0.0.zip
 
 # ----------------------------------------------------------------------------
 # 1. Prepare pacakge build dir and build deps
