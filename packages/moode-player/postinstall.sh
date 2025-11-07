@@ -931,6 +931,12 @@ function on_upgrade() {
 		echo "There are no postinstall updates for r942"
 	fi
 
+	# Introduced in r1000
+	dpkg --compare-versions $VERSION lt "10.0.0-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for r1000"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -951,15 +957,21 @@ function on_upgrade() {
     fi
 
     # From here only update version to version
-    # Add for each new upcoming version the update zip
+    # Release 9.4.2
     dpkg --compare-versions $VERSION lt "9.4.2-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.4.2.zip"
     fi
-    # The next one:
-    #dpkg --compare-versions $VERSION lt "9.4.3-1moode1"
+    # Release 10.0.0
+    dpkg --compare-versions $VERSION lt "10.0.0-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.0.zip"
+    fi
+
+	# The next one:
+    #dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
     #if [ $? -eq 0 ]; then
-    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-9.4.3.zip"
+    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.1.zip"
     #fi
 
     # Reset first use help to show just the Welcome notification.

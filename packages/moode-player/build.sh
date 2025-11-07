@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_9.4.2-1moode1"
+PKG="moode-player_10.0.0-1moode1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
@@ -306,7 +306,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends python3-rpi.gpio \
 --depends python3-setuptools \
 --depends rpi-update \
---depends runonce \
 --depends samba \
 --depends shairport-sync \
 --depends shairport-sync-metadata-reader \
