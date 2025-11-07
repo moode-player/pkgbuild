@@ -250,7 +250,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends camilladsp \
 --depends camillagui \
 --depends caps \
---depends chromium-browser \
+--depends chromium \
 --depends dos2unix \
 --depends exfat-fuse \
 --depends expect \
@@ -278,7 +278,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends libmms0 \
 --depends libnss-winbind \
 --depends librespot \
---depends libsgutils2-1.46-2 \
+--depends libsgutils2-1.48 \
 --depends libtool-bin \
 --depends libzen0v5 \
 --depends log2ram \
@@ -296,7 +296,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends php-fpm \
 --depends php-sqlite3 \
 --depends php-yaml \
---depends php8.2-gd \
+--depends php8.4-gd \
 --depends pi-bluetooth \
 --depends python3-dbus \
 --depends python3-libupnpp \
@@ -325,7 +325,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends upmpdcli-qobuz \
 --depends upmpdcli-tidal \
 --depends winbind \
---depends wsdd \
+--depends wsdd2 \
 --depends xfsprogs \
 --depends xinit \
 --depends xorg \
