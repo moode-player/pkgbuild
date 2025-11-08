@@ -147,7 +147,6 @@ function on_install() {
     [ ! -e /var/lib/mpd/music/NVME ] &&  ln -s /mnt/NVME /var/lib/mpd/music/NVME
     [ ! -e /var/lib/mpd/music/SATA ] &&  ln -s /mnt/SATA /var/lib/mpd/music/SATA
     [ ! -e /var/lib/mpd/music/OSDISK ] && ln -s /mnt/OSDISK /var/lib/mpd/music/OSDISK
-    [ ! -e /var/lib/mpd/music/SDCARD ] && ln -s /mnt/SDCARD /var/lib/mpd/music/SDCARD
     [ ! -e /var/lib/mpd/music/USB ] && ln -s /media /var/lib/mpd/music/USB
     [ ! -e /srv/nfs ] && mkdir /srv/nfs
     [ ! -e /srv/nfs/usb ] && ln -s /media /srv/nfs/usb

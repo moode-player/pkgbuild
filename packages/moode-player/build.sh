@@ -160,11 +160,9 @@ rsync -av --prune-empty-dirs --exclude *.sed* --exclude *.overwrite* $MOODE_DIR/
 rsync -av --prune-empty-dirs --include "*/" --include "*.overwrite*" --exclude="*" $MOODE_DIR/lib/ $NOT_OWNED_TEMP/lib/
 
 # /mnt (mount points)
-# NOTE: SDCARD is deprecated and replaced by OSDISK
-mkdir -p $PKG_ROOT_DIR/mnt/{NAS,NVME,OSDISK,SATA,SDCARD}
+mkdir -p $PKG_ROOT_DIR/mnt/{NAS,NVME,OSDISK,SATA}
 cp -r "$MOODE_DIR/osdisk/Stereo Test/" $PKG_ROOT_DIR/mnt/OSDISK
 cp -r "$MOODE_DIR/osdisk/System Sounds/" $PKG_ROOT_DIR/mnt/OSDISK
-#cp -r "$MOODE_DIR/sdcard/Stereo Test/" $PKG_ROOT_DIR/mnt/SDCARD
 
 # /usr
 rsync -av --prune-empty-dirs --exclude='mpd.conf' --exclude='mpdasrc.default' --exclude='install-wifi' --exclude='html/index.html' $MOODE_DIR/usr/ $PKG_ROOT_DIR/usr
