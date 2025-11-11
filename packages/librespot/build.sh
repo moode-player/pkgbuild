@@ -13,7 +13,7 @@
 PKG="librespot_0.7.1-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/librespot-org/librespot.git"
-PKG_SOURCE_GIT_TAG="v0.7.1"
+PKG_SOURCE_GIT_TAG="v0.8.0"
 
 rbl_check_cargo
 rbl_prepare_clone_from_git ${PKG_SOURCE_GIT} ${PKG_SOURCE_GIT_TAG}
