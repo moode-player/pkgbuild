@@ -51,8 +51,8 @@ if [ $2 ]
 then
   CMP="$2"
 else
-#   CMP="main"
-  CMP="unstable"
+  CMP="main"
+#   CMP="unstable"
 fi
 
 echo "Using channel: $CMP"
