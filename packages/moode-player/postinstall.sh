@@ -479,10 +479,10 @@ function on_upgrade() {
     # Release 10 series (Trixie)
     # --------------------------------------------------------------------------
 	# Introduced in r1001
-	#dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
-	#if [ $? -eq 0 ]; then
-	#	echo "There are no postinstall updates for r1001"
-	#fi
+	dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for r1001"
+	fi
 
     # --------------------------------------------------------------------------
     # Any release
