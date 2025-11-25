@@ -26,7 +26,7 @@ else
 fi
 
 # set debian local suffix flag
-DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --local $DEBSUFFIX "Rebuild for moOde bullseye with RPI and GPIO options."
+DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --local $DEBSUFFIX "Rebuild for moOde with RPI and GPIO options."
 
 #------------------------------------------------------------
 
