@@ -492,10 +492,10 @@ function on_upgrade() {
 
     # Update radio stations and logos (version to version)
     # Release 10.0.1
-    #dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
-    #if [ $? -eq 0 ]; then
-    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.1.zip"
-    #fi
+    dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.1.zip"
+    fi
 
 	# Release 10.0.2
     #dpkg --compare-versions $VERSION lt "10.0.2-1moode1"
