@@ -482,6 +482,8 @@ function on_upgrade() {
 	dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
 	if [ $? -eq 0 ]; then
 		echo "There are no postinstall updates for r1001"
+		# Hide feature Deezer Connect
+		sqlite3 $SQLDB "UPDATE cfg_system SET value='228279' WHERE param='feat_bitmask'"
 	fi
 
     # --------------------------------------------------------------------------
