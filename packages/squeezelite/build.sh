@@ -13,7 +13,7 @@
 PKG_DSC_URL="http://deb.debian.org/debian/pool/main/s/squeezelite/squeezelite_2.0.0-1541+git20250609.72e1fd8-1.dsc"
 
 rbl_prepare_from_dsc_url $PKG_DSC_URL
-
+rbl_check_build_dep libgpiod-dev
 #------------------------------------------------------------
 # Custom part of the packing
 
