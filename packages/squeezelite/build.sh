@@ -18,12 +18,7 @@ rbl_check_build_dep libgpiod-dev
 # Custom part of the packing
 
 # patch and add patch to debian
-if [ $ARCH64 -eq 1 ]
-then
-    rbl_patch $BASE_DIR/debian.rules.64.patch
-else
-    rbl_patch $BASE_DIR/debian.rules.patch
-fi
+rbl_patch $BASE_DIR/debian.rules.64.patch
 
 # set debian local suffix flag
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --local $DEBSUFFIX "Rebuild for moOde with RPI and GPIO options."
