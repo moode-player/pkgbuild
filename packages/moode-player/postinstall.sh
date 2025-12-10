@@ -487,6 +487,12 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET value='228279' WHERE param='feat_bitmask'"
 	fi
 
+	# Introduced in r1002
+	dpkg --compare-versions $VERSION lt "10.0.2-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for r1002"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -501,9 +507,15 @@ function on_upgrade() {
     fi
 
 	# Release 10.0.2
-    #dpkg --compare-versions $VERSION lt "10.0.2-1moode1"
+    dpkg --compare-versions $VERSION lt "10.0.2-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.2.zip"
+    fi
+
+	# Release 10.0.3
+    #dpkg --compare-versions $VERSION lt "10.0.3-1moode1"
     #if [ $? -eq 0 ]; then
-    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.2.zip"
+    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.3.zip"
     #fi
 
     # Reset first use help to show just the Welcome notification.
