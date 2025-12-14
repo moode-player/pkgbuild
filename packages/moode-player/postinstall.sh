@@ -490,7 +490,9 @@ function on_upgrade() {
 	# Introduced in r1002
 	dpkg --compare-versions $VERSION lt "10.0.2-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for r1002"
+		#echo "There are no postinstall updates for r1002"
+		# Bump to v3-moode-meters
+		sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v3-moode-meters' WHERE component='peppydisplay' AND type='moode-meters'"
 	fi
 
     # --------------------------------------------------------------------------
