@@ -463,7 +463,7 @@ function on_install() {
     echo "** Sync changes to disk"
     sync
 
-    echo "Moode-player package postinstall finished, please reboot"
+    echo "Moode-player package postinstall finished"
 }
 
 ################################################################################
@@ -553,7 +553,7 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Bring it alive ;-)
     # --------------------------------------------------------------------------
-    echo "Moode-player package upgrade finished"
+    echo "Moode-player package postinstall finished"
 }
 
 ################################################################################
