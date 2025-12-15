@@ -499,32 +499,35 @@ function on_upgrade() {
     # Any release
     # --------------------------------------------------------------------------
     # Update SSH header
+	echo "Update SSH header"
     cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
     # Update radio stations and logos (version to version)
     # Release 10.0.1
+	echo "Update radio stations"
     dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
     if [ $? -eq 0 ]; then
-        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.1.zip"
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.1.zip"
     fi
-
 	# Release 10.0.2
     dpkg --compare-versions $VERSION lt "10.0.2-1moode1"
     if [ $? -eq 0 ]; then
-        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.2.zip"
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.2.zip"
     fi
 
 	# Release 10.0.3
     #dpkg --compare-versions $VERSION lt "10.0.3-1moode1"
     #if [ $? -eq 0 ]; then
-    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update-10.0.3.zip"
+    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.3.zip"
     #fi
 
     # Reset first use help to show just the Welcome notification.
     # Since this is an update we can assume the first use help coupons have already been dismissed.
+	echo "Reset first use help"
     sqlite3 $SQLDB "UPDATE cfg_system SET value='n,n,y' WHERE param='first_use_help'"
 
     # Set permissions for service files
+	echo "Set permissions for service and etc files"
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bluealsa.service \
@@ -535,13 +538,13 @@ function on_upgrade() {
     /lib/systemd/system/shellinabox.service \
     /lib/systemd/system/squeezelite.service \
     /lib/systemd/system/localdisplay.service \
-    /lib/systemd/system/tmp.mount
+    /lib/systemd/system/tmp.mount > /dev/null 2>&1
     # Set permissions for etc files
     chmod 0644 \
     /etc/bluealsaaplay.conf \
     /etc/machine-info \
     /etc/nftables.conf \
-    /etc/squeezelite.conf
+    /etc/squeezelite.conf > /dev/null 2>&1
 
     # Update sample playlists
     # NOTE: Updates will be new image only
@@ -550,7 +553,7 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Bring it alive ;-)
     # --------------------------------------------------------------------------
-    echo "Moode-player package upgrade finished, please reboot"
+    echo "Moode-player package upgrade finished"
 }
 
 ################################################################################
