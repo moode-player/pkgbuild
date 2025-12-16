@@ -62,7 +62,7 @@ function import_stations() {
 # No prior install exists
 ################################################################################
 function on_install() {
-    echo "Moode-player package postinstall started"
+    echo "Moode-player package postinstall started (full install)"
 
     # --------------------------------------------------------------------------
     # Initial configuration
@@ -445,7 +445,7 @@ function on_install() {
     # In case any changes are made to systemd file reload config
     ischroot
     if [ $? -gt 0 ]; then
-        # On Bookworm Lite (not running within imgbuild)
+        # Not running within imgbuild
         echo "** Restart systemd (daemon-reload)"
         systemctl daemon-reload
     fi
@@ -478,11 +478,13 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Release 10 series (Trixie)
     # --------------------------------------------------------------------------
+	echo "Moode-player package postinstall started (in-place update)"
+
 	# Introduced in r1001
 	dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
 	if [ $? -eq 0 ]; then
-		#echo "There are no postinstall updates for r1001"
-		echo "Apply postinstall updates for r1001"
+		#echo "There are no postinstall updates for 10.0.1"
+		echo "** Apply postinstall updates for 10.0.1"
 		# Hide feature Deezer Connect
 		sqlite3 $SQLDB "UPDATE cfg_system SET value='228279' WHERE param='feat_bitmask'"
 	fi
@@ -490,7 +492,8 @@ function on_upgrade() {
 	# Introduced in r1002
 	dpkg --compare-versions $VERSION lt "10.0.2-1moode1"
 	if [ $? -eq 0 ]; then
-		#echo "There are no postinstall updates for r1002"
+		#echo "There are no postinstall updates for 10.0.2"
+		echo "** Apply postinstall updates for 10.0.2"
 		# Bump to v3-moode-meters
 		sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v3-moode-meters' WHERE component='peppydisplay' AND type='moode-meters'"
 	fi
@@ -498,13 +501,8 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
-    # Update SSH header
-	echo "Update SSH header"
-    cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
-
-    # Update radio stations and logos (version to version)
+	echo "** Update radio stations"
     # Release 10.0.1
-	echo "Update radio stations"
     dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.1.zip"
@@ -514,20 +512,19 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.2.zip"
     fi
-
 	# Release 10.0.3
     #dpkg --compare-versions $VERSION lt "10.0.3-1moode1"
     #if [ $? -eq 0 ]; then
     #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.3.zip"
     #fi
 
-    # Reset first use help to show just the Welcome notification.
-    # Since this is an update we can assume the first use help coupons have already been dismissed.
-	echo "Reset first use help"
+	echo "** Install SSH header"
+    cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
+
+	echo "** Reset first use help"
     sqlite3 $SQLDB "UPDATE cfg_system SET value='n,n,y' WHERE param='first_use_help'"
 
-    # Set permissions for service files
-	echo "Set permissions for service and etc files"
+	echo "** Set permissions for service and etc files"
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bluealsa.service \
@@ -553,6 +550,9 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Bring it alive ;-)
     # --------------------------------------------------------------------------
+	echo "** Sync changes to disk"
+    sync
+
     echo "Moode-player package postinstall finished"
 }
 
