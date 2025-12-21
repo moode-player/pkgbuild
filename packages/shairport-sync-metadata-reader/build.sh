@@ -29,8 +29,9 @@ dh_make -s -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 
-#rbl_fix_control_patch_maintainer $BASE_DIR/debian.control.patch $BUILD_ROOT_DIR/debian.control.patch
-rbl_patch $BASE_DIR/debian-copyright.patch
+rbl_fix_control_patch_maintainer $BASE_DIR/debian-copyright.patch $BUILD_ROOT_DIR/debian-copyright.patch
+rbl_patch $BUILD_ROOT_DIR/debian-copyright.patch
+
 rm debian/manpage.*.ex
 rm debian/README.*
 
