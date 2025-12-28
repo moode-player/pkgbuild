@@ -498,6 +498,12 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v3-moode-meters' WHERE component='peppydisplay' AND type='moode-meters'"
 	fi
 
+	# Introduced in r1003
+	dpkg --compare-versions $VERSION lt "10.0.3-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.0.3"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -513,10 +519,10 @@ function on_upgrade() {
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.2.zip"
     fi
 	# Release 10.0.3
-    #dpkg --compare-versions $VERSION lt "10.0.3-1moode1"
-    #if [ $? -eq 0 ]; then
-    #    import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.3.zip"
-    #fi
+    dpkg --compare-versions $VERSION lt "10.0.3-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.3.zip"
+    fi
 
 	echo "** Install SSH header"
     cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
