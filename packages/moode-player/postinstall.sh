@@ -504,6 +504,12 @@ function on_upgrade() {
 		echo "There are no postinstall updates for 10.0.3"
 	fi
 
+	# Introduced in r1004
+	dpkg --compare-versions $VERSION lt "10.0.4-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.0.4"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -522,6 +528,11 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.0.3-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.3.zip"
+    fi
+	# Release 10.0.4
+    dpkg --compare-versions $VERSION lt "10.0.4-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.4.zip"
     fi
 
 	echo "** Install SSH header"

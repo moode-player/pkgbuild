@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="moode-player_10.0.3-1moode1"
+PKG="moode-player_10.0.4-1moode1"
 
 # PKG_SOURCE_GIT="https://github.com/moode-player/moode.git"
 # PKG_SOURCE_GIT_TAG="r760prod"
