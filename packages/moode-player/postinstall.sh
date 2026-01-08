@@ -507,7 +507,11 @@ function on_upgrade() {
 	# Introduced in r1004
 	dpkg --compare-versions $VERSION lt "10.0.4-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for 10.0.4"
+		#echo "There are no postinstall updates for 10.0.4"
+		echo "** Apply postinstall updates for 10.0.4"
+		# Add cfg_system params for Peppy "Display on play" feature
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_svc', value='0' WHERE param='RESERVED_99'"
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_timeout', value='15' WHERE param='invert_polarity'"
 	fi
 
     # --------------------------------------------------------------------------
