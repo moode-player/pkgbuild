@@ -327,6 +327,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends xfsprogs \
 --depends xinit \
 --depends xorg \
+--depends xinput \
 --depends zip \
 --config-files /var/lib/mpd/playlists \
 root/boot/.=/boot \
