@@ -512,8 +512,6 @@ function on_upgrade() {
 		# Add cfg_system params for Peppy "Display on play" feature
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_svc', value='0' WHERE param='RESERVED_99'"
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_timeout', value='15' WHERE param='invert_polarity'"
-		# Add auto_initramfs=1 to /boot/firmware/config.txt (from stock PiOS Trixie)
-		sed -i '/arm_64bit=/a\auto_initramfs=1' /boot/firmware/config.txt
 	fi
 
     # --------------------------------------------------------------------------
