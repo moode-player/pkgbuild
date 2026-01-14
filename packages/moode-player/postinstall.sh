@@ -427,11 +427,6 @@ function on_install() {
 		-e 's/^pipe.name.*/pipe.name = \/tmp\/peppyspectrum/' \
 		/etc/peppyspectrum/config.txt
 
-	# /etc/initramfs-tools/initramfs.conf
-	# MODULES=most
-	sed -i -e 's/^MODULES.*/MODULES=most/' \
-		/etc/initramfs-tools/initramfs.conf
-
     # --------------------------------------------------------------------------
     # Install NGINX and MPD configs
     # --------------------------------------------------------------------------
@@ -517,8 +512,6 @@ function on_upgrade() {
 		# Add cfg_system params for Peppy "Display on play" feature
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_svc', value='0' WHERE param='RESERVED_99'"
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_timeout', value='15' WHERE param='invert_polarity'"
-		# Patch initramfs.conf
-		sed -i 's/^MODULES.*/MODULES=most/' /etc/initramfs-tools/initramfs.conf
 	fi
 
     # --------------------------------------------------------------------------
