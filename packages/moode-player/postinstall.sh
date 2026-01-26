@@ -514,6 +514,11 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_timeout', value='15' WHERE param='invert_polarity'"
 		# Add cfg_system param for engine-mpd socket timeout
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='empd_socket_timeout', value='default' WHERE param='gpio_svc'"
+		# Add config.txt param for compute module external antenna
+		sed -i -e '/# External antenna/d' \
+			-e '/dtparam=ant2/d' \
+			-e '/dtparam=fan_temp0/a # External antenna\n#dtparam=ant2' \
+			 /boot/firmware/config.txt
 	fi
 
     # --------------------------------------------------------------------------
