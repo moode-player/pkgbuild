@@ -504,11 +504,11 @@ function on_upgrade() {
 		echo "There are no postinstall updates for 10.0.3"
 	fi
 
-	# Introduced in r1004
-	dpkg --compare-versions $VERSION lt "10.0.4-1moode1"
+	# Introduced in r1010
+	dpkg --compare-versions $VERSION lt "10.1.0-1moode1"
 	if [ $? -eq 0 ]; then
-		#echo "There are no postinstall updates for 10.0.4"
-		echo "** Apply postinstall updates for 10.0.4"
+		#echo "There are no postinstall updates for 10.1.0"
+		echo "** Apply postinstall updates for 10.1.0"
 		# Add cfg_system params for Peppy "Display on play" feature
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_svc', value='0' WHERE param='RESERVED_99'"
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_timeout', value='15' WHERE param='invert_polarity'"
@@ -540,10 +540,10 @@ function on_upgrade() {
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.3.zip"
     fi
-	# Release 10.0.4
-    dpkg --compare-versions $VERSION lt "10.0.4-1moode1"
+	# Release 10.1.0
+    dpkg --compare-versions $VERSION lt "10.1.0-1moode1"
     if [ $? -eq 0 ]; then
-        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.0.4.zip"
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.1.0.zip"
     fi
 
 	echo "** Install SSH header"
