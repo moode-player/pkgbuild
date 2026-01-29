@@ -512,6 +512,8 @@ function on_upgrade() {
 		# Add cfg_system params for Peppy "Display on play" feature
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_svc', value='0' WHERE param='RESERVED_99'"
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='touchmon_timeout', value='15' WHERE param='invert_polarity'"
+		# Update to v4-moode-meters
+		sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v4-moode-meters' WHERE component='peppydisplay' AND type='moode-meters'"
 		# Add cfg_system param for engine-mpd socket timeout
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='empd_socket_timeout', value='default' WHERE param='gpio_svc'"
 		# Add config.txt param for compute module external antenna
