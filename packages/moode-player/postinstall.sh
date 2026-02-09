@@ -523,6 +523,15 @@ function on_upgrade() {
 			 /boot/firmware/config.txt
 	fi
 
+	# Introduced in r1011
+	dpkg --compare-versions $VERSION lt "10.1.1-1moode1"
+	if [ $? -eq 0 ]; then
+		#echo "There are no postinstall updates for 10.1.1"
+		echo "** Apply postinstall updates for 10.1.1"
+		# Add cfg_system param for radio track covers
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_track_covers', value='No' WHERE param='mpdcrossfade'"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -546,6 +555,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.1.0-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.1.0.zip"
+    fi
+
+	# Release 10.1.1
+    dpkg --compare-versions $VERSION lt "10.1.1-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.1.1.zip"
     fi
 
 	echo "** Install SSH header"
