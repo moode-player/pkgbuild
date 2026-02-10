@@ -529,7 +529,7 @@ function on_upgrade() {
 		#echo "There are no postinstall updates for 10.1.1"
 		echo "** Apply postinstall updates for 10.1.1"
 		# Add cfg_system param for radio track covers
-		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_track_covers', value='No' WHERE param='mpdcrossfade'"
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_track_covers', value='Yes' WHERE param='mpdcrossfade'"
 	fi
 
     # --------------------------------------------------------------------------
