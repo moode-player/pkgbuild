@@ -532,6 +532,10 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_track_covers', value='Yes' WHERE param='mpdcrossfade'"
 		# Add cfg_system param for moodefiles ignore
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='moodefiles_ignore', value='0' WHERE param='shellinabox'"
+		# Update class names dashboard.txt
+		if [ -f /var/local/www/dashboard.txt ]; then
+			sed -i 's/checkbox-ctl/checkbox-ctl-dashboard/g' /var/local/www/dashboard.txt
+		fi
 	fi
 
     # --------------------------------------------------------------------------
