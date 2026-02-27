@@ -93,17 +93,18 @@ function on_install() {
         mpd.socket \
         mpd2cdspvolume \
         nfs-server \
-        nmbd.service \
+		nmbd.service \
         nqptp \
         phpsessionclean.service \
         phpsessionclean.timer \
         shellinabox \
         shairport-sync \
-        smbd.service \
+		smbd.service \
         squeezelite \
         triggerhappy \
         udisks2 \
-        upmpdcli)
+        upmpdcli \
+		wsdd2.service)
 
     for service in "${disable_services[@]}"
     do
@@ -541,8 +542,11 @@ function on_upgrade() {
 	# Introduced in r1012
 	dpkg --compare-versions $VERSION lt "10.1.2-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for 10.1.2"
-		#echo "** Apply postinstall updates for 10.1.2"
+		#echo "There are no postinstall updates for 10.1.2"
+		echo "** Apply postinstall updates for 10.1.2"
+		# Disble samba wsdd2 systemd service file
+		systemctl stop wsdd2
+		systemctl disable wsdd2
 	fi
 
     # --------------------------------------------------------------------------
