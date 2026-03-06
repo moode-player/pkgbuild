@@ -551,8 +551,10 @@ function on_upgrade() {
 	# Introduced in r1013
 	dpkg --compare-versions $VERSION lt "10.1.3-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for 10.1.3"
-		#echo "** Apply postinstall updates for 10.1.3"
+		#echo "There are no postinstall updates for 10.1.3"
+		echo "** Apply postinstall updates for 10.1.3"
+		# Delete hdonly.json (replaced by hires.json)
+		rm /var/local/www/libcache_hdonly.json
 	fi
 
     # --------------------------------------------------------------------------
