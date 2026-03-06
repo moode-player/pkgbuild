@@ -77,7 +77,6 @@ function on_install() {
     systemctl disable apt-daily-upgrade.timer > /dev/null 2>&1
     systemctl mask apt-daily-upgrade.timer > /dev/null 2>&1
     systemctl daemon-reload > /dev/null 2>&1
-    sed -i "s/^CONF_SWAPSIZE.*/CONF_SWAPSIZE=200/" /etc/dphys-swapfile
 
     echo "** Disable systemd services managed by moOde"
     # These services are started on-demand or by moOde worker daemon (worker.php)
