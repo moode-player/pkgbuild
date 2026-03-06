@@ -549,6 +549,13 @@ function on_upgrade() {
 		systemctl disable wsdd2
 	fi
 
+	# Introduced in r1013
+	dpkg --compare-versions $VERSION lt "10.1.3-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.1.3"
+		#echo "** Apply postinstall updates for 10.1.3"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -584,6 +591,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.1.2-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.1.2.zip"
+    fi
+
+	# Release 10.1.3
+    dpkg --compare-versions $VERSION lt "10.1.3-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.1.3.zip"
     fi
 
 	echo "** Install SSH header"
