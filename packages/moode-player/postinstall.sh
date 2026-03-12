@@ -554,7 +554,11 @@ function on_upgrade() {
 		#echo "There are no postinstall updates for 10.1.3"
 		echo "** Apply postinstall updates for 10.1.3"
 		# Delete hdonly.json (replaced by hires.json)
-		rm /var/local/www/libcache_hdonly.json
+		rm /var/local/www/libcache_hdonly.json > /dev/null 2>&1
+		# Delete metadata .txt files (replaced by .json)
+		rm /var/local/www/aplmeta.txt > /dev/null 2>&1
+		rm /var/local/www/deezmeta.txt > /dev/null 2>&1
+		rm /var/local/www/spotmeta.txt > /dev/null 2>&1
 	fi
 
     # --------------------------------------------------------------------------
