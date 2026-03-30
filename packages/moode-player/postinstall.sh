@@ -76,6 +76,7 @@ function on_install() {
     systemctl stop apt-daily-upgrade.timer > /dev/null 2>&1
     systemctl disable apt-daily-upgrade.timer > /dev/null 2>&1
     systemctl mask apt-daily-upgrade.timer > /dev/null 2>&1
+	systemctl disable ModemManager > /dev/null 2>&1
     systemctl daemon-reload > /dev/null 2>&1
 
     echo "** Disable systemd services managed by moOde"
