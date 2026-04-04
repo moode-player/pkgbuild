@@ -94,7 +94,6 @@ function on_install() {
         mpd2cdspvolume \
         nfs-server \
 		nmbd.service \
-        nqptp \
         phpsessionclean.service \
         phpsessionclean.timer \
         shellinabox \
