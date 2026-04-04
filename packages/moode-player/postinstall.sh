@@ -98,7 +98,6 @@ function on_install() {
         phpsessionclean.service \
         phpsessionclean.timer \
         shellinabox \
-        shairport-sync \
 		smbd.service \
         squeezelite \
         triggerhappy \
@@ -319,7 +318,7 @@ function on_install() {
     # add line i2c-dev
     [[ -z $(grep "^i2c-dev" /etc/modules) ]] && sed -i '$a i2c-dev' /etc/modules
 
-    # /etc/shairport-sync.conf
+    # /etc/shairport-sync.conf (v5 conf)
 	# General
 	# interpolation = auto
 	# disable_synchronization = no

@@ -275,7 +275,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends libmediainfo0v5 \
 --depends libmms0 \
 --depends libnss-winbind \
---depends librespot \
 --depends libsgutils2-1.48 \
 --depends libtool-bin \
 --depends libzen0v5 \
@@ -305,7 +304,6 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends python3-setuptools \
 --depends rpi-update \
 --depends samba \
---depends shairport-sync \
 --depends shairport-sync-metadata-reader \
 --depends shellinabox \
 --depends smbclient \
