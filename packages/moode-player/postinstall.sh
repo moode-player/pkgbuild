@@ -571,6 +571,8 @@ function on_upgrade() {
 		rm /var/local/www/aplmeta.txt > /dev/null 2>&1
 		rm /var/local/www/deezmeta.txt > /dev/null 2>&1
 		rm /var/local/www/spotmeta.txt > /dev/null 2>&1
+		# Add col to v4 cfg_airplay for compatibility with new v5 config screen
+		sqlite3 $SQLDB "UPDATE cfg_airplay SET param='active_state_timeout', value='10.0' WHERE param='airplayvol'"
 	fi
 
     # --------------------------------------------------------------------------
