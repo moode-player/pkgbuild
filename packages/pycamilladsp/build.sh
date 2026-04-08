@@ -16,10 +16,10 @@
 . ../../scripts/rebuilder.lib.sh
 
 # don't forget to change the debian/changelog on version bump!
-PKG="pycamilladsp_3.0.0-1moode1"
+PKG="pycamilladsp_4.0.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/pycamilladsp.git"
-PKG_SOURCE_GIT_TAG="v3.0.0"
+PKG_SOURCE_GIT_TAG="v4.0.0"
 
 rbl_check_build_dep dh-python
 rbl_check_build_dep pybuild-plugin-pyproject

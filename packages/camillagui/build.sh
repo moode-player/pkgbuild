@@ -10,14 +10,14 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="camillagui_3.0.2-1moode1"
+PKG="camillagui_4.0.1-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/HEnquist/camillagui.git"
-PKG_SOURCE_GIT_TAG="v3.0.2"
+PKG_SOURCE_GIT_TAG="v4.0.0"
 # PKG_SOURCE_GIT_TAG="mixer_matrix"
 
 PKG_SOURCE_GIT_BACKEND="https://github.com/HEnquist/camillagui-backend.git"
-PKG_SOURCE_GIT_TAG_BACKEND="v3.0.2"
+PKG_SOURCE_GIT_TAG_BACKEND="v4.0.1"
 
 # gui is a react app
 rbl_check_build_dep npm
@@ -36,10 +36,10 @@ echo "build root : $BUILD_ROOT_DIR"
 # upgrade npm package will cause a strange layout on the files tab
 # (maybe todo with the old npm/Typescript tooling on the Pi?)
 # git revert  --no-edit a7e09fdb81b25df91b033786a9109ab0514ee05e
-
+#exit 1
 # add option to hide files tab on expert mode:
 rbl_patch $BASE_DIR/camillagui_hide_files.patch
-rbl_patch $BASE_DIR/camillagui_remove_quick_config.patch
+# rbl_patch $BASE_DIR/camillagui_remove_quick_config.patch
 rbl_patch $BASE_DIR/camillagui_logoheight.patch
 # installing npm deps with npm ci failed, so use npm install instead
 
@@ -47,7 +47,7 @@ npm install
 npx browserslist@latest --update-db
 
 npm run-script build --force
-if [[ ! $? -eq 0 ]]
+if [[ ! $? -eq 0 ]];
 then
     echo "${RED} Error: npm build  failed.${NORMAL}"
     cd ..
@@ -91,7 +91,8 @@ else
 fi
 cp $BASE_DIR/css-variables.css package/opt/camillagui/build
 cp $BASE_DIR/camillagui.yml package/opt/camillagui/config
-cp $BASE_DIR/gui-config.yml package/opt/camillagui/config
+cp $BASE_DIR/gui-config.yml.expert package/opt/camillagui/config/
+cp $BASE_DIR/gui-config.yml.basic package/opt/camillagui/config/
 cp $BASE_DIR/camillagui.service package/etc/systemd/system
 
 # build a deb files based on the directory structure

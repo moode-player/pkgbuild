@@ -1,0 +1,33 @@
+diff --git a/libasound_module_pcm_cdsp.c b/libasound_module_pcm_cdsp.c
+index 115ee1f..2ef2441 100644
+--- a/libasound_module_pcm_cdsp.c
++++ b/libasound_module_pcm_cdsp.c
+@@ -420,22 +420,22 @@ static int start_camilla(cdsp_t *pcm) {
+   char sformat[20];
+   switch (pcm->io.format) {
+     case SND_PCM_FORMAT_S16_LE:
+-      snprintf(sformat, sizeof(sformat), "S16LE");
++      snprintf(sformat, sizeof(sformat), "S16_LE");
+       break;
+     case SND_PCM_FORMAT_S24_LE:
+-      snprintf(sformat, sizeof(sformat), "S24LE");
++      snprintf(sformat, sizeof(sformat), "S24_4_RJ_LE");
+       break;
+     case SND_PCM_FORMAT_S24_3LE:
+-      snprintf(sformat, sizeof(sformat), "S24LE3");
++      snprintf(sformat, sizeof(sformat), "S24_3_LE");
+       break;
+     case SND_PCM_FORMAT_S32_LE:
+-      snprintf(sformat, sizeof(sformat), "S32LE");
++      snprintf(sformat, sizeof(sformat), "S32_LE");
+       break;
+     case SND_PCM_FORMAT_FLOAT_LE:
+-      snprintf(sformat, sizeof(sformat), "FLOAT32LE");
++      snprintf(sformat, sizeof(sformat), "F32_LE");
+       break;
+     case SND_PCM_FORMAT_FLOAT64_LE:
+-      snprintf(sformat, sizeof(sformat), "FLOAT64LE");
++      snprintf(sformat, sizeof(sformat), "F64_LE");
+       break;
+     default:
+       // Shouldn't get here

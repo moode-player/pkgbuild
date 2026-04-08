@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="alsa-cdsp_1.2.0-2moode1"
+PKG="alsa-cdsp_1.2.0-3moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsa_cdsp.git"
 PKG_SOURCE_GIT_TAG="v1.2.0"
@@ -30,6 +30,9 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 dh_make -l -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../LICENSE -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
+
+rbl_patch $BASE_DIR/cdsp4_format_fix.patch
+EDITOR=/bin/true dpkg-source --commit . cdsp4_format_fix.patch
 
 rbl_patch $BASE_DIR/debug_level.patch
 EDITOR=/bin/true dpkg-source --commit . debug_level.patch

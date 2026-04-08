@@ -2,5 +2,7 @@ hide_capture_samplerate: true
 hide_silence: true
 hide_capture_device: true
 hide_playback_device: true
-applyConfigAutomatically: false
+hide_multithreading: true
+apply_config_automatically: false
+save_config_automatically: false
 hide_file_manager: true
