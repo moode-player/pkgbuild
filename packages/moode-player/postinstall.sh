@@ -560,11 +560,11 @@ function on_upgrade() {
 		systemctl disable wsdd2
 	fi
 
-	# Introduced in r1013
-	dpkg --compare-versions $VERSION lt "10.1.3-1moode1"
+	# Introduced in r1020
+	dpkg --compare-versions $VERSION lt "10.2.0-1moode1"
 	if [ $? -eq 0 ]; then
-		#echo "There are no postinstall updates for 10.1.3"
-		echo "** Apply postinstall updates for 10.1.3"
+		#echo "There are no postinstall updates for 10.2.0"
+		echo "** Apply postinstall updates for 10.2.0"
 		# Delete hdonly.json (replaced by hires.json)
 		rm /var/local/www/libcache_hdonly.json > /dev/null 2>&1
 		# Delete metadata .txt files (replaced by .json)
@@ -612,10 +612,10 @@ function on_upgrade() {
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.1.2.zip"
     fi
 
-	# Release 10.1.3
-    dpkg --compare-versions $VERSION lt "10.1.3-1moode1"
+	# Release 10.2.0
+    dpkg --compare-versions $VERSION lt "10.2.0-1moode1"
     if [ $? -eq 0 ]; then
-        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.1.3.zip"
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.0.zip"
     fi
 
 	echo "** Install SSH header"
