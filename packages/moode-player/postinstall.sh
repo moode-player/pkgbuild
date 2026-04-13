@@ -573,6 +573,8 @@ function on_upgrade() {
 		rm /var/local/www/spotmeta.txt > /dev/null 2>&1
 		# Add col to v4 cfg_airplay for compatibility with new v5 config screen
 		sqlite3 $SQLDB "UPDATE cfg_airplay SET param='active_state_timeout', value='10.0' WHERE param='airplayvol'"
+		# Bump plugin sample configs to v4
+		sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v4-sample-configs' WHERE component='camilladsp' AND type='sample-configs'"
 	fi
 
     # --------------------------------------------------------------------------
