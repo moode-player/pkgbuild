@@ -575,6 +575,12 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_airplay SET param='active_state_timeout', value='10.0' WHERE param='airplayvol'"
 		# Bump plugin sample configs to v4
 		sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v4-sample-configs' WHERE component='camilladsp' AND type='sample-configs'"
+		# Add powersave=2 to WiFi nmconnect files
+		sed -i '/mode=/a powersave=2' "/etc/NetworkManager/system-connections/Hotspot.nmconnection"
+		SSID=$(sqlite3 $SQLDB "SELECT wlanssid FROM cfg_network WHERE id='2'")
+		if [[ -n "$SSID" ]]; then
+			sed -i '/mode=/a powersave=2' "/etc/NetworkManager/system-connections/$SSID.nmconnection"
+		fi
 	fi
 
     # --------------------------------------------------------------------------
