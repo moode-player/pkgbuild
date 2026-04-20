@@ -15,12 +15,3 @@
   xmltoman,
  Standards-Version: 4.6.0
  Homepage: https://github.com/mikebrady/shairport-sync
-@@ -25,7 +25,7 @@
- Package: shairport-sync
- Architecture: linux-any
- Pre-Depends: ${misc:Pre-Depends}
--Depends: adduser, avahi-daemon, ${misc:Depends}, ${shlibs:Depends}
-+Depends: adduser, avahi-daemon, nqptp, ${misc:Depends}, ${shlibs:Depends}
- Description: AirPlay audio player
-  Plays audio streamed from iTunes, iOS devices and third-party AirPlay
-  sources such as ForkedDaapd and others. Audio played by a Shairport
