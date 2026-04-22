@@ -243,7 +243,6 @@ function _rbl_check_build_deps {
         #mk-build-deps --install --root sudo --remove
         # old version -y isn't support; will required manual confirmation
 		# TEST: Avoid user prompt with --tool apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y
-        --no-install-recommends
         mk-build-deps --install --root sudo --remove --tool apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y
 
         if [[ $? -gt 0 ]]
