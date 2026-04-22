@@ -242,7 +242,10 @@ function _rbl_check_build_deps {
     then
         #mk-build-deps --install --root sudo --remove
         # old version -y isn't support; will required manual confirmation
-        mk-build-deps --install --root sudo --remove
+		# TEST: Avoid user prompt with --tool apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y
+        --no-install-recommends
+        mk-build-deps --install --root sudo --remove --tool apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y
+
         if [[ $? -gt 0 ]]
         then
             echo "${RED}Error: automatic install of dependencies not succesfull${NORMAL}"
