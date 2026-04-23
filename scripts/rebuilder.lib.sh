@@ -310,7 +310,7 @@ function rbl_check_cargo {
         export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
         #echo "Choose option 1 when asked !"
         #read "(press key to continue)"
-		# TEST Avoid user prompt: | sh -s -- -y
+		# Avoid user prompt: | sh -s -- -y
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         source $HOME/.cargo/env
     else
