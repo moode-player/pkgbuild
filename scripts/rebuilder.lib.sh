@@ -308,9 +308,10 @@ function rbl_check_cargo {
     then
         echo "${YELLOW}cargo: not installed, installing it${NORMAL}"
         export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
-        echo "Choose option 1 when asked !"
-        read "(press key to continue)"
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        #echo "Choose option 1 when asked !"
+        #read "(press key to continue)"
+		# TEST Avoid user prompt: | sh -s -- -y
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         source $HOME/.cargo/env
     else
         echo "${GREEN}cargo: already installed${NORMAL}"
