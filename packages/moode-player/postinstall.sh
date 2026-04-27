@@ -541,6 +541,9 @@ function on_upgrade() {
 		sqlite3 $SQLDB "DROP TABLE cfg_plugin"
 		sqlite3 $SQLDB "CREATE TABLE cfg_plugin (id INTEGER PRIMARY KEY, component CHAR (32), type CHAR (32), plugin CHAR (32), version CHAR (32))"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
+		# Set fixed swap size
+		mkdir /etc/rpi/swap.conf.d/
+		cp -f $SRC/etc/rpi/swap.conf.d/fixedswapsize.conf /etc/rpi/swap.conf.d/
 
     # --------------------------------------------------------------------------
     # Any release
