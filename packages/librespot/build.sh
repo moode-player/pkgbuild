@@ -23,6 +23,7 @@ rbl_create_git_archive ${PKG_SOURCE_GIT_TAG} ../${PKGNAME}_${PKGVERSION}.orig.ta
 # Custom part of the packing
 
 rbl_check_build_dep libasound2-dev
+rbl_check_build_dep libssl-dev
 
 #Add to [package.metadata.deb] section of Cargo.toml:
 sed -i "s/^priority = \"optional\"/priority = \"optional\"\nrevision = \"${DEBVER}${DEBLOC}\"/" Cargo.toml
