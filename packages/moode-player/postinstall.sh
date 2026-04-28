@@ -544,6 +544,7 @@ function on_upgrade() {
 		# Set fixed swap size
 		mkdir /etc/rpi/swap.conf.d/
 		cp -f $SRC/etc/rpi/swap.conf.d/fixedswapsize.conf /etc/rpi/swap.conf.d/
+	fi
 
     # --------------------------------------------------------------------------
     # Any release
