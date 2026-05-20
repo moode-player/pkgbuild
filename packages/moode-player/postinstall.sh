@@ -546,6 +546,15 @@ function on_upgrade() {
 		cp -f $SRC/etc/rpi/swap.conf.d/fixedswapsize.conf /etc/rpi/swap.conf.d/
 	fi
 
+	# Introduced in r1021
+	dpkg --compare-versions $VERSION lt "10.2.1-1moode1"
+	if [ $? -eq 0 ]; then
+		#echo "There are no postinstall updates for 10.2.1"
+		echo "** Apply postinstall updates for 10.2.1"
+		# Add itunes_query_timeout to cfg_system
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='itunes_query_timeout', value='3' WHERE param='extmeta'"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
