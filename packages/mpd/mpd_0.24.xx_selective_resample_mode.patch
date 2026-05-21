@@ -111,7 +111,7 @@ index dc076a79a..4540cc5ac 100644
 @@ -168,6 +170,7 @@ public:
  	DecoderControl(Mutex &_mutex, Cond &_client_cond,
  		       InputCacheManager *_input_cache,
- 		       const AudioFormat _configured_audio_format,
+ 		       AudioFormat _configured_audio_format,
 +		       const unsigned selective_resample_mode,
  		       const ReplayGainConfig &_replay_gain_config) noexcept;
  	~DecoderControl() noexcept;
