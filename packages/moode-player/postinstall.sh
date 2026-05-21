@@ -598,6 +598,12 @@ function on_upgrade() {
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.0.zip"
     fi
 
+	# Release 10.2.1
+    dpkg --compare-versions $VERSION lt "10.2.1-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.1.zip"
+    fi
+
 	echo "** Install SSH header"
     cp -f $SRC/etc/update-motd.d/00-moodeos-header /etc/update-motd.d/
 
