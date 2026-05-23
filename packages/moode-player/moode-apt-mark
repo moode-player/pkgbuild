@@ -8,8 +8,11 @@
 #
 #########################################################################
 
-if [[ -z "$1" ]] || [[ "$1" != "hold" ]] && [[  "$1" != "unhold" ]]
-then
+if [[ $EUID -ne 0 ]]; then
+	echo "Use sudo to run the script"
+	exit
+fi
+if [[ -z "$1" ]] || [[ "$1" != "hold" ]] && [[  "$1" != "unhold" ]]; then
    echo "Arguments are [hold | unhold]"
    exit
 fi
@@ -17,26 +20,28 @@ fi
 cmd=$1
 pkgstr=""
 package_list="/etc/moode-apt-mark.conf"
+
+echo "Generating package list"
 while IFS= read -r line
 do
-  package=`echo "$line" | sed -e 's/[[:space:]]*#.*// ; /^[[:space:]]*$/d'`
-  if [[ -n "$package" ]]
-  then
+  package=$(echo "$line" | sed -e 's/[[:space:]]*#.*// ; /^[[:space:]]*$/d')
+  if [[ -n "$package" ]]; then
 	result=$(dpkg-query --showformat='${Version}\n' --show $package)
-	if [[ $result != "" ]]; then
+	if [[ -z $result ]]; then
+		echo "INFO: $package skipped, not installed"
+	else
 		pkgstr+="$package "
 		if [ $? -gt 1 ]; then
-		  echo "ERROR: processing $package failed, loop aborted"
+		  echo "ERROR: processing $package failed, exiting script"
 		  exit 1
 		fi
-	else
-		echo "INFO: $package skipped, not installed"
 	fi
   fi
 done < "$package_list"
+
+echo "Marking packages"
 apt-mark "$cmd" $pkgstr
-if [ $? -gt 1 ]
-then
-	echo "ERROR: apt-mark $cmd failed on a package in the list"
+if [ $? -gt 1 ]; then
+	echo "ERROR: apt-mark $cmd failed, exiting script"
 	exit 1
 fi
