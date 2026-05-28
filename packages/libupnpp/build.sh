@@ -11,10 +11,10 @@
 . ../../scripts/rebuilder.lib.sh
 
 
-PKG="libupnpp_0.26.7-1moode1"
+PKG="libupnpp_1.0.3-1moode1"
 
 PKG_SOURCE_GIT="https://framagit.org/medoc92/libupnpp.git"
-PKG_SOURCE_GIT_TAG="libupnpp-v0.26.7"
+PKG_SOURCE_GIT_TAG="libupnpp-v1.0.3"
 
 rbl_prepare_from_git_with_deb_repo
 
@@ -27,4 +27,3 @@ DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch -b --newversion $FULL_VERSION "R
 
 rbl_build
 echo "done"
-
