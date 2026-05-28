@@ -11,7 +11,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="libupnpp-bindings_1.26.1-1moode1"
+PKG="libupnpp-bindings_0.26.1-1moode1"
 
 PKG_SOURCE_GIT="https://framagit.org/medoc92/libupnpp-bindings.git"
 PKG_SOURCE_GIT_TAG="libupnpp-bindings-v0.26.1"
