@@ -555,6 +555,13 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='itunes_query_timeout', value='3' WHERE param='extmeta'"
 	fi
 
+	# Introduced in r1022
+	dpkg --compare-versions $VERSION lt "10.2.2-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.2.2"
+		#echo "** Apply postinstall updates for 10.2.2"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -602,6 +609,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.2.1-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.1.zip"
+    fi
+
+	# Release 10.2.2
+    dpkg --compare-versions $VERSION lt "10.2.2-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.2.zip"
     fi
 
 	echo "** Install SSH header"
