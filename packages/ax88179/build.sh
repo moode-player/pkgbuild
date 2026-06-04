@@ -24,12 +24,8 @@ PKG="ax88179_2.0-1"
 # required for creating a dkms project:
 DKMS_MODULE="ax88179_178a/2.0"
 SRC_DIR="ax88179_178a-2.0"
-if [ $ARCH64 -eq 1 ]
-then
-  ARCHS=( v8+ )
-else
-  ARCHS=( v7l+ v7+ )
-fi
+
+ARCHS=( rpi-v8 rpi-2712 )
 MODULE="ax88179_178a.ko"
 MODULE_PATH='drivers/net/usb'
 
