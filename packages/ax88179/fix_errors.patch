@@ -1,0 +1,34 @@
+--- build/ax88179_178a/2.0/build/ax88179_178a.c.orig	2026-06-04 10:41:16.421318254 -0400
++++ build/ax88179_178a/2.0/build/ax88179_178a.c	2026-06-04 10:42:33.391808391 -0400
+@@ -29,6 +29,11 @@
+ MODULE_LICENSE("GPL");
+ MODULE_VERSION(DRIVER_VERSION);
+ 
++/* define strlcpy if no prototype predefined in headers */
++#ifndef strlcpy
++    #define strlcpy(dst, src, size) snprintf((dst), (size), "%s", (src));
++#endif
++
+ /* EEE advertisement is disabled in default setting */
+ static int bEEE = 0;
+ module_param(bEEE, int, 0);
+@@ -2536,7 +2541,18 @@
+ 		   axdev->netdev->dev_addr[4], axdev->netdev->dev_addr[5]);
+ 
+ 	usb_set_intfdata(intf, axdev);
+-	netif_napi_add(netdev, &axdev->napi, ax_poll, AX88179_NAPI_WEIGHT);
++
++       /* use 4-arg form if kernel supports it; otherwise use 3-arg form */
++        #if defined(KERNEL_VERSION)
++            #if LINUX_VERSION_CODE < KERNEL_VERSION(6,1,0)
++                netif_napi_add(netdev, &axdev->napi, ax_poll, AX88179_NAPI_WEIGHT);
++            #else
++                netif_napi_add(netdev, &axdev->napi, ax_poll);
++            #endif
++        #else
++            /* fallback: assume 3-arg form if kernel headers don't define KERNEL_VERSION) */
++            netif_napi_add(netdev, &axdev->napi, ax_poll);
++        #endif
+ 
+ 	SET_NETDEV_DEV(netdev, &intf->dev);
+ 	ret = register_netdev(netdev);
