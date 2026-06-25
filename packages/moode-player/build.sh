@@ -263,6 +263,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends fonts-lato \
 --depends id3v2 \
 --depends inotify-tools \
+--depends jq \
 --depends libasound2-plugin-bluez \
 --depends libasound2-plugin-equal \
 --depends libatasmart4 \
