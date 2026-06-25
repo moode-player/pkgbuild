@@ -576,6 +576,13 @@ function on_upgrade() {
 		#echo "** Apply postinstall updates for 10.2.4"
 	fi
 
+	# Introduced in r1025
+	dpkg --compare-versions $VERSION lt "10.2.5-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.2.5"
+		#echo "** Apply postinstall updates for 10.2.5"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -641,6 +648,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.2.4-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.4.zip"
+    fi
+
+	# Release 10.2.5
+    dpkg --compare-versions $VERSION lt "10.2.5-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.5.zip"
     fi
 
 	echo "** Install SSH header"
