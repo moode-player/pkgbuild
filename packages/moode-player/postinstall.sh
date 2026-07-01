@@ -579,8 +579,14 @@ function on_upgrade() {
 	# Introduced in r1025
 	dpkg --compare-versions $VERSION lt "10.2.5-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for 10.2.5"
-		#echo "** Apply postinstall updates for 10.2.5"
+		#echo "There are no postinstall updates for 10.2.5"
+		echo "** Apply postinstall updates for 10.2.5"
+		# Remove test iTunes cover search utility (its been renamed to itunescover.py)
+		if [ -f /var/www/util/trackcover-url.py ]; then
+			rm /var/www/util/trackcover-url.py
+		fi
+		# Update Radio Covers option
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_covers', value='Radio Cover+' WHERE param='radio_track_covers'"
 	fi
 
     # --------------------------------------------------------------------------
