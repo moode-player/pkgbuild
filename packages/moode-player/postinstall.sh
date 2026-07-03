@@ -581,11 +581,13 @@ function on_upgrade() {
 	if [ $? -eq 0 ]; then
 		#echo "There are no postinstall updates for 10.2.5"
 		echo "** Apply postinstall updates for 10.2.5"
-		# Update Radio Covers option
-		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_covers', value='Radio Cover+' WHERE param='radio_track_covers'"
 		# Update bluealsaaplay.conf
 		sed -i 's/_audioout.conf/plug:_audioout.conf/' /etc/bluealsaaplay.conf
-		# Remove test iTunes cover search utility (its been renamed to itunescover.py)
+		# Update Radio Cover param
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_covers', value='Radio Cover+' WHERE param='radio_track_covers'"
+		# Create Radio Cover URL cache table
+		sqlite3 $SQLDB "CREATE TABLE cfg_rcucache (id INTEGER PRIMARY KEY, title CHAR (32), cover_url CHAR (32))"
+		# Remove test iTunes cover search utility
 		if [ -f /var/www/util/trackcover-url.py ]; then
 			rm /var/www/util/trackcover-url.py
 		fi
