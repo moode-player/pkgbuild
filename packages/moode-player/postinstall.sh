@@ -229,7 +229,7 @@ function on_install() {
     # Logic to handle config.txt
     ischroot
     if [ $? -gt 0 ]; then
-        # On Bookworm Lite (not running within imgbuild)
+        # On >= Bookworm Lite (not running within imgbuild)
         echo "** Copy config.txt to /boot/firmware"
         cp -f $SRC/boot/firmware/config.txt /boot/firmware > /dev/null 2>&1
     else
@@ -591,6 +591,44 @@ function on_upgrade() {
 		if [ -f /var/www/util/trackcover-url.py ]; then
 			rm /var/www/util/trackcover-url.py
 		fi
+		# Create /etc/radiocover-plus/config.txt
+		[ -d "/etc/radiocover-plus/" ] || mkdir "/etc/radiocover-plus"
+		cat <<- EOF > /etc/radiocover-plus/config.txt
+		# Search providers
+		iTunes=True
+		Deezer=True
+		MusicBrainz=True
+		Spotify=False
+		LastFM=False
+		Discogs=False
+		TheAudioDB=False
+		# Access tokens
+		SPOTIFY_CLIENT_ID=
+		SPOTIFY_CLIENT_SECRET=
+		LASTFM_API_KEY=
+		DISCOGS_TOKEN=
+		THEAUDIODB_API_KEY=
+		# Search settings
+		REQUEST_TIMEOUT=2.5
+		MIN_SIMILARITY=0.75
+		MIN_SIMILARITY_ITUNES=0.90
+		FAST_DEADLINE_S=1.5
+		TOTAL_DEADLINE_S=2.5
+		EARLY_STOP_SCORE=5.0
+		MAX_SIZE_PX=800
+		COVER_QUALITY=85
+		# Daemon mode settings (SSE server)
+		DEBOUNCE_MS=1.0
+		CACHE_ENABLED=True
+		LAST_EVENT_SEND_DELAY=1.5
+		HEALTH_CHECK_INTERVAL=300
+		SEGMENT_COVER_METEO=https://raw.githubusercontent.com/frantale70-lgtm/moOde-radio-plus/main/covers/meteo.jpg
+		SEGMENT_COVER_TRAFFIC=https://raw.githubusercontent.com/frantale70-lgtm/moOde-radio-plus/main/covers/traffic.jpg
+		SEGMENT_COVER_NEWS=https://raw.githubusercontent.com/frantale70-lgtm/moOde-radio-plus/main/covers/news.jpg
+		SEGMENT_COVER_ADVERTISING=https://raw.githubusercontent.com/frantale70-lgtm/moOde-radio-plus/main/covers/advertising.jpg
+		# Logging
+		LOG_LEVEL=INFO
+		EOF
 	fi
 
     # --------------------------------------------------------------------------
