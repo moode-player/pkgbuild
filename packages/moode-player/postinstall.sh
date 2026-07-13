@@ -576,13 +576,20 @@ function on_upgrade() {
 		#echo "** Apply postinstall updates for 10.2.4"
 	fi
 
-	# Introduced in r1025
-	dpkg --compare-versions $VERSION lt "10.2.5-1moode1"
+	# Introduced in r1030
+	dpkg --compare-versions $VERSION lt "10.3.0-1moode1"
 	if [ $? -eq 0 ]; then
-		#echo "There are no postinstall updates for 10.2.5"
-		echo "** Apply postinstall updates for 10.2.5"
+		#echo "There are no postinstall updates for 10.3.0"
+		echo "** Apply postinstall updates for 10.3.0"
 		# Update bluealsaaplay.conf
 		sed -i 's/_audioout.conf/plug:_audioout.conf/' /etc/bluealsaaplay.conf
+		# Remove renderer backdrop option
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='RESERVED_145', value='' WHERE param='renderer_backdrop'"
+		# Remove old default cover image
+		rm "/var/www/images/default-album-cover.png" >/dev/null 2>&1
+		# Create cfg_rbgenres table
+		sqlite3 $SQLDB "CREATE TABLE cfg_rbgenres (id INTEGER PRIMARY KEY, name CHAR (32), genre  CHAR (32))"
+		cat $SQLDB".sql" | grep "INSERT INTO cfg_rbgenres" | sqlite3 $SQLDB
 		# Update Radio Cover param
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='radio_covers', value='Radio Cover+' WHERE param='radio_track_covers'"
 		# Create Radio Cover URL cache table
@@ -698,10 +705,10 @@ function on_upgrade() {
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.4.zip"
     fi
 
-	# Release 10.2.5
-    dpkg --compare-versions $VERSION lt "10.2.5-1moode1"
+	# Release 10.3.0
+    dpkg --compare-versions $VERSION lt "10.3.0-1moode1"
     if [ $? -eq 0 ]; then
-        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.2.5.zip"
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.0.zip"
     fi
 
 	echo "** Install SSH header"
