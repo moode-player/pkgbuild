@@ -25,6 +25,7 @@ rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 echo "build root : $BUILD_ROOT_DIR"
 
 rbl_patch $BASE_DIR/configpath.patch
+rbl_patch $BASE_DIR/volume-gain-db.patch
 # Create the package
 # setup a directory structure for the files which should end up in the deb file:
 rm -rf ../package

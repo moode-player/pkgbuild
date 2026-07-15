@@ -1,0 +1,85 @@
+diff --git a/config.txt b/config.txt
+index 22bd49e..66f377d 100644
+--- a/config.txt
++++ b/config.txt
+@@ -61,6 +61,8 @@ volume.constant = 80.0
+ volume.min = 0.0
+ volume.max = 100.0
+ volume.max.in.pipe = 100.0
++volume.gain.db = 0
++volume.gain.db.source =
+ step = 6
+ mono.algorithm = average
+ stereo.algorithm = new
+diff --git a/configfileparser.py b/configfileparser.py
+index 23f537f..3474724 100644
+--- a/configfileparser.py
++++ b/configfileparser.py
+@@ -83,6 +83,8 @@ VOLUME_CONSTANT = "volume.constant"
+ VOLUME_MIN = "volume.min"
+ VOLUME_MAX = "volume.max"
+ VOLUME_MAX_IN_PIPE = "volume.max.in.pipe"
++VOLUME_GAIN_DB = "volume.gain.db"
++VOLUME_GAIN_DB_SOURCE = "volume.gain.db.source"
+ STEP = "step"
+ MONO_ALGORITHM = "mono.algorithm"
+ STEREO_ALGORITHM = "stereo.algorithm"
+@@ -295,6 +297,8 @@ class ConfigFileParser(object):
+         d[VOLUME_MIN] = config_file.getfloat(section, VOLUME_MIN)
+         d[VOLUME_MAX] = config_file.getfloat(section, VOLUME_MAX)
+         d[VOLUME_MAX_IN_PIPE] = config_file.getfloat(section, VOLUME_MAX_IN_PIPE)
++        d[VOLUME_GAIN_DB] = config_file.getfloat(section, VOLUME_GAIN_DB, fallback=0.0)
++        d[VOLUME_GAIN_DB_SOURCE] = config_file.get(section, VOLUME_GAIN_DB_SOURCE, fallback="")
+         d[MONO_ALGORITHM] = config_file.get(section, MONO_ALGORITHM)
+         d[STEREO_ALGORITHM] = config_file.get(section, STEREO_ALGORITHM)
+         d[STEP] = config_file.getint(section, STEP)
+diff --git a/datasource.py b/datasource.py
+index 861cbca..713c3bc 100644
+--- a/datasource.py
++++ b/datasource.py
+@@ -61,6 +61,12 @@ class DataSource(object):
+         self.min = self.config[VOLUME_MIN]
+         self.max_in_ui = self.config[VOLUME_MAX]
+         self.max_in_pipe = self.config[VOLUME_MAX_IN_PIPE]
++        try:
++            self.gain_db = float(self.config.get(VOLUME_GAIN_DB, 0.0))
++        except Exception:
++            self.gain_db = 0.0
++        self.gain_mult = 10.0 ** (self.gain_db / 20.0)
++        self.gain_source = self.config.get(VOLUME_GAIN_DB_SOURCE, "")
+         
+         self.v = 0
+         self.step = self.config[STEP]
+@@ -265,6 +271,20 @@ class DataSource(object):
+         with self.lock:
+             return self.http_data
+ 
++    def get_gain_source_mult(self):
++        """ Read a live gain value in dB from the configured source file.
++
++        Returns a linear multiplier (10**(dB/20)), or 1.0 (unity) when no
++        source is configured or the file is missing/empty/unreadable.
++        """
++        if not self.gain_source:
++            return 1.0
++        try:
++            with open(self.gain_source) as f:
++                return 10.0 ** (float(f.read().strip()) / 20.0)
++        except Exception:
++            return 1.0
++
+     def get_pipe_value(self):
+         """ Get signal from the named pipe. """
+ 
+@@ -283,8 +303,9 @@ class DataSource(object):
+             if length == 0:
+                 return (0, 0, 0)
+             
+-            new_left = int(self.max_in_ui * ((data[length - 4] + (data[length - 3] << 8)) / self.max_in_pipe))
+-            new_right = int(self.max_in_ui * ((data[length - 2] + (data[length - 1] << 8)) / self.max_in_pipe))
++            gain = self.gain_mult * self.get_gain_source_mult()
++            new_left = int(self.max_in_ui * ((data[length - 4] + (data[length - 3] << 8)) / self.max_in_pipe) * gain)
++            new_right = int(self.max_in_ui * ((data[length - 2] + (data[length - 1] << 8)) / self.max_in_pipe) * gain)
+             new_mono = self.get_mono(new_left, new_right)
+             
+             left = self.get_channel(self.previous_left, new_left)
