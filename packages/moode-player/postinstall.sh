@@ -638,6 +638,13 @@ function on_upgrade() {
 		EOF
 	fi
 
+	# Introduced in r1031
+	dpkg --compare-versions $VERSION lt "10.3.1-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.3.1"
+		#echo "** Apply postinstall updates for 10.3.1"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -709,6 +716,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.3.0-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.0.zip"
+    fi
+
+	# Release 10.3.1
+    dpkg --compare-versions $VERSION lt "10.3.1-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.1.zip"
     fi
 
 	echo "** Install SSH header"
