@@ -641,8 +641,10 @@ function on_upgrade() {
 	# Introduced in r1031
 	dpkg --compare-versions $VERSION lt "10.3.1-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for 10.3.1"
-		#echo "** Apply postinstall updates for 10.3.1"
+		#echo "There are no postinstall updates for 10.3.1"
+		echo "** Apply postinstall updates for 10.3.1"
+		# Update comment (from PR #769 @Gjuju)
+		sed -i 's/# ALSA mixer.*/# ALSA control element (hardware mixer element or "PCM" if none)/' /etc/alsa/conf.d/peppy.*
 	fi
 
     # --------------------------------------------------------------------------
