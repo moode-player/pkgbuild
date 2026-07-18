@@ -310,7 +310,7 @@ function rbl_check_cargo {
 	then
 		# For standard builds run as user
 		echo "${YELLOW}removing existing cargo+rust install (user)${NORMAL}"
-		rustup self uninstall
+		rustup self uninstall -y
 	fi
 
     # Install cargo + rust tools
