@@ -297,46 +297,48 @@ function rbl_check_cargo {
     export PATH=$PATH:/home/pi/.cargo/bin
 
     RUSTC_MIN_VERSION="1.85"
-    #RUST_CHAIN="nightly"
-    # until 1.61 is available on stable switch to nightly
-    RUST_CHAIN="stable"
+	# Specify version to avoid the issue in 1.97 causing segfaults
+	RUSTC_PIN_VERSION="1.96.0"
+
+	# Remove any existing cargo/rust install and start clean
+	if [[ -f /root/.cargo/bin/rustup ]]
+	then
+		# For the librespot user-on-demand build which runs as root
+		echo "${YELLOW}removing existing cargo+rust install (root)${NORMAL}"
+		/root/.cargo/bin/rustup self uninstall -y
+	elif [[ -f `which rustup` ]]
+	then
+		# For standard builds run as user
+		echo "${YELLOW}removing existing cargo+rust install (user)${NORMAL}"
+		rustup self uninstall
+	fi
+
     # Install cargo + rust tools
     CARGO_VER=`cargo --version > /dev/null 2>&1`
-
-
     if [[ $? -gt 0 ]]
     then
         echo "${YELLOW}cargo: not installed, installing it${NORMAL}"
         export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
-        #echo "Choose option 1 when asked !"
-        #read "(press key to continue)"
-		# Avoid user prompt: | sh -s -- -y
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=$RUSTC_PIN_VERSION -y
         source $HOME/.cargo/env
     else
         echo "${GREEN}cargo: already installed${NORMAL}"
     fi
 
     RUSTC_VER=`rustc --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/"`
-
-    dpkg --compare-versions $RUSTC_VER ge $RUSTC_MIN_VERSION
-    if [ $? -gt 0 ]
+	dpkg --compare-versions $RUSTC_VER ne $RUSTC_PIN_VERSION
+    if [[ $? -eq 0 ]]
     then
-        echo "${YELLOW}rust version = $RUSTC_VER , needs update ${NORMAL}"
-        # as long as 1.61 isn't stable switch to nightly build
-        echo "${YELLOW}rustup: updating ... ${NORMAL}"
-        rustup default $RUST_CHAIN
-        #rustup default stable
-        rustup update
+		echo "${RED}exiting build: installed rust version $RUSTC_VER is not the required verion $RUSTC_PIN_VERSION${NORMAL}"
+        exit 1
     else
         echo "${GREEN}rust version = $RUSTC_VER${NORMAL}"
     fi
-    rustup default $RUST_CHAIN
 
     CARGO_DEB_VER=`cargo-deb --version > /dev/null 2>&1`
     if [[ $? -gt 0 ]]
     then
-        echo "${YELLOW}cargo-deb: not installed, installing it.${NORMAL}"
+        echo "${YELLOW}cargo-deb: not installed, installing it${NORMAL}"
         cargo install cargo-deb
     else
         echo "${GREEN}cargo-deb: already installed${NORMAL}"
