@@ -297,7 +297,7 @@ function rbl_check_cargo {
 	if [[ $EUID -ne 0 ]]; then
 		echo "${GREEN}Running as user on a build machine${NORMAL}"
 		BASE_PATH=""
-		CARGO_PATH="/home/pi/.cargo/bin"
+		CARGO_PATH="/home/pi/.cargo/bin/"
 	else
 		echo "${GREEN}Running as root for the on-demand-install from Renderer Config${NORMAL}"
 		BASE_PATH="/root/.cargo/bin/"
@@ -310,7 +310,7 @@ function rbl_check_cargo {
 	RUSTC_PIN_VERSION="1.96.0"
 
 	# Cargo+rust
-	if [[ -f $BASE_PATH"rustup" ]]
+	if [[ -f $CARGO_PATH"rustup" ]]
 	then
 		INSTALLED_RUSTC_VERSION=$($BASE_PATH"rustc" --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/")
 		if [[ $INSTALLED_RUSTC_VERSION == $RUSTC_PIN_VERSION ]]
@@ -334,7 +334,7 @@ function rbl_check_cargo {
 	if [[ $? -gt 0 ]]
 	then
 		echo "${YELLOW}cargo-deb is not installed, installing it${NORMAL}"
-		$CARGO_PATH"cargo" install cargo-deb
+		$BASE_PATH"cargo" install cargo-deb
 	else
 		echo "${GREEN}cargo-deb is already installed${NORMAL}"
 	fi
