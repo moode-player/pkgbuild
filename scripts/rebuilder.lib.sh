@@ -293,57 +293,51 @@ function _rebuild {
 }
 
 function rbl_check_cargo {
-    export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
-    export PATH=$PATH:/home/pi/.cargo/bin
-
-    RUSTC_MIN_VERSION="1.85"
-	# Specify version to avoid the issue in 1.97 causing segfaults
-	RUSTC_PIN_VERSION="1.96.0"
-
-	# Remove any existing cargo/rust install and start clean
-	if [[ -f /root/.cargo/bin/rustup ]]
-	then
-		# For the librespot user-on-demand build which runs as root
-		echo "${YELLOW}removing existing cargo+rust install (root)${NORMAL}"
-		/root/.cargo/bin/rustup self uninstall -y
-	elif [[ -f `which rustup` ]]
-	then
-		# For standard builds run as user
-		echo "${YELLOW}removing existing cargo+rust install (user)${NORMAL}"
-		rustup self uninstall -y
+	# Set paths
+	if [[ $EUID -ne 0 ]]; then
+		echo "${GREEN}Running as user on a build machine${NORMAL}"
+		BASE_PATH=""
+		CARGO_PATH="/home/pi/.cargo/bin"
+	else
+		echo "${GREEN}Running as root for the on-demand-install from Renderer Config${NORMAL}"
+		BASE_PATH="/root/.cargo/bin/"
+		CARGO_PATH=$BASE_PATH
 	fi
 
-    # Install cargo + rust tools
-    CARGO_VER=`cargo --version > /dev/null 2>&1`
-    if [[ $? -gt 0 ]]
-    then
-        echo "${YELLOW}cargo: not installed, installing it${NORMAL}"
-        export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
+	# Env
+	export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
+	export PATH=$PATH:$CARGO_PATH
+	RUSTC_PIN_VERSION="1.96.0"
+
+	# Cargo+rust
+	if [[ -f $BASE_PATH"rustup" ]]
+	then
+		INSTALLED_RUSTC_VERSION=$($BASE_PATH"rustc" --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/")
+		if [[ $INSTALLED_RUSTC_VERSION == $RUSTC_PIN_VERSION ]]
+		then
+			echo "${GREEN}cargo+rust $RUSTC_PIN_VERSION is already installed${NORMAL}"
+		else
+			echo "${YELLOW}cargo+rust install is not the correct version, removing it${NORMAL}"
+			$BASE_PATH"rustup" self uninstall -y
+
+			echo "${YELLOW}installing cargo+rust $RUSTC_PIN_VERSION${NORMAL}"
+			curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=$RUSTC_PIN_VERSION -y
+			source $HOME/.cargo/env
+		fi
+	else
+		echo "${YELLOW}installing cargo+rust $RUSTC_PIN_VERSION${NORMAL}"
 		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=$RUSTC_PIN_VERSION -y
-        source $HOME/.cargo/env
-    else
-        echo "${GREEN}cargo: already installed${NORMAL}"
-    fi
-
-    RUSTC_VER=`rustc --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/"`
-	dpkg --compare-versions $RUSTC_VER ne $RUSTC_PIN_VERSION
-    if [[ $? -eq 0 ]]
-    then
-		echo "${RED}exiting build: installed rust version $RUSTC_VER is not the required verion $RUSTC_PIN_VERSION${NORMAL}"
-        exit 1
-    else
-        echo "${GREEN}rust version = $RUSTC_VER${NORMAL}"
-    fi
-
-    CARGO_DEB_VER=`cargo-deb --version > /dev/null 2>&1`
-    if [[ $? -gt 0 ]]
-    then
-        echo "${YELLOW}cargo-deb: not installed, installing it${NORMAL}"
-        cargo install cargo-deb
-    else
-        echo "${GREEN}cargo-deb: already installed${NORMAL}"
-    fi
-
+		source $HOME/.cargo/env
+	fi
+	# Cargo-deb
+	CARGO_DEB_VER=$($BASE_PATH"cargo-deb" --version > /dev/null 2>&1)
+	if [[ $? -gt 0 ]]
+	then
+		echo "${YELLOW}cargo-deb is not installed, installing it${NORMAL}"
+		$CARGO_PATH"cargo" install cargo-deb
+	else
+		echo "${GREEN}cargo-deb is already installed${NORMAL}"
+	fi
 }
 
 function rbl_check_fpm {
