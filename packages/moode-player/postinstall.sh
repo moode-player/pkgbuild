@@ -645,6 +645,8 @@ function on_upgrade() {
 		echo "** Apply postinstall updates for 10.3.1"
 		# Update comment (from PR #769 @Gjuju)
 		sed -i 's/# ALSA mixer.*/# ALSA control element (hardware mixer element or "PCM" if none)/' /etc/alsa/conf.d/peppy.*
+		# Delete duplicate genre in cfg_rbgenres
+		sqlite3 $SQLDB "DELETE FROM cfg_rbgenres WHERE id='131' AND name='Jazz - Bebop'"
 	fi
 
     # --------------------------------------------------------------------------
