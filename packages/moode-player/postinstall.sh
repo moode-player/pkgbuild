@@ -643,13 +643,12 @@ function on_upgrade() {
 	if [ $? -eq 0 ]; then
 		#echo "There are no postinstall updates for 10.3.1"
 		echo "** Apply postinstall updates for 10.3.1"
-		# Update comment (from PR #769 @Gjuju)
+		# Update comment (from PR #769 by @Gjuju)
 		sed -i 's/# ALSA mixer.*/# ALSA control element (hardware mixer element or "PCM" if none)/' /etc/alsa/conf.d/peppy.*
 		# Delete duplicate genre in cfg_rbgenres
 		sqlite3 $SQLDB "DELETE FROM cfg_rbgenres WHERE id='131' AND name='Jazz - Bebop'"
-		# Config updates for latest PeppyMeter 2026-07-20
-		sed -i -e '/volume.max.in.pipe/a \volume.gain.db = 0\nvolume.gain.db.source =' /etc/peppymeter/config.txt
-	fi
+		# Config updates for latest PeppyMeter 2026-07-20 and the Hardware volume tracker (PR #773 by @Gjuju)
+		sed -i -e '/volume.max.in.pipe/a \volume.gain.db = 0\nvolume.gain.db.source = \/tmp\/peppy_gain_db' /etc/peppymeter/config.txt	fi
 
     # --------------------------------------------------------------------------
     # Any release
