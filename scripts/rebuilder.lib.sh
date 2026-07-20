@@ -306,7 +306,10 @@ function rbl_check_cargo {
 
 	# Env
 	export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
-	export PATH=$PATH:$CARGO_PATH
+	# Prepend: a distro rustc in /usr/bin must not shadow the rustup one,
+	# otherwise the version check below reads the wrong rustc and the
+	# toolchain gets uninstalled and reinstalled on every build.
+	export PATH=$CARGO_PATH:$PATH
 	RUSTC_PIN_VERSION="1.96.0"
 
 	# Cargo+rust
@@ -329,6 +332,16 @@ function rbl_check_cargo {
 		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=$RUSTC_PIN_VERSION -y
 		source $HOME/.cargo/env
 	fi
+
+	# The pin exists to avoid the segfaults in 1.97, so don't build at all
+	# if the install we ended up with isn't it
+	INSTALLED_RUSTC_VERSION=$($BASE_PATH"rustc" --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/")
+	if [[ $INSTALLED_RUSTC_VERSION != $RUSTC_PIN_VERSION ]]
+	then
+		echo "${RED}exiting build: installed rust version $INSTALLED_RUSTC_VERSION is not the required version $RUSTC_PIN_VERSION${NORMAL}"
+		exit 1
+	fi
+
 	# Cargo-deb
 	CARGO_DEB_VER=$($BASE_PATH"cargo-deb" --version > /dev/null 2>&1)
 	if [[ $? -gt 0 ]]
