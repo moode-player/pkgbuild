@@ -9,7 +9,7 @@
 #########################################################################
 
 . ../../scripts/rebuilder.lib.sh
-PKG="peppy-meter_2025.6.3-1moode1"
+PKG="peppy-meter_2026.7.20-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/project-owner/PeppyMeter.git"
 PKG_SOURCE_GIT_TAG="master"
