@@ -293,63 +293,83 @@ function _rebuild {
 }
 
 function rbl_check_cargo {
-	# Set paths
-	if [[ $EUID -ne 0 ]]; then
-		echo "${GREEN}Running as user on a build machine${NORMAL}"
-		BASE_PATH=""
-		CARGO_PATH="/home/pi/.cargo/bin/"
-	else
-		echo "${GREEN}Running as root for the on-demand-install from Renderer Config${NORMAL}"
-		BASE_PATH="/root/.cargo/bin/"
-		CARGO_PATH=$BASE_PATH
-	fi
-
-	# Env
-	export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
-	# Prepend: a distro rustc in /usr/bin must not shadow the rustup one,
-	# otherwise the version check below reads the wrong rustc and the
-	# toolchain gets uninstalled and reinstalled on every build.
-	export PATH=$CARGO_PATH:$PATH
+	# Specify version to avoid the issue in 1.97 causing segfaults
 	RUSTC_PIN_VERSION="1.96.0"
 
-	# Cargo+rust
-	if [[ -f $CARGO_PATH"rustup" ]]
+	# The toolchain lives in a different place depending on how the build
+	# was started, so pin CARGO_HOME explicitly for both contexts and let
+	# every step below work off it. rustup, cargo and the env script all
+	# honour CARGO_HOME, so nothing has to guess a path afterwards.
+	if [[ $EUID -ne 0 ]]
 	then
-		INSTALLED_RUSTC_VERSION=$($BASE_PATH"rustc" --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/")
-		if [[ $INSTALLED_RUSTC_VERSION == $RUSTC_PIN_VERSION ]]
+		echo "${GREEN}Running as user on a build machine${NORMAL}"
+		# Not /home/pi: since Bookworm the account is created at first
+		# boot, so the build user is whoever is logged in
+		if [[ -z "$HOME" ]]
 		then
-			echo "${GREEN}cargo+rust $RUSTC_PIN_VERSION is already installed${NORMAL}"
-		else
-			echo "${YELLOW}cargo+rust install is not the correct version, removing it${NORMAL}"
-			$BASE_PATH"rustup" self uninstall -y
-
-			echo "${YELLOW}installing cargo+rust $RUSTC_PIN_VERSION${NORMAL}"
-			curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=$RUSTC_PIN_VERSION -y
-			source $HOME/.cargo/env
+			echo "${RED}exiting build: HOME is not set, cannot locate the cargo install${NORMAL}"
+			exit 1
 		fi
+		export CARGO_HOME="$HOME/.cargo"
 	else
+		echo "${GREEN}Running as root for the on-demand-install from Renderer Config${NORMAL}"
+		# Spelled out rather than $HOME: the moode worker that runs the
+		# on-demand build does not necessarily export it
+		export CARGO_HOME="/root/.cargo"
+	fi
+	CARGO_PATH="$CARGO_HOME/bin"
+
+	export RUSTUP_UNPACK_RAM=94371840; export RUSTUP_IO_THREADS=1
+	# Prepend so that a distro rustc in /usr/bin cannot shadow the pinned one
+	export PATH="$CARGO_PATH:$PATH"
+
+	# Ask the toolchain we manage, by full path, so the answer does not
+	# depend on what else is installed on the machine
+	INSTALLED_RUSTC_VERSION=""
+	if [[ -x "$CARGO_PATH/rustc" ]]
+	then
+		INSTALLED_RUSTC_VERSION=`"$CARGO_PATH/rustc" --version 2>/dev/null | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/"`
+	fi
+
+	if [[ "$INSTALLED_RUSTC_VERSION" == "$RUSTC_PIN_VERSION" ]]
+	then
+		echo "${GREEN}cargo+rust $RUSTC_PIN_VERSION is already installed${NORMAL}"
+	else
+		# Clean out whatever is there before installing the pinned version
+		if [[ -x "$CARGO_PATH/rustup" ]]
+		then
+			echo "${YELLOW}removing cargo+rust ${INSTALLED_RUSTC_VERSION:-(unknown version)}${NORMAL}"
+			"$CARGO_PATH/rustup" self uninstall -y
+		fi
+		# An interrupted install leaves a CARGO_HOME with no rustup in it
+		# to uninstall with, and rustup-init will not install over it
+		if [[ -d "$CARGO_HOME" ]]
+		then
+			echo "${YELLOW}removing leftover $CARGO_HOME${NORMAL}"
+			rm -rf "$CARGO_HOME"
+		fi
+
 		echo "${YELLOW}installing cargo+rust $RUSTC_PIN_VERSION${NORMAL}"
 		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=$RUSTC_PIN_VERSION -y
-		source $HOME/.cargo/env
+		source "$CARGO_HOME/env"
 	fi
 
 	# The pin exists to avoid the segfaults in 1.97, so don't build at all
 	# if the install we ended up with isn't it
-	INSTALLED_RUSTC_VERSION=$($BASE_PATH"rustc" --version | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/")
-	if [[ $INSTALLED_RUSTC_VERSION != $RUSTC_PIN_VERSION ]]
+	INSTALLED_RUSTC_VERSION=`"$CARGO_PATH/rustc" --version 2>/dev/null | sed -r "s/rustc[ ]([0-9]+[.][0-9]+[.][0-9]+).*/\1/"`
+	if [[ "$INSTALLED_RUSTC_VERSION" != "$RUSTC_PIN_VERSION" ]]
 	then
-		echo "${RED}exiting build: installed rust version $INSTALLED_RUSTC_VERSION is not the required version $RUSTC_PIN_VERSION${NORMAL}"
+		echo "${RED}exiting build: installed rust version ${INSTALLED_RUSTC_VERSION:-none} is not the required version $RUSTC_PIN_VERSION${NORMAL}"
 		exit 1
 	fi
 
-	# Cargo-deb
-	CARGO_DEB_VER=$($BASE_PATH"cargo-deb" --version > /dev/null 2>&1)
-	if [[ $? -gt 0 ]]
+	# Cargo-deb, which rustup self uninstall takes down with the toolchain
+	if "$CARGO_PATH/cargo-deb" --version > /dev/null 2>&1
 	then
-		echo "${YELLOW}cargo-deb is not installed, installing it${NORMAL}"
-		$BASE_PATH"cargo" install cargo-deb
-	else
 		echo "${GREEN}cargo-deb is already installed${NORMAL}"
+	else
+		echo "${YELLOW}cargo-deb is not installed, installing it${NORMAL}"
+		"$CARGO_PATH/cargo" install cargo-deb
 	fi
 }
 
