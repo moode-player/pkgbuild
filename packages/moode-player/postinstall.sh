@@ -648,7 +648,8 @@ function on_upgrade() {
 		# Delete duplicate genre in cfg_rbgenres
 		sqlite3 $SQLDB "DELETE FROM cfg_rbgenres WHERE id='131' AND name='Jazz - Bebop'"
 		# Config updates for latest PeppyMeter 2026-07-20 and the Hardware volume tracker (PR #773 by @Gjuju)
-		sed -i -e '/volume.max.in.pipe/a \volume.gain.db = 0\nvolume.gain.db.source = \/tmp\/peppy_gain_db' /etc/peppymeter/config.txt	fi
+		sed -i -e '/volume.max.in.pipe/a \volume.gain.db = 0\nvolume.gain.db.source = \/tmp\/peppy_gain_db' /etc/peppymeter/config.txt
+	fi
 
     # --------------------------------------------------------------------------
     # Any release
