@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="peppy-alsa_2024.02.10-1moode1"
+PKG="peppy-alsa_2024.02.10-1moode2"
 
 PKG_SOURCE_GIT="https://github.com/project-owner/peppyalsa.git"
 PKG_SOURCE_GIT_TAG="master"
@@ -28,6 +28,8 @@ rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 
 rbl_patch $BASE_DIR/peppy_alsa_fixes_by_kent_reed.patch
 EDITOR=/bin/true dpkg-source --commit . peppy_alsa_fixes_by_kent_reed.patch
+rbl_patch $BASE_DIR/peppy_alsa_dop_levels.patch
+EDITOR=/bin/true dpkg-source --commit . peppy_alsa_dop_levels.patch
 rm debian/manpage.*.ex
 rm debian/README.*
 rm debian/pep
