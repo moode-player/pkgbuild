@@ -378,6 +378,7 @@ function on_install() {
 	# mouse.device = /dev/input/event0
 	# mouse.enabled = False
 	# pipe.name = /tmp/peppymeter
+	# volume.gain.db.source = /tmp/peppy_gain_db
 	sed -i -e 's/^framebuffer.device.*/framebuffer.device = \/dev\/fb0/' \
 		-e 's/^mouse.device.*/mouse.device = \/dev\/input\/event0/' \
 		-e 's/^mouse.enabled.*/mouse.enabled = False/' \
@@ -652,6 +653,13 @@ function on_upgrade() {
 		sed -i -e '/volume.max.in.pipe/a \volume.gain.db = 0\nvolume.gain.db.source = \/tmp\/peppy_gain_db' /etc/peppymeter/config.txt
 	fi
 
+	# Introduced in r1032
+	dpkg --compare-versions $VERSION lt "10.3.2-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.3.2"
+		#echo "** Apply postinstall updates for 10.3.2"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -729,6 +737,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.3.1-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.1.zip"
+    fi
+
+	# Release 10.3.2
+    dpkg --compare-versions $VERSION lt "10.3.2-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.2.zip"
     fi
 
 	echo "** Install SSH header"
