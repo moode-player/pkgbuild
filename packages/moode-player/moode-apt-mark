@@ -19,16 +19,48 @@ fi
 
 cmd=$1
 pkgstr=""
+releasestr=""
 package_list="/etc/moode-apt-mark.conf"
+
+# A package entry can carry an optional condition: "<package> <relation> <version>".
+# The hold then lasts only while the candidate version still satisfies it, so a
+# package frozen while waiting for a fix to reach the distro releases itself once
+# the distro ships that fix. Entries without a condition are held as before.
+function hold_still_needed {
+	local package=$1
+	local relation=$2
+	local version=$3
+	local candidate
+
+	case "$relation" in
+		"<<"|"<="|"="|">="|">>") ;;
+		*)
+			echo "WARNING: $package has an unknown condition '$relation', keeping the hold"
+			return 0
+			;;
+	esac
+
+	candidate=$(LC_ALL=C apt-cache policy "$package" | awk '/Candidate:/ {print $2; exit}')
+	if [[ -z "$candidate" ]] || [[ "$candidate" == "(none)" ]]; then
+		echo "WARNING: no candidate version for $package, keeping the hold"
+		return 0
+	fi
+
+	dpkg --compare-versions "$candidate" "$relation" "$version"
+}
 
 echo "Generating package list"
 while IFS= read -r line
 do
-  package=$(echo "$line" | sed -e 's/[[:space:]]*#.*// ; /^[[:space:]]*$/d')
-  if [[ -n "$package" ]]; then
+  entry=$(echo "$line" | sed -e 's/[[:space:]]*#.*// ; /^[[:space:]]*$/d')
+  if [[ -n "$entry" ]]; then
+	read -r package relation version <<< "$entry"
 	result=$(dpkg-query --showformat='${Version}\n' --show $package)
 	if [[ -z $result ]]; then
 		echo "INFO: $package skipped, not installed"
+	elif [[ "$cmd" == "hold" ]] && [[ -n "$relation" ]] && ! hold_still_needed "$package" "$relation" "$version"; then
+		echo "INFO: $package no longer needs to be frozen, releasing it"
+		releasestr+="$package "
 	else
 		pkgstr+="$package "
 		if [ $? -gt 1 ]; then
@@ -40,8 +72,17 @@ do
 done < "$package_list"
 
 echo "Marking packages"
-apt-mark "$cmd" $pkgstr
-if [ $? -gt 1 ]; then
-	echo "ERROR: apt-mark $cmd failed, exiting script"
-	exit 1
+if [[ -n "$pkgstr" ]]; then
+	apt-mark "$cmd" $pkgstr
+	if [ $? -gt 1 ]; then
+		echo "ERROR: apt-mark $cmd failed, exiting script"
+		exit 1
+	fi
+fi
+if [[ -n "$releasestr" ]]; then
+	apt-mark unhold $releasestr
+	if [ $? -gt 1 ]; then
+		echo "ERROR: apt-mark unhold failed, exiting script"
+		exit 1
+	fi
 fi
