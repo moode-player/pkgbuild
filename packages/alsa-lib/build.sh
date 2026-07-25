@@ -13,16 +13,19 @@
 #  - scope_dsd_levels: recover a level from a DSD stream by bit density, so
 #    the needles work on native DSD instead of sitting still.
 #
-# Both are submitted upstream (alsa-project/alsa-lib #516 and #517), but merging
-# there is only the first of four steps: alsa-project must cut a release, Debian
-# package it, and the base OS pick it up. Trixie is stable and keeps alsa-lib
-# 1.2.14 for its whole life, so the fix reaches users on the NEXT base OS - years,
-# not months.
+# Built the way moOde builds mpd: the upstream release tag from git, plus the
+# running distro's own debian/ packaging grabbed as a plain tarball. We do NOT
+# fetch a source .dsc - on Raspberry Pi OS its .dsc is signed with a key dget
+# cannot verify, and chasing per-distro pool URLs and revisions is fragile. The
+# debian/ tarball is fetched and untarred without any signature check, pinned to
+# the distro's revision, so the package keeps the distro's version and nothing
+# has to refresh an apt source index on every build.
 #
-# The recipe therefore follows the base OS instead of pinning one version: it
-# builds whatever alsa-lib the build host's distro offers, refuses versions it
-# has not been validated against, and asks the source itself whether it is still
-# needed, so nothing here has to track an upstream release or pull request number.
+# Both patches are submitted upstream (alsa-project/alsa-lib #516 and #517), but
+# merging there is only the first of four steps: alsa-project must cut a release,
+# Debian package it, and the base OS pick it up. Trixie is stable and keeps
+# alsa-lib 1.2.14 for its whole life, so the fix reaches users on the NEXT base
+# OS - years, not months. Drop this package when a base OS ships a fixed alsa-lib.
 #
 # (C) bitkeeper 2026 http://moodeaudio.org
 # License: GPLv3
@@ -30,64 +33,36 @@
 #########################################################################
 . ../../scripts/rebuilder.lib.sh
 
-# Version to rebuild. Defaults to the distro candidate, so a point release that
-# drops the old .dsc from the pool does not break the build. Override both when
-# the base OS carries its own alsa-lib revision.
-ALSA_MIRROR=${ALSA_MIRROR:-http://deb.debian.org/debian}
-ALSA_VERSION=${ALSA_VERSION:-`LC_ALL=C apt-cache policy libasound2t64 libasound2 2>/dev/null | awk '/Candidate:/ && $2 != "(none)" {print $2; exit}'`}
+PKG="alsa-lib_1.2.14-1+rpt1"
+PKG_SOURCE_GIT="https://github.com/alsa-project/alsa-lib.git"
+PKG_SOURCE_GIT_TAG="v1.2.14"
+PKG_DEBIAN="http://archive.raspberrypi.com/debian/pool/main/a/alsa-lib/alsa-lib_1.2.14-1+rpt1.debian.tar.xz"
 
-if [ -z "$ALSA_VERSION" ]
+# The patches were written against 1.2.14 and dry-run clean through 1.2.16.1. If
+# the distro's own alsa-lib has moved past that, warn - it may already carry a
+# fix, or the hunks may need refreshing - but do not block the build.
+PATCH_TESTED="1.2.16.1"
+DISTRO_VERSION=`LC_ALL=C apt-cache policy libasound2t64 libasound2 2>/dev/null | awk '/Candidate:/ && $2 != "(none)" {print $2; exit}'`
+if [ -n "$DISTRO_VERSION" ] && dpkg --compare-versions "${DISTRO_VERSION%-*}" gt "$PATCH_TESTED"
 then
-    echo "${RED}Error: could not determine the alsa-lib version to build, set ALSA_VERSION${NORMAL}"
-    exit 1
+    echo "${YELLOW}Warning: the distro ships alsa-lib $DISTRO_VERSION, newer than the last tested $PATCH_TESTED - the meter scope may already be fixed upstream, or these patches may need updating.${NORMAL}"
 fi
 
-ALSA_UPSTREAM=${ALSA_VERSION%-*}
-
-# Oldest upstream release the patches were validated against
-PATCH_FLOOR="1.2.14"
-
-if dpkg --compare-versions "$ALSA_UPSTREAM" lt "$PATCH_FLOOR"
-then
-    echo "${RED}Error: alsa-lib $ALSA_UPSTREAM is older than $PATCH_FLOOR, the patches are untested there${NORMAL}"
-    exit 1
-fi
-
-# One patch set covers 1.2.14 up to 1.2.16.1: pcm_meter.c is unchanged from
-# 1.2.15 onwards, and the 1.2.14 -> 1.2.15 churn (whitespace, SNDERR replaced by
-# the new log macros) misses the patched hunks. Branch here if a later version
-# moves them.
-PATCHES="alsa_lib_scope_no_abort.patch alsa_lib_scope_dsd_levels.patch"
-
-PKG_DSC_URL="$ALSA_MIRROR/pool/main/a/alsa-lib/alsa-lib_${ALSA_VERSION}.dsc"
-
-echo "building alsa-lib $ALSA_VERSION from $PKG_DSC_URL"
-
-rbl_prepare_from_dsc_url $PKG_DSC_URL
+rbl_prepare_from_git_with_deb_repo
 
 #------------------------------------------------------------
 # Custom part of the packing
 
-# This package only exists while the scope still bails out on a format it cannot
-# convert. Ask the source, not a version number: any accepted form of the fix
-# drops that bailout, whatever release or pull request it arrives by, and
-# upstream numbers are not a reliable key - alsa-project reviews on alsa-devel
-# and its maintainer commits most patches himself.
-if ! awk '/^static int s16_enable/,/^}/' src/pcm/pcm_meter.c | grep -A2 "^	default:" | grep -q -- "return -EINVAL"
-then
-    echo "alsa-lib $ALSA_UPSTREAM already handles unconvertible formats, this package is obsolete - nothing to build"
-    exit 0
-fi
+# bring in the distro's debian/ packaging (plain tarball, no signature to verify)
+rbl_grab_debian_archive $PKG_DEBIAN
 
-# patch and add patches to debian
-for patch in $PATCHES
-do
-    rbl_patch $BASE_DIR/$patch
-    EDITOR=/bin/true dpkg-source --commit . $patch
-done
+# add our two meter scope patches
+rbl_patch $BASE_DIR/alsa_lib_scope_no_abort.patch
+EDITOR=/bin/true dpkg-source --commit . alsa_lib_scope_no_abort.patch
+rbl_patch $BASE_DIR/alsa_lib_scope_dsd_levels.patch
+EDITOR=/bin/true dpkg-source --commit . alsa_lib_scope_dsd_levels.patch
 
-# patch(1) applies with offset and fuzz, so check the result instead of trusting
-# the exit code alone
+# patch(1) applies with offset and fuzz, so check the result, not just the exit code
 for marker in "s16->silent" "dsd_frame_bits"
 do
     if ! grep -q "$marker" src/pcm/pcm_meter.c
