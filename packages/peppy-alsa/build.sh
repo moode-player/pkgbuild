@@ -4,6 +4,7 @@
 # Build recipe for peppymeter debian package
 #
 # (C) bitkeeper 2025 http://moodeaudio.org
+# (C) Gjuju 2026 peppy_alsa_dop_levels.patch
 # License: GPLv3
 #
 #########################################################################
@@ -42,4 +43,3 @@ rbl_set_initial_version_changelog $PKGNAME $FULL_VERSION
 #------------------------------------------------------------
 rbl_build
 echo "done"
-
