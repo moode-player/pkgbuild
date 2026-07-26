@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="peppy-alsa_2024.02.10-1moode3"
+PKG="peppy-alsa_2026.07.26-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/project-owner/peppyalsa.git"
 PKG_SOURCE_GIT_TAG="master"
