@@ -4,14 +4,13 @@
 # Build recipe for peppymeter debian package
 #
 # (C) bitkeeper 2025 http://moodeaudio.org
-# (C) Gjuju 2026 peppy_alsa_dop_levels.patch
 # License: GPLv3
 #
 #########################################################################
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="peppy-alsa_2024.02.10-1moode2"
+PKG="peppy-alsa_2024.02.10-1moode3"
 
 PKG_SOURCE_GIT="https://github.com/project-owner/peppyalsa.git"
 PKG_SOURCE_GIT_TAG="master"
@@ -27,10 +26,6 @@ rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
 dh_make -l -p ${PKGNAME} -f ../${PKGNAME}_${PKGVERSION}.tar.gz -c custom --copyrightfile ../LICENSE -y
 rm ../${PKGNAME}_${PKGVERSION}.tar.gz
 
-rbl_patch $BASE_DIR/peppy_alsa_fixes_by_kent_reed.patch
-EDITOR=/bin/true dpkg-source --commit . peppy_alsa_fixes_by_kent_reed.patch
-rbl_patch $BASE_DIR/peppy_alsa_dop_levels.patch
-EDITOR=/bin/true dpkg-source --commit . peppy_alsa_dop_levels.patch
 rm debian/manpage.*.ex
 rm debian/README.*
 rm debian/pep
