@@ -28,6 +28,7 @@
 # OS - years, not months. Drop this package when a base OS ships a fixed alsa-lib.
 #
 # (C) bitkeeper 2026 http://moodeaudio.org
+# (C) Gjuju 2026 alsa_lib_scope_no_abort.patch, alsa_lib_scope_dsd_levels.patch
 # License: GPLv3
 #
 #########################################################################
