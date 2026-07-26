@@ -82,7 +82,7 @@ then
 fi
 
 DEB=`find ./dist/binary -maxdepth 1 -name "$PKG*.deb" ! -name "$PKG-dbgsym*.deb"`
-DEB_COUNT=`find ./dist/binary -maxdepth 1 -name "$PKG*.deb" | wc -l`
+DEB_COUNT=`find ./dist/binary -maxdepth 1 -name "$PKG*.deb" ! -name "$PKG-dbgsym*.deb" | wc -l`
 
 DSC=`find ./dist/source -maxdepth 1 -name "$PKG*.dsc"`
 DEBIAN=`find ./dist/source -maxdepth 1 -name "$PKG*.debian*"`
@@ -90,8 +90,11 @@ SRC=`find ./dist/source -maxdepth 1 -name "$PKG*.orig*" ! -name "$PKG*.asc"`
 
 if [ $DEB_COUNT -gt 1 ]
 then
-    echo "${YELLOW}Multiple packages found to upload, not supported.${NORMAL}"
-    echo $DEB
+    echo "${YELLOW}Multiple packages found to upload, not supported. Run one per package:${NORMAL}"
+    for FOUND in $DEB
+    do
+        echo "  deploy.sh `basename $FOUND | sed -r 's/^(.*)_[^_]*\.deb$/\1/'`"
+    done
     deactivate
     exit 1
 fi

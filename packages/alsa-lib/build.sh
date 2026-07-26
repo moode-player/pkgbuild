@@ -76,7 +76,24 @@ done
 # set debian local suffix flag
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --local $DEBSUFFIX "Added PCM meter scope patches: no abort on unconvertible formats, DSD levels"
 
+# read back from the changelog: FULL_VERSION does not carry the local suffix here,
+# the distro revision (1+rpt1) already fills the field it is decoded from
+DEB_VERSION=`dpkg-parsechangelog -S Version`
+
 #------------------------------------------------------------
 
 rbl_build
+
+# This source produces several binaries that have to be published together:
+# libasound2-dev Depends: libasound2t64 (= ${binary:Version}). A repo holding the
+# patched library without its matching -dev makes apt remove libasound2-dev, and
+# every later build needing it fails. deploy.sh takes one package per run and
+# matches on the file name, and alsa-lib is not one of the binary names.
+echo "${GREEN}Publish with:${NORMAL}"
+echo "  ../../scripts/deploy.sh ${PKGNAME}_${DEB_VERSION}"
+for binary in libasound2t64 libasound2-data libasound2-dev
+do
+    echo "  ../../scripts/deploy.sh ${binary}_${DEB_VERSION}"
+done
+
 echo "done"
