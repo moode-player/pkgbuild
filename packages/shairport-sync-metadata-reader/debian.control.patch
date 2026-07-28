@@ -1,6 +1,6 @@
 --- shairport-sync-metadata-reader-2.0.0~git20260724.a4a29f3/debian/control.org	2026-07-28 08:18:34.672703694 -0400
 +++ shairport-sync-metadata-reader-2.0.0~git20260724.a4a29f3/debian/control	2026-07-28 08:27:02.738573058 -0400
-@@ -1,14 +1,14 @@
+@@ -1,19 +1,18 @@
  Source: shairport-sync-metadata-reader
 -Section: unknown
 +Section: audio
@@ -19,3 +19,9 @@
 
  Package: shairport-sync-metadata-reader
  Architecture: any
+ Depends:
+  ${shlibs:Depends},
+  ${misc:Depends},
+-Description: <insert up to 60 chars description>
+- <Insert long description, indented with spaces.>
++Description: AirPlay metadata reader
