@@ -32,8 +32,6 @@ if [ -f debian/patches/github-1314.patch ]; then
 fi
 
 rbl_patch $BASE_DIR/debian.rules.patch
-rbl_patch $BASE_DIR/debian.control.patch
-
 
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Build for moOde."
 
