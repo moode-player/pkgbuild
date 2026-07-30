@@ -323,6 +323,13 @@ function rbl_check_cargo {
 	# Prepend so that a distro rustc in /usr/bin cannot shadow the pinned one
 	export PATH="$CARGO_PATH:$PATH"
 
+	# On aarch64 a codegen worker thread can overflow its stack and take rustc
+	# down with SIGSEGV inside LLVM, on generated code with very large functions
+	# (librespot-protocol). Not the OOM killer, not governed by the job count,
+	# so it strikes at random. 16 MiB is what rustc's own diagnostic suggests,
+	# and a thread stack is reserved address space - pages cost only when used.
+	export RUST_MIN_STACK=${RUST_MIN_STACK:-16777216}
+
 	# Ask the toolchain we manage, by full path, so the answer does not
 	# depend on what else is installed on the machine
 	INSTALLED_RUSTC_VERSION=""
