@@ -656,8 +656,10 @@ function on_upgrade() {
 	# Introduced in r1032
 	dpkg --compare-versions $VERSION lt "10.3.2-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for 10.3.2"
-		#echo "** Apply postinstall updates for 10.3.2"
+		#echo "There are no postinstall updates for 10.3.2"
+		echo "** Apply postinstall updates for 10.3.2"
+		# Update airplay plugin ver
+		sqlite3 $SQLDB "UPDATE cfg_plugin SET version='5.2.1-1moode1' WHERE component='renderer' AND type='airplay'"
 	fi
 
     # --------------------------------------------------------------------------
