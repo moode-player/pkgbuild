@@ -132,8 +132,6 @@ function on_install() {
 
     echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
-    echo "** Set permissions for bt-agent PIN code file"
-    chmod 0600 /etc/bluetooth/pin.conf
 
     echo "** Set permissions for triggerhappy to execute ALSA commands"
     usermod -a -G audio nobody
