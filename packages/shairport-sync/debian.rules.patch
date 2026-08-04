@@ -1,26 +1,25 @@
---- shairport-sync-dev.org/debian/rules.org	2026-07-28 18:49:47.010007194 -0400
-+++ shairport-sync-dev/debian/rules	2026-07-28 18:55:46.496571889 -0400
-@@ -23,7 +23,7 @@
- 		--with-pipe \
- 		--without-configfiles \
- 		--with-piddir=/run/shairport-sync \
--		--with-libdaemon \
-+		--without-libdaemon \
- 		--with-ssl=openssl \
- 		--with-soxr \
- 		--with-metadata \
-@@ -31,10 +31,10 @@
- 		--with-metadata-multicast \
- 		--with-avahi \
- 		--with-alsa \
--		--with-jack \
--		--with-pulseaudio \
--		--with-pipewire \
--		--with-convolution \
-+		--without-jack \
-+		--without-pulseaudio \
-+		--without-pipewire \
-+		--without-convolution \
+--- shairport-sync.org/debian/rules	2022-12-13 20:25:42.438700086 +0100
++++ shairport-sync/debian/rules	2022-12-13 20:29:26.340683130 +0100
+@@ -20,9 +20,10 @@
+
+ override_dh_auto_clean:
+ 	dh_auto_clean
+-	rm -f man/shairport-sync.7 man/shairport-sync.html
++#	rm -f man/shairport-sync.7 man/shairport-sync.html
+
+ override_dh_auto_configure:
++#	autoreconf -fi
+ 	dh_auto_configure -- \
+ 		--with-dummy \
+ 		--with-stdout \
+@@ -40,7 +41,9 @@
+ 		--with-convolution \
  		--with-dbus-interface \
  		--with-mpris-interface \
- 		--with-mqtt-client \
+-		--with-mqtt-client
++		--with-mqtt-client \
++		--with-airplay-2 \
++		--with-ssl=openssl
+
+ override_dh_installchangelogs:
+ 	dh_installchangelogs --keep RELEASENOTES.md
