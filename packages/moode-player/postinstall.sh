@@ -660,6 +660,15 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_plugin SET version='5.2.1-1moode1' WHERE component='renderer' AND type='airplay'"
 	fi
 
+	# Introduced in r1033
+	dpkg --compare-versions $VERSION lt "10.3.3-1moode1"
+	if [ $? -eq 0 ]; then
+		#echo "There are no postinstall updates for 10.3.3"
+		echo "** Apply postinstall updates for 10.3.3"
+		# Clear Radio Cover+ cache table (gets rid of duplicates)
+		sqlite3 $SQLDB "DELETE FROM cfg_rcucache"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -743,6 +752,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.3.2-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.2.zip"
+    fi
+
+	# Release 10.3.3
+    dpkg --compare-versions $VERSION lt "10.3.3-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.3.zip"
     fi
 
 	echo "** Install SSH header"
