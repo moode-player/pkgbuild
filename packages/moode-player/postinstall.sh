@@ -123,7 +123,7 @@ function on_install() {
     /lib/systemd/system/tmp.mount
     #/etc/systemd/system/bluealsa.service \ We get file not found, very odd
 
-    echo "Set permissions for etc files"
+    echo "** Set permissions for etc files"
     chmod 0644 \
     /etc/bluealsaaplay.conf \
     /etc/nftables.conf \
@@ -766,7 +766,7 @@ function on_upgrade() {
 	echo "** Reset first use help"
     sqlite3 $SQLDB "UPDATE cfg_system SET value='n,n,y' WHERE param='first_use_help'"
 
-	echo "** Set permissions for service and etc files"
+	echo "** Set permissions for systemd and etc files"
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bluealsa.service \
