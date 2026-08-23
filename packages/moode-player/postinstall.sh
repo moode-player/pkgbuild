@@ -667,8 +667,9 @@ function on_upgrade() {
 		echo "** Apply postinstall updates for 10.3.3"
 		# Clear Radio Cover+ cache table (gets rid of duplicates)
 		sqlite3 $SQLDB "DELETE FROM cfg_rcucache"
-		# Add ignore_volume_control param to cfg_airplay
+		# Add ignore_volume_control param to AirPlay config
 		sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_airplay (id, param, value) VALUES (20, 'ignore_volume_control', 'no')"
+		sed -i -e 's/\/\/.*\(ignore_volume_control =\)/\1/' /etc/shairport-sync.conf
 	fi
 
     # --------------------------------------------------------------------------
