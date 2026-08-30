@@ -90,7 +90,6 @@ rbl_build
 # every later build needing it fails. deploy.sh takes one package per run and
 # matches on the file name, and alsa-lib is not one of the binary names.
 echo "${GREEN}Publish with:${NORMAL}"
-echo "  ../../scripts/deploy.sh ${PKGNAME}_${DEB_VERSION}"
 for binary in libasound2t64 libasound2-data libasound2-dev
 do
     echo "  ../../scripts/deploy.sh ${binary}_${DEB_VERSION}"
