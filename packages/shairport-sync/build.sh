@@ -10,10 +10,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="shairport-sync_5.2.1-1moode1"
+PKG="shairport-sync_5.2.3-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync.git"
-PKG_SOURCE_GIT_TAG="5.2.1"
+PKG_SOURCE_GIT_TAG="5.2.3"
 
 PKG_DEBIAN="http://deb.debian.org/debian/pool/main/s/shairport-sync/shairport-sync_5.1~dev~git20260518-1.debian.tar.xz"
 
