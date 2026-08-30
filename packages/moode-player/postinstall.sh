@@ -672,6 +672,13 @@ function on_upgrade() {
 		sed -i -e 's/\/\/.*\(ignore_volume_control =\)/\1/' /etc/shairport-sync.conf
 	fi
 
+	# Introduced in r1034
+	dpkg --compare-versions $VERSION lt "10.3.4-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "There are no postinstall updates for 10.3.4"
+		#echo "** Apply postinstall updates for 10.3.4"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -761,6 +768,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.3.3-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.3.zip"
+    fi
+
+	# Release 10.3.4
+    dpkg --compare-versions $VERSION lt "10.3.4-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.4.zip"
     fi
 
 	echo "** Install SSH header"
