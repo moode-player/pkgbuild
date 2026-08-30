@@ -15,9 +15,9 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="mpd_0.24.13-1moode1"
+PKG="mpd_0.24.15-1moode1"
 PKG_SOURCE_GIT="https://github.com/MusicPlayerDaemon/MPD.git"
-PKG_SOURCE_GIT_TAG="v0.24.13"
+PKG_SOURCE_GIT_TAG="v0.24.15"
 
 PKG_DEBIAN="http://deb.debian.org/debian/pool/main/m/mpd/mpd_0.24.12-1.debian.tar.xz"
 rbl_prepare_from_git_with_deb_repo
