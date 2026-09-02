@@ -33,6 +33,11 @@ then
 fi
 echo "${YELLOW}building librespot with CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS} (RAM ${MEM_MB:-?}MB, `nproc` cores)${NORMAL}"
 
+# A codegen thread can overflow its 8 MiB stack on librespot-protocol and take
+# rustc down with SIGSEGV inside LLVM (aarch64). 16 MiB is what rustc's own
+# diagnostic suggests, and it measured free on Pi 4 and Pi 5.
+export RUST_MIN_STACK=${RUST_MIN_STACK:-16777216}
+
 rbl_check_cargo
 rbl_prepare_clone_from_git ${PKG_SOURCE_GIT} ${PKG_SOURCE_GIT_TAG}
 rbl_create_git_archive ${PKG_SOURCE_GIT_TAG} ../${PKGNAME}_${PKGVERSION}.orig.tar.gz
