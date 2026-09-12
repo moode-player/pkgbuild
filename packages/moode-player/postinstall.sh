@@ -705,8 +705,12 @@ function on_upgrade() {
 	# Introduced in r1035
 	dpkg --compare-versions $VERSION lt "10.3.5-1moode1"
 	if [ $? -eq 0 ]; then
-		echo "There are no postinstall updates for 10.3.5"
-		#echo "** Apply postinstall updates for 10.3.5"
+		#echo "There are no postinstall updates for 10.3.5"
+		echo "** Apply postinstall updates for 10.3.5"
+		# Radio Cover+ logging and rcu cache
+		sqlite3 $SQLDB "DELETE FROM cfg_rcucache"
+		truncate /var/log/moode_radiocover_plus.log --size 0
+		sed -i 's/^LOG_LEVEL=.*/LOG_LEVEL=ERROR/' /etc/radiocover-plus/config.txt
 	fi
 
     # --------------------------------------------------------------------------
