@@ -1,0 +1,27 @@
+Add the Debian packaging metadata cargo-deb needs.
+
+The upstream tree packages for Arch, snap and Flatpak; only the desktop crate
+carries a [package.metadata.deb] section, so cargo-deb has nothing to read for
+the daemon. This adds the same shape as that sibling section, minus the GUI
+runtime dependencies and the .desktop/icon assets the daemon has no use for.
+
+No systemd unit is shipped: moOde starts and stops the daemon itself from
+renderer.php, the same way it drives librespot.
+
+--- a/crates/qbzd/Cargo.toml
++++ b/crates/qbzd/Cargo.toml
+@@ -56,3 +56,14 @@
+ 
+ [dev-dependencies]
+ tempfile = "3"
++
++[package.metadata.deb]
++maintainer = "vicrodh <noreply@qbz.lol>"
++copyright = "2026 QBZ, MIT"
++section = "sound"
++priority = "optional"
++extended-description = "Headless Qobuz playback daemon: a Qobuz Connect renderer, a local control API and a CLI in one binary. None of the desktop GUI stack is linked."
++depends = "$auto"
++assets = [
++    ["target/release/qbzd", "usr/bin/", "755"],
++]
