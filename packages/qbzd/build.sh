@@ -10,20 +10,15 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-VER="2.0.2"
-PKG="qbzd_$VER-1moode1"
+PKG="qbzd_2.0.2-49-1moode1"
 
-# Upstream tags its moOde-targeted builds <version>.moodeNN and reads that id
-# back from QBZD_BUILD_ID at compile time -- it provides the variable for
-# packagers precisely because a four-part id is not valid semver and cannot
-# live in Cargo.toml. Without it the binary reports the bare crate version and
-# the build it came from is no longer identifiable. Bump it together with the
-# package revision above.
-QBZ_BUILD="moode49"
-export QBZD_BUILD_ID="$VER.$QBZ_BUILD"
+# Upstream reads its build id back from QBZD_BUILD_ID at compile time; without
+# it the binary reports the bare crate version and the build it came from is no
+# longer identifiable.
+export QBZD_BUILD_ID="2.0.2.moode49"
 
 PKG_SOURCE_GIT="https://github.com/PhilipVinc/qbz.git"
-PKG_SOURCE_GIT_TAG="qbzd-v$VER.$QBZ_BUILD"
+PKG_SOURCE_GIT_TAG="qbzd-v2.0.2.moode49"
 
 # Set before rbl_check_cargo so it also covers the cargo-deb install it may
 # trigger, itself a build of some 200 crates.
@@ -66,19 +61,15 @@ rbl_check_build_dep libssl-dev
 # so the [package.metadata.deb] section cargo-deb reads is added here.
 rbl_patch $BASE_DIR/qbzd-cargo-deb.patch
 
-#Add to [package.metadata.deb] section of Cargo.toml:
-sed -i "s/^priority = \"optional\"/priority = \"optional\"\nrevision = \"${DEBVER}${DEBLOC}\"/" crates/qbzd/Cargo.toml
-if [[ $? -gt 0 ]]
-then
-    echo "${RED}Error: sed failed to set correct PKG VERSION!${NORMAL}"
-    exit 1
-fi
-
 # The cargo workspace root is crates/, not the repo root: the top level carries
 # flake.nix, snapcraft.yaml and flatpak/ but no manifest.
 cd crates
 
-RUSTFLAGS='-Ccodegen-units=1' cargo-deb -p qbzd --
+# cargo-deb builds the package version from the crate version plus a revision,
+# and a Debian revision cannot hold the upstream build number (no hyphens are
+# allowed in it), so pass the whole version instead. It comes from PKG, which
+# stays the single place to bump.
+RUSTFLAGS='-Ccodegen-units=1' cargo-deb -p qbzd --deb-version "${PKGVERSION}-${DEBVER}${DEBLOC}" --
 
 if [[ $? -gt 0 ]]
 then
