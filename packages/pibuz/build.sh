@@ -12,11 +12,17 @@
 
 # Plain semver, matching the pibuz release tag below.
 #
-# A pre-release goes here as `~rc.N`, never `-rc.N` -- `pibuz_2.4.0~rc.3-1moode1`.
+# The `-1` is the Debian revision and is NOT optional: `rebuilder.lib.sh` lists
+# a bare `caps_0.9.26` among its unsupported formats, and its REGEXP requires
+# the `-<digits>` — without one, `_rbl_decode_pkg_version` cannot decode PKG and
+# exits before the first build step. `-1` with no `moodeN` after it is the
+# shortest form it accepts, as `aloop_0.1-1` and `ax88179_2.0-1` already use.
+#
+# A pre-release goes here as `~rc.N`, never `-rc.N` -- `pibuz_2.4.0~rc.3-1`.
 # dpkg sorts a plain 2.4.0 BELOW any hyphen-suffixed version, so a hyphenated rc
 # would outrank the release it precedes and block the upgrade to it. A `~` sorts
 # before the empty string, which is what a pre-release wants.
-PKG="pibuz_2.4.0-1moode1"
+PKG="pibuz_2.4.0-1"
 
 PKG_SOURCE_GIT="https://github.com/PhilipVinc/pibuz.git"
 PKG_SOURCE_GIT_TAG="v2.4.0"
