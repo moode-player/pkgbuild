@@ -10,13 +10,16 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-# `~rc.3`, not `-rc.3`: dpkg sorts a plain 2.4.0 BELOW any suffixed version, so
-# a hyphenated rc would outrank the release it precedes and block the upgrade.
-# A `~` sorts before the empty string, which is what a pre-release wants.
-PKG="pibuz_2.4.0~rc.3-1moode1"
+# Plain semver, matching the pibuz release tag below.
+#
+# A pre-release goes here as `~rc.N`, never `-rc.N` -- `pibuz_2.4.0~rc.3-1moode1`.
+# dpkg sorts a plain 2.4.0 BELOW any hyphen-suffixed version, so a hyphenated rc
+# would outrank the release it precedes and block the upgrade to it. A `~` sorts
+# before the empty string, which is what a pre-release wants.
+PKG="pibuz_2.4.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/PhilipVinc/pibuz.git"
-PKG_SOURCE_GIT_TAG="v2.4.0-rc.3"
+PKG_SOURCE_GIT_TAG="v2.4.0"
 
 # cargo defaults to one rustc per core; on a 4-core 1 GB board that stacks four
 # and thrashes swap hard enough for the systemd watchdog to reset the board, so
@@ -71,8 +74,8 @@ rbl_check_build_dep pkg-config
 rbl_check_build_dep libasound2-dev
 
 # cargo-deb derives the package version from the crate version plus a Debian
-# revision, and a revision cannot hold the `~rc.1` this one needs, so pass the
-# whole thing. It comes from PKG, which stays the single place to bump.
+# revision, and a revision cannot hold the `~rc.N` a pre-release needs, so pass
+# the whole thing. It comes from PKG, which stays the single place to bump.
 RUSTFLAGS='-Ccodegen-units=1' cargo-deb -p pibuz --deb-version "${PKGVERSION}-${DEBVER}${DEBLOC}"
 
 if [[ $? -gt 0 ]]
