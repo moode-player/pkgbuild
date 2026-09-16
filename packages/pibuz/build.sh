@@ -22,10 +22,10 @@
 # dpkg sorts a plain 2.4.0 BELOW any hyphen-suffixed version, so a hyphenated rc
 # would outrank the release it precedes and block the upgrade to it. A `~` sorts
 # before the empty string, which is what a pre-release wants.
-PKG="pibuz_2.4.0-1"
+PKG="pibuz_2.4.1-1"
 
 PKG_SOURCE_GIT="https://github.com/PhilipVinc/pibuz.git"
-PKG_SOURCE_GIT_TAG="v2.4.0"
+PKG_SOURCE_GIT_TAG="v2.4.1"
 
 # cargo defaults to one rustc per core; on a 4-core 1 GB board that stacks four
 # and thrashes swap hard enough for the systemd watchdog to reset the board, so
