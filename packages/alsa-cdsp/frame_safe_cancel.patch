@@ -1,0 +1,282 @@
+Description: Keep the CamillaDSP FIFO frame-aligned when the IO thread is cancelled
+ snd_pcm_drop() pthread_cancels the IO thread from cdsp_stop(). write() is a
+ cancellation point, so a cancel mid-period leaves a sub-frame byte count in
+ the FIFO and CamillaDSP then reads a permanently misaligned stream.
+ Disable cancellation across one whole period write.
+ .
+ Apply after debug_level.patch and fix_make_clean.patch.
+Origin: upstream, https://github.com/bitkeeper/alsa_cdsp/pull/2
+Forwarded: https://github.com/bitkeeper/alsa_cdsp/pull/2
+Author: Mike Ovsiannikov <mike1@yahoo.com>
+Last-Update: 2026-09-26
+
+diff -ruN /tmp/moode-alsa-a/Makefile /tmp/moode-alsa-b/Makefile
+--- a/Makefile
++++ b/Makefile
+@@ -20,5 +20,18 @@
+ uninstall:
+ 	rm $(LIBDIR)/alsa-lib/$(TARGET).so
+ 
++# Cancellation-safety regression test for the FIFO writer. Exercises
++# cdsp_pipe_write.h directly (no ALSA/CamillaDSP needed): it repeatedly
++# pthread_cancel()s a writer feeding a small pipe with a slow reader and asserts
++# the FIFO always ends on a frame boundary. Build with -DUNGUARDED to observe
++# the sub-frame byte slip the guard prevents.
++TEST = test/frame_align_on_cancel
++
++test: $(TEST)
++	$(TEST)
++
++$(TEST): $(TEST).c cdsp_pipe_write.h
++	$(CC) $(CFLAGS) -O2 -pthread -o $(TEST) $(TEST).c
++
+ clean:
+-	rm -f $(TARGET).so
++	rm -f $(TARGET).so $(TEST)
+diff -ruN /tmp/moode-alsa-a/cdsp_pipe_write.h /tmp/moode-alsa-b/cdsp_pipe_write.h
+--- a/cdsp_pipe_write.h
++++ b/cdsp_pipe_write.h
+@@ -0,0 +1,52 @@
++#ifndef CDSP_PIPE_WRITE_H
++#define CDSP_PIPE_WRITE_H
++
++#include <errno.h>
++#include <pthread.h>
++#include <stddef.h>
++#include <sys/types.h>
++#include <unistd.h>
++
++/*
++ * cdsp_pipe_write_period() - write one whole PCM period to the CamillaDSP FIFO,
++ * atomically with respect to THREAD CANCELLATION.
++ *
++ * The IO thread streams to CamillaDSP one period (a whole number of frames) at a
++ * time; the ioplug .stop callback (fired by snd_pcm_drop()) pthread_cancel()s
++ * that thread. write() is a *deferred cancellation point*, so a cancel arriving
++ * while a period is only PARTIALLY written would terminate the thread mid-write,
++ * leaving a partial, sub-frame byte count in the FIFO. The still-running
++ * CamillaDSP then keeps reading, now misaligned by < 1 frame, and every sample
++ * is rebuilt from bytes straddling two real samples => permanent wideband noise
++ * until the pipe is torn down.
++ *
++ * Disabling cancellation across the write loop defers any pending cancel to the
++ * next cancellation point (the caller's loop, once cancellation is restored), so
++ * the FIFO always ends on a frame boundary. The reader (CamillaDSP) drains the
++ * pipe continuously, so this completes in bounded time; if the reader has closed
++ * its end, write() returns EPIPE (SIGPIPE is blocked by the IO thread) and we
++ * return -1 so the caller can tear down.
++ *
++ * Returns 0 when all `len` bytes were written, or -1 with errno set (EPIPE when
++ * the reader is gone). `len` must be a whole number of frames.
++ */
++static inline int cdsp_pipe_write_period(int fd, const char *buf, size_t len) {
++	int oldstate;
++	ssize_t ret;
++
++	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &oldstate);
++	while (len != 0) {
++		if ((ret = write(fd, buf, len)) == -1) {
++			if (errno == EINTR)
++				continue;
++			pthread_setcancelstate(oldstate, NULL);
++			return -1; /* caller inspects errno (EPIPE = reader closed) */
++		}
++		buf += ret;
++		len -= (size_t)ret;
++	}
++	pthread_setcancelstate(oldstate, NULL);
++	return 0;
++}
++
++#endif /* CDSP_PIPE_WRITE_H */
+diff -ruN /tmp/moode-alsa-a/libasound_module_pcm_cdsp.c /tmp/moode-alsa-b/libasound_module_pcm_cdsp.c
+--- a/libasound_module_pcm_cdsp.c
++++ b/libasound_module_pcm_cdsp.c
+@@ -31,6 +31,7 @@
+ 
+ #include "rt.h"
+ #include "strrep.h"
++#include "cdsp_pipe_write.h"
+ 
+ #define DEBUG 1
+ #define error(fmt, ...) \
+@@ -375,20 +376,19 @@
+     if ((snd_pcm_uframes_t)io_hw_ptr >= pcm->io_hw_boundary)
+       io_hw_ptr -= pcm->io_hw_boundary;
+ 
+-    ssize_t ret = 0;
+-
+-    // Perform atomic write - see the explanation above.
+-    do {
+-      if ((ret = write(pcm->cdsp_pcm_fd, head, len)) == -1) {
+-        if (errno == EINTR)
+-          continue;
+-        if (errno != EPIPE)
+-          SNDERR("PCM FIFO write error: %s", strerror(errno));
+-        goto fail;
+-      }
+-      head += ret;
+-      len -= ret;
+-    } while (len != 0);
++    // Perform atomic write - see the explanation above. Keep the whole
++    // frame-aligned period atomic w.r.t. THREAD CANCELLATION as well as partial
++    // write() returns: snd_pcm_drop() -> cdsp_stop() pthread_cancel()s this
++    // thread and write() is a deferred cancellation point, so a cancel arriving
++    // mid-period would leave a sub-frame byte count in the FIFO that the
++    // still-running CamillaDSP reads misaligned -> permanent wideband noise.
++    // cdsp_pipe_write_period() disables cancellation across the write so a drop
++    // can only take effect on a frame boundary (see cdsp_pipe_write.h).
++    if (cdsp_pipe_write_period(pcm->cdsp_pcm_fd, head, len) == -1) {
++      if (errno != EPIPE)
++        SNDERR("PCM FIFO write error: %s", strerror(errno));
++      goto fail;
++    }
+     io_thread_update_delay(pcm, io_hw_ptr);
+ 
+     asrsync_sync(&asrs, frames);
+diff -ruN /tmp/moode-alsa-a/test/frame_align_on_cancel.c /tmp/moode-alsa-b/test/frame_align_on_cancel.c
+--- a/test/frame_align_on_cancel.c
++++ b/test/frame_align_on_cancel.c
+@@ -0,0 +1,142 @@
++/*
++ * frame_align_on_cancel.c - regression test for the FIFO-writer cancellation
++ * hazard fixed by cdsp_pipe_write.h.
++ *
++ * The plugin's IO thread streams to CamillaDSP one PCM period (a whole number of
++ * frames) at a time, and the .stop callback (snd_pcm_drop()) pthread_cancel()s
++ * that thread. write() is a deferred cancellation point, so a cancel landing
++ * mid-period could leave a PARTIAL, sub-frame byte count in the pipe; CamillaDSP
++ * then reads the byte stream misaligned by < 1 frame => permanent wideband hash.
++ *
++ * This test reproduces exactly that pressure with no ALSA/CamillaDSP needed: a
++ * writer thread pushes fixed-size periods into a deliberately small pipe while a
++ * slow reader drains it (so the writer is usually blocked mid-period), and the
++ * main thread pthread_cancel()s the writer at a random instant. It then drains
++ * the pipe and asserts the total byte count is always a whole number of frames.
++ *
++ *   make test                         # guarded (cdsp_pipe_write_period) -> PASS
++ *   cc -DUNGUARDED ... frame_align_on_cancel.c   # naive write loop -> FAILs,
++ *                                     # demonstrating the slip the guard prevents
++ *
++ * A non-power-of-two frame (6 bytes = stereo S24_3LE, the moOde/qbzd case) makes
++ * any sub-frame slip visible: a partial period is almost never a multiple of 6.
++ */
++#define _GNU_SOURCE
++#include <errno.h>
++#include <fcntl.h>
++#include <pthread.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++
++#include "../cdsp_pipe_write.h"
++
++#define FRAME 6                       /* stereo S24_3LE */
++#define PERIOD_FRAMES 4096            /* period >> pipe so writes block mid-period */
++#define PERIOD (FRAME * PERIOD_FRAMES)
++#define PIPE_BYTES 4096               /* one page: the plugin's deliberately tiny FIFO */
++#define ITERS 300
++
++#ifdef UNGUARDED
++/* Naive (pre-fix) period write: write() stays a cancellation point, so a cancel
++ * can terminate the thread mid-period and leave a partial sub-frame behind. */
++static int write_period_naive(int fd, const char *buf, size_t len) {
++	ssize_t r;
++	while (len != 0) {
++		if ((r = write(fd, buf, len)) == -1) {
++			if (errno == EINTR)
++				continue;
++			return -1;
++		}
++		buf += r;
++		len -= (size_t)r;
++	}
++	return 0;
++}
++#  define WRITE_PERIOD write_period_naive
++#else
++#  define WRITE_PERIOD cdsp_pipe_write_period
++#endif
++
++static char g_period[PERIOD];
++
++struct reader_ctx { int fd; size_t total; };
++
++/* Slow consumer: small reads with a short delay, so the writer spends most of
++ * its time blocked inside a period write - the window the cancel must be safe in.
++ * Drains to EOF (after the write end is closed) so `total` == everything the
++ * writer actually committed to the FIFO. */
++static void *reader_fn(void *arg) {
++	struct reader_ctx *c = arg;
++	char b[500];                       /* non-frame-multiple read size, adversarial */
++	for (;;) {
++		ssize_t n = read(c->fd, b, sizeof b);
++		if (n > 0) {
++			c->total += (size_t)n;
++			usleep(60);
++		} else if (n == 0) {
++			break;                     /* write end closed, fully drained */
++		} else if (errno == EINTR) {
++			continue;
++		} else {
++			break;
++		}
++	}
++	return NULL;
++}
++
++static void *writer_fn(void *arg) {
++	int fd = *(int *)arg;
++	for (;;) {
++		if (WRITE_PERIOD(fd, g_period, PERIOD) == -1)
++			break;                     /* reader gone (EPIPE) */
++		pthread_testcancel();          /* honour a pending cancel on a frame boundary */
++	}
++	return NULL;
++}
++
++int main(void) {
++	memset(g_period, 0xA5, sizeof g_period);
++	srand(20260910u);
++
++	size_t fails = 0, exercised = 0;
++	for (int i = 0; i < ITERS; i++) {
++		int fd[2];
++		if (pipe(fd) != 0) { perror("pipe"); return 2; }
++		(void)fcntl(fd[1], F_SETPIPE_SZ, PIPE_BYTES);
++
++		struct reader_ctx rc = { fd[0], 0 };
++		pthread_t tr, tw;
++		pthread_create(&tr, NULL, reader_fn, &rc);
++		pthread_create(&tw, NULL, writer_fn, &fd[1]);
++
++		usleep(200 + rand() % 1500);   /* let the writer get mid-period, then... */
++		pthread_cancel(tw);            /* ...the drop */
++		pthread_join(tw, NULL);
++		close(fd[1]);                  /* reader drains the remaining FIFO to EOF */
++		pthread_join(tr, NULL);
++		close(fd[0]);
++
++		if (rc.total > 0)
++			exercised++;
++		if (rc.total % FRAME != 0) {
++			if (fails < 5)
++				fprintf(stderr, "  iter %d: %zu bytes in FIFO, %% %d = %zu (MISALIGNED)\n",
++				        i, rc.total, FRAME, rc.total % FRAME);
++			fails++;
++		}
++	}
++
++	printf("frame_align_on_cancel: %d iters, %zu with data, frame=%d B, %zu misaligned\n",
++	       ITERS, exercised, FRAME, fails);
++#ifdef UNGUARDED
++	printf("  [UNGUARDED build] exercising the pre-fix naive write loop\n");
++#endif
++	if (fails != 0) {
++		printf("FAIL: a mid-write cancel left the FIFO non-frame-aligned\n");
++		return 1;
++	}
++	printf("PASS: every cancel left the FIFO frame-aligned\n");
++	return 0;
++}
