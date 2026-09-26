@@ -727,6 +727,8 @@ function on_upgrade() {
 		rm -rf /root/.local/share/qbzd
 		rm -rf /root/.cache/qbz
 		rm -rf /root/.local/share/qbz
+		# Remove deprecated MPD option "thesycon_dsd_workaround"
+		sqlite3 $SQLDB "UPDATE cfg_mpd SET param='RESERVED_48', value='' WHERE param='thesycon_dsd_workaround'"
 	fi
 
     # --------------------------------------------------------------------------
