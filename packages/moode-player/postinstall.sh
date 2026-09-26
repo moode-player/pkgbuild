@@ -719,8 +719,6 @@ function on_upgrade() {
 		# - Reload cfg_qobuz
 		sqlite3 $SQLDB "DELETE FROM cfg_qobuz"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_qobuz" | sqlite3 $SQLDB
-		# - Update cfg_plugin to pibuz
-		sqlite3 $SQLDB "UPDATE cfg_plugin SET plugin='v2-pibuz', version='2.5.0-1moode1' WHERE type='qobuz-connect'"
 		# - Remove old qbzd files
 		rm -f /var/log/moode_qbzd.log
 		rm -rf /root/.config/qbzd
@@ -729,6 +727,9 @@ function on_upgrade() {
 		rm -rf /root/.local/share/qbz
 		# Remove deprecated MPD option "thesycon_dsd_workaround"
 		sqlite3 $SQLDB "UPDATE cfg_mpd SET param='RESERVED_48', value='' WHERE param='thesycon_dsd_workaround'"
+		# Update cfg_plugin for moode-meters, pibuz and shairport-sync version bumps
+		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
+		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
 	fi
 
     # --------------------------------------------------------------------------
