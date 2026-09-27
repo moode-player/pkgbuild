@@ -22,7 +22,7 @@
 # dpkg sorts a plain 2.4.0 BELOW any hyphen-suffixed version, so a hyphenated rc
 # would outrank the release it precedes and block the upgrade to it. A `~` sorts
 # before the empty string, which is what a pre-release wants.
-PKG="pibuz_2.5.0-1"
+PKG="pibuz_2.5.0-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/PhilipVinc/pibuz.git"
 PKG_SOURCE_GIT_TAG="v2.5.0"
