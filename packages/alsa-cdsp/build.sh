@@ -10,7 +10,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="alsa-cdsp_1.2.0-3moode1"
+PKG="alsa-cdsp_1.2.0-4moode1"
 
 PKG_SOURCE_GIT="https://github.com/bitkeeper/alsa_cdsp.git"
 PKG_SOURCE_GIT_TAG="v1.2.0"
@@ -39,6 +39,9 @@ EDITOR=/bin/true dpkg-source --commit . debug_level.patch
 
 rbl_patch $BASE_DIR/fix_make_clean.patch
 EDITOR=/bin/true dpkg-source --commit . fix_make_clean.patch
+
+rbl_patch $BASE_DIR/frame_safe_cancel.patch
+EDITOR=/bin/true dpkg-source --commit . frame_safe_cancel.patch
 
 rbl_patch $BASE_DIR/fix_libdir_for_deb_build.patch
 EDITOR=/bin/true dpkg-source --commit . fix_deb_build.patch
