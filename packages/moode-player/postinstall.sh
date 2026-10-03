@@ -92,6 +92,7 @@ function on_install() {
         mpd.service \
         mpd.socket \
         mpd2cdspvolume \
+        mqtt-bridge \
         nfs-server \
 		nmbd.service \
         phpsessionclean.service \
@@ -114,6 +115,7 @@ function on_install() {
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/mqtt-bridge.service \
     /etc/systemd/system/plexamp.service \
     /etc/udev/rules.d/10-a2dp-autoconnect.rules \
     /lib/systemd/system/rotenc.service \
@@ -730,6 +732,12 @@ function on_upgrade() {
 		# Update cfg_plugin for moode-meters, pibuz and shairport-sync version bumps
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
+		# MQTT bridge
+		# - Create cfg_mqtt table
+		sqlite3 $SQLDB "CREATE TABLE cfg_mqtt (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
+		cat $SQLDB".sql" | grep "INSERT INTO cfg_mqtt" | sqlite3 $SQLDB
+		# - Add cfg_system param
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='mqttsvc', value='0' WHERE param='RESERVED_145'"
 	fi
 
 	# Introduced in r1036
@@ -859,6 +867,7 @@ function on_upgrade() {
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bluealsa.service \
     /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/mqtt-bridge.service \
     /etc/systemd/system/plexamp.service \
     /etc/udev/rules.d/10-a2dp-autoconnect.rules \
     /lib/systemd/system/rotenc.service \
