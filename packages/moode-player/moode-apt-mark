@@ -57,9 +57,9 @@ do
 	read -r package relation version <<< "$entry"
 	result=$(dpkg-query --showformat='${Version}\n' --show $package)
 	if [[ -z $result ]]; then
-		echo "INFO: $package skipped, not installed"
+		echo "INFO: $package skipped, not currently installed"
 	elif [[ "$cmd" == "hold" ]] && [[ -n "$relation" ]] && ! hold_still_needed "$package" "$relation" "$version"; then
-		echo "INFO: $package no longer needs to be frozen, releasing it"
+		echo "INFO: $package no longer needs to be held, releasing it"
 		releasestr+="$package "
 	else
 		pkgstr+="$package "
