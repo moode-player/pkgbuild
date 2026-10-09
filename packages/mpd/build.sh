@@ -15,7 +15,7 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="mpd_0.24.15-1moode1"
+PKG="mpd_0.24.15-2moode1"
 PKG_SOURCE_GIT="https://github.com/MusicPlayerDaemon/MPD.git"
 PKG_SOURCE_GIT_TAG="v0.24.15"
 
@@ -29,7 +29,6 @@ rbl_prepare_from_git_with_deb_repo
 rbl_grab_debian_archive $PKG_DEBIAN
 
 rbl_patch $BASE_DIR/moode_build_options.patch
-rbl_patch $BASE_DIR/debian.control.patch
 
 # update the packageversion + debian version part
 DEBFULLNAME=$DEBFULLNAME DEBEMAIL=$DEBEMAIL dch --newversion $FULL_VERSION "Support for selective resample mode"
