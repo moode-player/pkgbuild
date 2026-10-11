@@ -10,15 +10,13 @@
 
 . ../../scripts/rebuilder.lib.sh
 
+# NOTE: When bumping the version don't push the commit until after moode
+# and in-place update are released.
 PKG="librespot_0.8.0-1moode1"
-
 PKG_SOURCE_GIT="https://github.com/librespot-org/librespot.git"
 PKG_SOURCE_GIT_TAG="v0.8.0"
 
-# Set before rbl_check_cargo so it also covers the cargo-deb install it may
-# trigger, itself a build of some 200 crates.
-
-# cargo defaults to one rustc per core; on a 4-core 512 MB Pi that stacks four
+# Cargo defaults to one rustc per core; on a 4-core 512 MB Pi that stacks four
 # and thrashes swap. Budget 512 MB per job, clamped to [1, nproc], so 2 GB and
 # up keeps today's default. An explicit CARGO_BUILD_JOBS wins.
 if [[ -z "$CARGO_BUILD_JOBS" ]]

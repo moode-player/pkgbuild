@@ -10,20 +10,9 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-# Plain semver, matching the pibuz release tag below.
-#
-# The `-1` is the Debian revision and is NOT optional: `rebuilder.lib.sh` lists
-# a bare `caps_0.9.26` among its unsupported formats, and its REGEXP requires
-# the `-<digits>` — without one, `_rbl_decode_pkg_version` cannot decode PKG and
-# exits before the first build step. `-1` with no `moodeN` after it is the
-# shortest form it accepts, as `aloop_0.1-1` and `ax88179_2.0-1` already use.
-#
-# A pre-release goes here as `~rc.N`, never `-rc.N` -- `pibuz_2.4.0~rc.3-1`.
-# dpkg sorts a plain 2.4.0 BELOW any hyphen-suffixed version, so a hyphenated rc
-# would outrank the release it precedes and block the upgrade to it. A `~` sorts
-# before the empty string, which is what a pre-release wants.
+# NOTE: When bumping the version don't push the commit until after moode
+# and in-place update are released.
 PKG="pibuz_2.5.1-1moode1"
-
 PKG_SOURCE_GIT="https://github.com/PhilipVinc/pibuz.git"
 PKG_SOURCE_GIT_TAG="v2.5.1"
 
@@ -33,9 +22,15 @@ PKG_SOURCE_GIT_TAG="v2.5.1"
 # to [1, nproc]: 1 GB builds single-job, 2 GB gets two. Set before
 # rbl_check_cargo so it also covers the cargo-deb install it may trigger.
 # An explicit CARGO_BUILD_JOBS from the environment wins.
+
+# Cargo defaults to one rustc per core; on a 4-core 512 MB Pi that stacks four
+# and thrashes swap. Budget 512 MB per job, clamped to [1, nproc], so 2 GB and
+# up keeps today's default. An explicit CARGO_BUILD_JOBS wins.
 if [[ -z "$CARGO_BUILD_JOBS" ]]
 then
     MEM_MB=`awk '/MemTotal/ {print int($2 / 1024)}' /proc/meminfo`
+	# +512 absorbs what MemTotal under-reports (CMA/GPU), so a 1 GB board
+    # announcing ~905 MB still lands on 2 jobs
     CARGO_BUILD_JOBS=$(( (MEM_MB - 512) / 512 ))
     [[ $CARGO_BUILD_JOBS -lt 1 ]] && CARGO_BUILD_JOBS=1
     [[ $CARGO_BUILD_JOBS -gt `nproc` ]] && CARGO_BUILD_JOBS=`nproc`

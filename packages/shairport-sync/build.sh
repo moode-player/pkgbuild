@@ -10,8 +10,9 @@
 
 . ../../scripts/rebuilder.lib.sh
 
+# NOTE: When bumping the version don't push the commit until after moode
+# and in-place update are released.
 PKG="shairport-sync_5.5.2-1moode1"
-
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync.git"
 PKG_SOURCE_GIT_TAG="5.5.2"
 
