@@ -778,6 +778,15 @@ function on_upgrade() {
 		sed -i 's/bt-pairing-agent.py/bt_pairing_agent.py/' /etc/systemd/system/bt-agent.service
 	fi
 
+	# Introduced in r1037
+	dpkg --compare-versions $VERSION lt "10.3.7-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "Apply postinstall updates for 10.3.7"
+		# Bump pibuz to 2.6.0
+		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
+		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -885,6 +894,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.3.6-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.6.zip"
+    fi
+
+	# Release 10.3.7
+    dpkg --compare-versions $VERSION lt "10.3.7-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.7.zip"
     fi
 
 	echo "** Install SSH header"
