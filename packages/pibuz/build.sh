@@ -12,9 +12,9 @@
 
 # NOTE: When bumping the version don't push the commit until after moode
 # and in-place update are released.
-PKG="pibuz_2.5.1-1moode1"
+PKG="pibuz_2.7.0-1moode1"
 PKG_SOURCE_GIT="https://github.com/PhilipVinc/pibuz.git"
-PKG_SOURCE_GIT_TAG="v2.5.1"
+PKG_SOURCE_GIT_TAG="v2.7.0"
 
 # cargo defaults to one rustc per core; on a 4-core 1 GB board that stacks four
 # and thrashes swap hard enough for the systemd watchdog to reset the board, so
