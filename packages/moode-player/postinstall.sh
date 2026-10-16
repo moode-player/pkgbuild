@@ -782,7 +782,7 @@ function on_upgrade() {
 	dpkg --compare-versions $VERSION lt "10.3.7-1moode1"
 	if [ $? -eq 0 ]; then
 		echo "Apply postinstall updates for 10.3.7"
-		# Bump pibuz to 2.6.0
+		# Bump pibuz to 2.7.0
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
 	fi
