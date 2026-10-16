@@ -732,12 +732,6 @@ function on_upgrade() {
 		# Update cfg_plugin for moode-meters, pibuz and shairport-sync version bumps
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
-		# MQTT bridge
-		# - Create cfg_mqtt table
-		sqlite3 $SQLDB "CREATE TABLE cfg_mqtt (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
-		cat $SQLDB".sql" | grep "INSERT INTO cfg_mqtt" | sqlite3 $SQLDB
-		# - Add cfg_system param
-		sqlite3 $SQLDB "UPDATE cfg_system SET param='mqttsvc', value='0' WHERE param='RESERVED_145'"
 	fi
 
 	# Introduced in r1036
@@ -798,6 +792,12 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
+	echo "** MQTT bridge"
+	# Idempotent, so it applies whichever release it first ships in
+	sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_mqtt (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
+	cat $SQLDB".sql" | grep "INSERT INTO cfg_mqtt" | sed 's/^INSERT INTO/INSERT OR IGNORE INTO/' | sqlite3 $SQLDB
+	sqlite3 $SQLDB "UPDATE cfg_system SET param='mqttsvc', value='0' WHERE param='RESERVED_145'"
+
 	echo "** Update radio stations"
     # Release 10.0.1
     dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
