@@ -785,6 +785,8 @@ function on_upgrade() {
 		# Bump pibuz to 2.7.0
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
+		# Remove obsolete option from mpd.conf (missing in r1035 section)
+		sed -i '/thesycon_dsd_workaround/d' /etc/mpd.conf
 	fi
 
     # --------------------------------------------------------------------------
