@@ -60,10 +60,10 @@ diff --git a/src/config/Templates.cxx b/src/config/Templates.cxx
 index e3794e001..302b91178 100644
 --- a/src/config/Templates.cxx
 +++ b/src/config/Templates.cxx
-@@ -59,6 +59,7 @@ const ConfigTemplate config_param_templates[] = {
+@@ -58,6 +58,7 @@ const ConfigTemplate config_param_templates[] = {
+ 	{ "auto_update" },
  	{ "auto_update_depth" },
  	{ "mixramp_analyzer" },
- 	{ "inhibit_idle" },
 +	{ "selective_resample_mode" },
  };
 
@@ -297,3 +297,4 @@ index 5980f4748..5a5b6e4a3 100644
 +			  selective_resample_mode,
  			  config.replay_gain);
  	dc.StartThread();
+
