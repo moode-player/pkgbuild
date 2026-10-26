@@ -782,7 +782,7 @@ function on_upgrade() {
 	dpkg --compare-versions $VERSION lt "10.3.7-1moode1"
 	if [ $? -eq 0 ]; then
 		echo "Apply postinstall updates for 10.3.7"
-		# Bump pibuz to 2.7.0
+		# Bump renderer plugins: shairport-sync 5.6.2, nqptp 1.2.9, pibuz 2.7.1
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
 		# Remove obsolete option from mpd.conf (missing in r1035 section)
