@@ -11,13 +11,10 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-GIT_HASH="a4a29f3"
-
-PKG="shairport-sync-metadata-reader_2.0.0~git20260724.$GIT_HASH-1moode1"
-
+GIT_HASH="99a5935"
+PKG="shairport-sync-metadata-reader_2.0.1~git20261003.$GIT_HASH-1moode1"
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync-metadata-reader.git"
 PKG_SOURCE_GIT_TAG="master"
-
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 
