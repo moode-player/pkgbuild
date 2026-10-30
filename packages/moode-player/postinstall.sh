@@ -787,6 +787,8 @@ function on_upgrade() {
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
 		# Remove obsolete option from mpd.conf (missing in r1035 section)
 		sed -i '/thesycon_dsd_workaround/d' /etc/mpd.conf
+		# Remove old dashboard cache file (replaced by json file)
+		rm /var/local/www/dashboard.txt
 	fi
 
     # --------------------------------------------------------------------------
