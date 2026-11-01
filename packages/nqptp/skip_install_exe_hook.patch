@@ -1,14 +1,13 @@
---- ./Makefile.am.org	2026-03-12 20:55:22.874805363 +0100
-+++ ./Makefile.am	2026-03-12 20:55:42.356836126 +0100
-@@ -21,9 +21,9 @@
+--- ./Makefile.am.org	2026-10-18 09:01:55.347113210 -0400
++++ ./Makefile.am	2026-10-18 09:03:00.642319822 -0400
+@@ -22,9 +22,9 @@
  # If you want to run NQPTP from the command line, e.g. for debugging, run it as root user.
  # no installer for System V
  if INSTALL_SYSTEMD_STARTUP
--	[ -e $(DESTDIR)$(libdir)/systemd/system ] || mkdir -p $(DESTDIR)$(libdir)/systemd/system
-+#	[ -e $(DESTDIR)$(libdir)/systemd/system ] || mkdir -p $(DESTDIR)$(libdir)/systemd/system
+-	[ -e $(DESTDIR)$(systemdsystemunitdir) ] || mkdir -p $(DESTDIR)$(systemdsystemunitdir)
++#	[ -e $(DESTDIR)$(systemdsystemunitdir) ] || mkdir -p $(DESTDIR)$(systemdsystemunitdir)
  # don't replace a service file if it already exists...
--	[ -e $(DESTDIR)$(libdir)/systemd/system/nqptp.service ] || cp nqptp.service $(DESTDIR)$(libdir)/systemd/system
-+#	[ -e $(DESTDIR)$(libdir)/systemd/system/nqptp.service ] || cp nqptp.service $(DESTDIR)$(libdir)/systemd/system
+-	[ -e $(DESTDIR)$(systemdsystemunitdir)/nqptp.service ] || cp nqptp.service $(DESTDIR)$(systemdsystemunitdir)
++#	[ -e $(DESTDIR)$(systemdsystemunitdir)/nqptp.service ] || cp nqptp.service $(DESTDIR)$(systemdsystemunitdir)
  endif
  endif
- 
