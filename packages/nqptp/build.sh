@@ -10,9 +10,9 @@
 
 . ../../scripts/rebuilder.lib.sh
 
-PKG="nqptp_1.2.6-1moode1"
+PKG="nqptp_1.2.9-1moode1"
 PKG_SOURCE_GIT="https://github.com/mikebrady/nqptp.git"
-PKG_SOURCE_GIT_TAG="1.2.6"
+PKG_SOURCE_GIT_TAG="1.2.9"
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
 rbl_create_git_archive $PKG_SOURCE_GIT_TAG ../${PKGNAME}_${PKGVERSION}.tar.gz
