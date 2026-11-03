@@ -110,25 +110,32 @@ function on_install() {
         systemctl disable "${service}" > /dev/null 2>&1
     done
 
+    echo "** Copy .overwrite files to target dirs"
+    cp -rf $SRC/etc/* /etc/
+    cp -rf $SRC/lib/* /lib/ > /dev/null 2>&1
+    cp -rf $SRC/usr/* /usr/ > /dev/null 2>&1
+    cp -rf $SRC/var/lib /var/lib/ > /dev/null 2>&1
+
+	echo "** Set permissions for etc files"
+    chmod 0644 \
+    /etc/bluealsaaplay.conf \
+	/etc/machine-info \
+    /etc/nftables.conf \
+    /etc/squeezelite.conf
     echo "** Set permissions for systemd files"
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bt-agent.service \
     /etc/systemd/system/plexamp.service \
-    /etc/udev/rules.d/10-a2dp-autoconnect.rules \
+	/lib/systemd/system/bluetooth.service \
     /lib/systemd/system/rotenc.service \
     /lib/systemd/system/shellinabox.service \
-    /lib/systemd/system/squeezelite.service \
     /lib/systemd/system/localdisplay.service \
     /lib/systemd/system/tmp.mount
-    #/etc/systemd/system/bluealsa.service \ We get file not found, very odd
-
-    echo "** Set permissions for etc files"
+	echo "** Set permissions for udev rules"
     chmod 0644 \
-    /etc/bluealsaaplay.conf \
-    /etc/nftables.conf \
-    /etc/squeezelite.conf
-    #/etc/machine-info \ We get file not found, very odd
+	/etc/udev/rules.d/10-a2dp-autoconnect.rules \
+	/etc/udev/rules.d/90-moode-usb-audio.rules
 
     echo "** Set permissions for bluez-alsa D-Bus"
     usermod -a -G audio mpd
@@ -216,14 +223,6 @@ function on_install() {
     chmod 0440 /etc/sudoers.d/010_moode
     chmod 0440 /etc/sudoers.d/010_www-data-nopasswd
 
-    # --------------------------------------------------------------------------
-    # Overwrite files not owned by moode-player (owned by other packages)
-    # --------------------------------------------------------------------------
-    echo "** Copy overwrite files to target dirs"
-    cp -rf $SRC/etc/* /etc/
-    cp -rf $SRC/lib/* /lib/ > /dev/null 2>&1
-    cp -rf $SRC/usr/* /usr/ > /dev/null 2>&1
-    cp -rf $SRC/var/lib /var/lib/ > /dev/null 2>&1
     # Logic to handle config.txt
     ischroot
     if [ $? -gt 0 ]; then
@@ -795,6 +794,8 @@ function on_upgrade() {
 	dpkg --compare-versions $VERSION lt "10.3.8-1moode1"
 	if [ $? -eq 0 ]; then
 		echo "Apply postinstall updates for 10.3.8"
+		# Add USB hot-plug rule
+		cp -f $SRC/etc/udev/rules.d/90-moode-usb-audio.rules /etc/udev/rules.d/
 	fi
 
     # --------------------------------------------------------------------------
@@ -924,24 +925,27 @@ function on_upgrade() {
 	echo "** Reset first use help"
     sqlite3 $SQLDB "UPDATE cfg_system SET value='n,n,y' WHERE param='first_use_help'"
 
-	echo "** Set permissions for systemd and etc files"
-    chmod 0644 \
-    /etc/systemd/system/bluealsa-aplay@.service \
-    /etc/systemd/system/bluealsa.service \
-    /etc/systemd/system/bt-agent.service \
-    /etc/systemd/system/plexamp.service \
-    /etc/udev/rules.d/10-a2dp-autoconnect.rules \
-    /lib/systemd/system/rotenc.service \
-    /lib/systemd/system/shellinabox.service \
-    /lib/systemd/system/squeezelite.service \
-    /lib/systemd/system/localdisplay.service \
-    /lib/systemd/system/tmp.mount > /dev/null 2>&1
-    # Set permissions for etc files
+	# Copy from on_install() section
+	echo "** Set permissions for etc files"
     chmod 0644 \
     /etc/bluealsaaplay.conf \
-    /etc/machine-info \
+	/etc/machine-info \
     /etc/nftables.conf \
-    /etc/squeezelite.conf > /dev/null 2>&1
+    /etc/squeezelite.conf
+    echo "** Set permissions for systemd files"
+    chmod 0644 \
+    /etc/systemd/system/bluealsa-aplay@.service \
+    /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/plexamp.service \
+	/lib/systemd/system/bluetooth.service \
+    /lib/systemd/system/rotenc.service \
+    /lib/systemd/system/shellinabox.service \
+    /lib/systemd/system/localdisplay.service \
+    /lib/systemd/system/tmp.mount
+	echo "** Set permissions for udev rules"
+    chmod 0644 \
+	/etc/udev/rules.d/10-a2dp-autoconnect.rules \
+	/etc/udev/rules.d/90-moode-usb-audio.rules
 
     # Update sample playlists
     # NOTE: Updates will be new image only
