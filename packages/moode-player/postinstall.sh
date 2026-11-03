@@ -791,6 +791,12 @@ function on_upgrade() {
 		rm /var/local/www/dashboard.txt
 	fi
 
+	# Introduced in r1038
+	dpkg --compare-versions $VERSION lt "10.3.8-1moode1"
+	if [ $? -eq 0 ]; then
+		echo "Apply postinstall updates for 10.3.8"
+	fi
+
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
@@ -904,6 +910,12 @@ function on_upgrade() {
     dpkg --compare-versions $VERSION lt "10.3.7-1moode1"
     if [ $? -eq 0 ]; then
         import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.7.zip"
+    fi
+
+	# Release 10.3.8
+    dpkg --compare-versions $VERSION lt "10.3.8-1moode1"
+    if [ $? -eq 0 ]; then
+        import_stations update "https://dl.cloudsmith.io/public/moodeaudio/m8y/raw/files/moode-stations-update_10.3.8.zip"
     fi
 
 	echo "** Install SSH header"
