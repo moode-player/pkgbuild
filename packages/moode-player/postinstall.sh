@@ -796,6 +796,20 @@ function on_upgrade() {
 		echo "Apply postinstall updates for 10.3.8"
 		# Add USB hot-plug rule
 		cp -f $SRC/etc/udev/rules.d/90-moode-usb-audio.rules /etc/udev/rules.d/
+		# Spotify Soloist renderer
+		# - Create cfg_soloist table
+		sqlite3 $SQLDB "CREATE TABLE cfg_soloist (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
+		cat $SQLDB".sql" | grep "INSERT INTO cfg_soloist" | sqlite3 $SQLDB
+		# - Add cfg_system params
+		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (177, 'soloistsvc', '0')"
+		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (178, 'soloistname', 'Moode Soloist')"
+		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (179, 'solactive', '0')"
+		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (180, 'rsmaftersol', 'No')"
+		# - Enable the feature (keeps the other bits as set by the user)
+		sqlite3 $SQLDB "UPDATE cfg_system SET value=CAST(value AS INTEGER) | 262144 WHERE param='feat_bitmask'"
+		# - Update cfg_plugin
+		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
+		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
 	fi
 
     # --------------------------------------------------------------------------
