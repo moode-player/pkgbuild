@@ -797,6 +797,9 @@ function on_upgrade() {
 		# Add USB hot-plug rule
 		cp -f $SRC/etc/udev/rules.d/90-moode-usb-audio.rules /etc/udev/rules.d/
 		# Spotify Soloist renderer
+		# - Create conf files
+		mkdir /etc/soloist
+		cp -f $SRC/etc/soloist/*.conf /etc/soloist/
 		# - Create cfg_soloist table
 		sqlite3 $SQLDB "CREATE TABLE cfg_soloist (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_soloist" | sqlite3 $SQLDB
