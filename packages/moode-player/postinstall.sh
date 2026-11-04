@@ -376,11 +376,13 @@ function on_install() {
 	# mouse.enabled = False
 	# pipe.name = /tmp/peppymeter
 	# volume.gain.db.source = /tmp/peppy_gain_db
+	# volume.curve = 0.0
 	sed -i -e 's/^framebuffer.device.*/framebuffer.device = \/dev\/fb0/' \
 		-e 's/^mouse.device.*/mouse.device = \/dev\/input\/event0/' \
 		-e 's/^mouse.enabled.*/mouse.enabled = False/' \
 		-e 's/^pipe.name.*/pipe.name = \/tmp\/peppymeter/' \
 		-e 's/^volume.gain.db.source.*/volume.gain.db.source = \/tmp\/peppy_gain_db/' \
+		-e 's/^volume.curve.*/volume.curve = 0.0' \
 		/etc/peppymeter/config.txt
 
 	# /etc/peppyspectrum/config.txt
@@ -813,6 +815,8 @@ function on_upgrade() {
 		# - Update cfg_plugin
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
+		# Peppymeter volume curve
+		grep -q '^volume.curve' /etc/peppymeter/config.txt || sed -i '/^volume.gain.db.source/a volume.curve = 0.0' /etc/peppymeter/config.txt
 	fi
 
     # --------------------------------------------------------------------------
