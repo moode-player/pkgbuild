@@ -382,7 +382,7 @@ function on_install() {
 		-e 's/^mouse.enabled.*/mouse.enabled = False/' \
 		-e 's/^pipe.name.*/pipe.name = \/tmp\/peppymeter/' \
 		-e 's/^volume.gain.db.source.*/volume.gain.db.source = \/tmp\/peppy_gain_db/' \
-		-e 's/^volume.curve.*/volume.curve = 0.0' \
+		-e 's/^volume.curve.*/volume.curve = 0.0/' \
 		/etc/peppymeter/config.txt
 
 	# /etc/peppyspectrum/config.txt
