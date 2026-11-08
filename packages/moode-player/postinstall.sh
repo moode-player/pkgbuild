@@ -277,6 +277,8 @@ function on_install() {
     # /etc/php/$PHP_VER/fpm/pool.d/www.conf
 	# pm.max_children = 64
     sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+	# pm = ondemand
+    sed -i "s/^pm = .*/pm = ondemand/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 
     # /etc/php/$PHP_VER/fpm/php.ini
     # max_execution_time = 300
