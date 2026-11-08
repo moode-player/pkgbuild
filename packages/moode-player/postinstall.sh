@@ -92,6 +92,7 @@ function on_install() {
         mpd.service \
         mpd.socket \
         mpd2cdspvolume \
+        mqtt-bridge \
         nfs-server \
 		nmbd.service \
         phpsessionclean.service \
@@ -126,6 +127,7 @@ function on_install() {
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/mqtt-bridge.service \
     /etc/systemd/system/plexamp.service \
 	/lib/systemd/system/bluetooth.service \
     /lib/systemd/system/rotenc.service \
@@ -824,6 +826,12 @@ function on_upgrade() {
     # --------------------------------------------------------------------------
     # Any release
     # --------------------------------------------------------------------------
+	echo "** MQTT bridge"
+	# Idempotent, so it applies whichever release it first ships in
+	sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_mqtt (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
+	cat $SQLDB".sql" | grep "INSERT INTO cfg_mqtt" | sed 's/^INSERT INTO/INSERT OR IGNORE INTO/' | sqlite3 $SQLDB
+	sqlite3 $SQLDB "UPDATE cfg_system SET param='mqttsvc', value='0' WHERE param='RESERVED_145'"
+
 	echo "** Update radio stations"
     # Release 10.0.1
     dpkg --compare-versions $VERSION lt "10.0.1-1moode1"
@@ -959,6 +967,7 @@ function on_upgrade() {
     chmod 0644 \
     /etc/systemd/system/bluealsa-aplay@.service \
     /etc/systemd/system/bt-agent.service \
+    /etc/systemd/system/mqtt-bridge.service \
     /etc/systemd/system/plexamp.service \
 	/lib/systemd/system/bluetooth.service \
     /lib/systemd/system/rotenc.service \
