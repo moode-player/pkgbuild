@@ -819,10 +819,10 @@ function on_upgrade() {
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
 		# Peppymeter volume curve
 		grep -q '^volume.curve' /etc/peppymeter/config.txt || sed -i '/^volume.gain.db.source/a volume.curve = 0.0' /etc/peppymeter/config.txt
-		# Migrate hdmi_cec param to cfg_system
-		sqlite3 $SQLDB "UPDATE cfg_system SET param='hdmi_cec', value='off' WHERE param='RESERVED_42'"
-		# Start PHP-FPM workers on demand
-		sed -i "s/^pm = .*/pm = ondemand/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+		# Move hdmi_cec from the session to cfg_system (id 42, keeps the current setting)
+		VALUE=$(moodeutl -d -gv hdmi_cec 2>/dev/null)
+		[ "$VALUE" != "on" ] && VALUE="off"
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='hdmi_cec', value='$VALUE' WHERE id=42"
 	fi
 
     # --------------------------------------------------------------------------
