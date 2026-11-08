@@ -817,6 +817,8 @@ function on_upgrade() {
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
 		# Peppymeter volume curve
 		grep -q '^volume.curve' /etc/peppymeter/config.txt || sed -i '/^volume.gain.db.source/a volume.curve = 0.0' /etc/peppymeter/config.txt
+		# Migrate hdmi_cec param to cfg_system
+		sqlite3 $SQLDB "UPDATE cfg_system SET param='hdmi_cec', value='off' WHERE param='RESERVED_42'"
 	fi
 
     # --------------------------------------------------------------------------
