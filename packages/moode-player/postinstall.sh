@@ -825,6 +825,15 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='hdmi_cec', value='$VALUE' WHERE id=42"
 		# Start PHP-FPM workers on demand
 		sed -i "s/^pm = .*/pm = ondemand/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+		# Add headphone jack enable
+		# - To cmdline.txt
+		COUNT=$(grep -c "snd_bcm2835.enable_headphones" /boot/firmware/cmdline.txt)
+		if [ $COUNT = 0 ]; then
+			sed -i 's/$/ snd_bcm2835.enable_headphones=1/' /boot/firmware/cmdline.txt
+		fi
+		# - Also uncomment vc4-kms-v3d in config.txt
+		#  It may have been commented out by the now obsolete Integrated audio option
+		sed -i 's/^#dtoverlay=vc4-kms-v3d/dtoverlay=vc4-kms-v3d/' /boot/firmware/config.txt
 	fi
 
     # --------------------------------------------------------------------------
