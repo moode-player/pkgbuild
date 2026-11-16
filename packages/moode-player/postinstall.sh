@@ -834,6 +834,8 @@ function on_upgrade() {
 		# - Also uncomment vc4-kms-v3d in config.txt
 		#  It may have been commented out by the now obsolete Integrated audio option
 		sed -i 's/^#dtoverlay=vc4-kms-v3d/dtoverlay=vc4-kms-v3d/' /boot/firmware/config.txt
+		# Renderer controls on the overlays (Preferences)
+		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (181, 'renderer_controls', 'No')"
 	fi
 
     # --------------------------------------------------------------------------
