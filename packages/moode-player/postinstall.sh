@@ -828,7 +828,7 @@ function on_upgrade() {
 	# Idempotent, so it applies whichever release it first ships in
 	sqlite3 $SQLDB "CREATE TABLE IF NOT EXISTS cfg_mqtt (id INTEGER PRIMARY KEY, param CHAR (32), value CHAR (32))"
 	cat $SQLDB".sql" | grep "INSERT INTO cfg_mqtt" | sed 's/^INSERT INTO/INSERT OR IGNORE INTO/' | sqlite3 $SQLDB
-	sqlite3 $SQLDB "UPDATE cfg_system SET param='mqttsvc', value='0' WHERE param='RESERVED_145'"
+	sqlite3 $SQLDB "INSERT OR IGNORE INTO cfg_system (id, param, value) VALUES (181, 'mqttsvc', '0')"
 
 	echo "** Update radio stations"
     # Release 10.0.1
