@@ -296,6 +296,7 @@ fpm -s dir -t deb -n $PKGNAME -v $PKGVERSION \
 --depends php-yaml \
 --depends php8.4-gd \
 --depends pi-bluetooth \
+--depends plymouth \
 --depends python3-dbus \
 --depends python3-libupnpp \
 --depends python3-musicpd \
