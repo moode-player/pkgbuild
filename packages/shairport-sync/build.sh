@@ -16,7 +16,7 @@ PKG="shairport-sync_5.6.2-1moode1"
 PKG_SOURCE_GIT="https://github.com/mikebrady/shairport-sync.git"
 PKG_SOURCE_GIT_TAG="5.6.2"
 
-PKG_DEBIAN="http://deb.debian.org/debian/pool/main/s/shairport-sync/shairport-sync_5.1~dev~git20260518-1.debian.tar.xz"
+PKG_DEBIAN="http://moodeaudio.org/test/shairport-sync_5.1~dev~git20260518-1.debian.tar.xz"
 
 rbl_check_build_dep libplist-utils
 rbl_prepare_from_git_with_deb_repo
