@@ -9,15 +9,13 @@
  		--with-ssl=openssl \
  		--with-soxr \
  		--with-metadata \
-@@ -31,10 +31,10 @@
+@@ -31,9 +31,9 @@
  		--with-metadata-multicast \
  		--with-avahi \
  		--with-alsa \
--		--with-jack \
 -		--with-pulseaudio \
 -		--with-pipewire \
 -		--with-convolution \
-+		--without-jack \
 +		--without-pulseaudio \
 +		--without-pipewire \
 +		--without-convolution \

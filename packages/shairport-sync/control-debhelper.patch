@@ -1,0 +1,11 @@
+--- shairport-sync-dev.org/debian/control.org	2026-11-19 19:33:26.169457671 +0100
++++ shairport-sync-dev/debian/control	2026-11-19 19:34:03.183427726 +0100
+@@ -2,7 +2,7 @@
+ Section: sound
+ Maintainer: Chris Boot <bootc@debian.org>
+ Build-Depends:
+- debhelper-compat (= 14),
++ debhelper-compat (= 13),
+  dh-sequence-single-binary,
+  libasound2-dev,
+  libavahi-client-dev,
