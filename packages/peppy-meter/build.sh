@@ -9,12 +9,12 @@
 #########################################################################
 
 . ../../scripts/rebuilder.lib.sh
-PKG="peppy-meter_2026.11.04-1moode1"
+PKG="peppy-meter_2026.11.22-1moode1"
 
 PKG_SOURCE_GIT="https://github.com/project-owner/PeppyMeter.git"
 PKG_SOURCE_GIT_TAG="master"
 
-# For packign fpm is used, which is created with Ruby
+# For packing fpm is used, which is created with Ruby
 rbl_check_fpm
 
 rbl_prepare_clone_from_git $PKG_SOURCE_GIT $PKG_SOURCE_GIT_TAG
