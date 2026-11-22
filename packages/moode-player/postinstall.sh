@@ -812,8 +812,8 @@ function on_upgrade() {
 		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (178, 'soloistname', 'Moode Soloist')"
 		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (179, 'solactive', '0')"
 		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (180, 'rsmaftersol', 'No')"
-		# - Enable the feature (keeps the other bits as set by the user)
-		sqlite3 $SQLDB "UPDATE cfg_system SET value=CAST(value AS INTEGER) | 262144 WHERE param='feat_bitmask'"
+		# - Enable the feature (228343 + 262144 = 490487)
+		sqlite3 $SQLDB "UPDATE cfg_system SET value='490487' WHERE param='feat_bitmask'"
 		# - Update cfg_plugin
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
@@ -836,6 +836,8 @@ function on_upgrade() {
 		sed -i 's/^#dtoverlay=vc4-kms-v3d/dtoverlay=vc4-kms-v3d/' /boot/firmware/config.txt
 		# Renderer controls on the overlays (Preferences)
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='renderer_controls', value='No' WHERE param='RESERVED_145'"
+		# Remove Spotify Connect from feature bitmask (490487 - 2048 = 488439)
+		sqlite3 $SQLDB "UPDATE cfg_system SET value='488439' WHERE param='feat_bitmask'"
 	fi
 
     # --------------------------------------------------------------------------
