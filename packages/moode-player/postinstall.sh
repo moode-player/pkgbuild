@@ -817,8 +817,13 @@ function on_upgrade() {
 		# - Update cfg_plugin
 		sqlite3 $SQLDB "DELETE FROM cfg_plugin"
 		cat $SQLDB".sql" | grep "INSERT INTO cfg_plugin" | sqlite3 $SQLDB
-		# Peppymeter volume curve
+		# Peppymeter
+		# - New config.txt params
 		grep -q '^volume.curve' /etc/peppymeter/config.txt || sed -i '/^volume.gain.db.source/a volume.curve = 0.0' /etc/peppymeter/config.txt
+		grep -q '^volume.text.source' /etc/peppymeter/config.txt || sed -i '/^volume.curve/a volume.text.source = \/tmp\/peppy_volume' /etc/peppymeter/config.txt
+		grep -q '^text.source' /etc/peppymeter/config.txt || sed -i '/^volume.text.source/a text.source = \/tmp\/peppy_text' /etc/peppymeter/config.txt
+		# - New cfg_system param
+		sqlite3 $SQLDB "INSERT INTO cfg_system (id, param, value) VALUES (182, 'peppy_text', '');"
 		# Move hdmi_cec from the session to cfg_system (id 42, keeps the current setting)
 		VALUE=$(moodeutl -d -gv hdmi_cec 2>/dev/null)
 		[ "$VALUE" != "on" ] && VALUE="off"
@@ -826,13 +831,12 @@ function on_upgrade() {
 		# Start PHP-FPM workers on demand
 		sed -i "s/^pm = .*/pm = ondemand/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 		# Add headphone jack enable
-		# - To cmdline.txt
+		# - Cmdline.txt
 		COUNT=$(grep -c "snd_bcm2835.enable_headphones" /boot/firmware/cmdline.txt)
 		if [ $COUNT = 0 ]; then
 			sed -i 's/$/ snd_bcm2835.enable_headphones=1/' /boot/firmware/cmdline.txt
 		fi
-		# - Also uncomment vc4-kms-v3d in config.txt
-		#  It may have been commented out by the now obsolete Integrated audio option
+		# - Config.txt (uncomment, may have been commented out by now obsolete "Integrated audio" option)
 		sed -i 's/^#dtoverlay=vc4-kms-v3d/dtoverlay=vc4-kms-v3d/' /boot/firmware/config.txt
 		# Renderer controls on the overlays (Preferences)
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='renderer_controls', value='No' WHERE param='RESERVED_145'"
