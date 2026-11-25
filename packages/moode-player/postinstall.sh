@@ -275,10 +275,13 @@ function on_install() {
         /etc/php/$PHP_VER/cli/php.ini
 
     # /etc/php/$PHP_VER/fpm/pool.d/www.conf
-	# pm.max_children = 64
-    sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 	# pm = ondemand
-    sed -i "s/^pm = .*/pm = ondemand/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+	# pm.max_children = 64
+	#;pm.process_idle_timeout = 3s;
+    sed -i -e "s/^pm = .*/pm = ondemand/" \
+    	-e "s/^pm[.]max_children.*/pm.max_children = 64/" \
+		-e "s/^;pm.process_idle_timeout.*/pm.process_idle_timeout = 3s/" \
+		/etc/php/$PHP_VER/fpm/pool.d/www.conf
 
     # /etc/php/$PHP_VER/fpm/php.ini
     # max_execution_time = 300
@@ -840,6 +843,8 @@ function on_upgrade() {
 		sed -i 's/^#dtoverlay=vc4-kms-v3d/dtoverlay=vc4-kms-v3d/' /boot/firmware/config.txt
 		# Renderer controls on the overlays (Preferences)
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='renderer_controls', value='No' WHERE param='RESERVED_145'"
+		# Reduce pm.process_idle_timeout from default 10s to 3s
+		sed -i -e "s/^;pm.process_idle_timeout.*/pm.process_idle_timeout = 3s/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 		# Remove Spotify Connect from feature bitmask (490487 - 2048 = 488439)
 		sqlite3 $SQLDB "UPDATE cfg_system SET value='488439' WHERE param='feat_bitmask'"
 	fi
