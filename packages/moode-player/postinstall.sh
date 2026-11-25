@@ -279,6 +279,8 @@ function on_install() {
     sed -i "s/^pm[.]max_children.*/pm.max_children = 64/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 	# pm = ondemand
     sed -i "s/^pm = .*/pm = ondemand/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+	# pm.process_idle_timeout = 3s
+    sed -i "s/^;*pm[.]process_idle_timeout.*/pm.process_idle_timeout = 3s/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 
     # /etc/php/$PHP_VER/fpm/php.ini
     # max_execution_time = 300
@@ -830,6 +832,8 @@ function on_upgrade() {
 		sqlite3 $SQLDB "UPDATE cfg_system SET param='hdmi_cec', value='$VALUE' WHERE id=42"
 		# Start PHP-FPM workers on demand
 		sed -i "s/^pm = .*/pm = ondemand/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
+		# Retire idle PHP-FPM workers after 3 seconds
+		sed -i "s/^;*pm[.]process_idle_timeout.*/pm.process_idle_timeout = 3s/" /etc/php/$PHP_VER/fpm/pool.d/www.conf
 		# Add headphone jack enable
 		# - Cmdline.txt
 		COUNT=$(grep -c "snd_bcm2835.enable_headphones" /boot/firmware/cmdline.txt)
